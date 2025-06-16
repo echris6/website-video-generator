@@ -1,8 +1,11 @@
 📊 Video Generation Summary
-Generated at: Mon Jun 16 14:13:18 UTC 2025
+Generated at: Mon Jun 16 14:35:18 UTC 2025
 Triggered by: repository_dispatch event
 
-🌐 Website files: 0
-🎬 Video files: 0
+🌐 Website files: 3
+🎬 Video files: 3
 
 📹 Generated videos:
+videos/17medspa_1750084511301.mp4
+videos/glow_aesthetic_center_med_spa_1750084210175.mp4
+videos/nakedmd_med_spa_newport_beach_1750084037090.mp4

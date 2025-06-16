@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "name": "NakedMD Med Spa Newport Beach",
+    "category": "medical-spa",
+    "sanitizedName": "nakedmd-med-spa-newport-beach",
+    "htmlFilePath": "websites/medical-spa/nakedmd-med-spa-newport-beach/index.html",
+    "projectPath": "websites/medical-spa/nakedmd-med-spa-newport-beach"
+  },
+  {
+    "name": "Glow Aesthetic Center Med Spa",
+    "category": "medical-spa",
+    "sanitizedName": "glow-aesthetic-center-med-spa",
+    "htmlFilePath": "websites/medical-spa/glow-aesthetic-center-med-spa/index.html",
+    "projectPath": "websites/medical-spa/glow-aesthetic-center-med-spa"
+  },
+  {
+    "name": "17MedSpa",
+    "category": "medical-spa",
+    "sanitizedName": "17medspa",
+    "htmlFilePath": "websites/medical-spa/17medspa/index.html",
+    "projectPath": "websites/medical-spa/17medspa"
+  }
+]
