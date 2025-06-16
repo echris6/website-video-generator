@@ -1,9 +1,32 @@
 # Dependencies
 node_modules/
 
-# Generated videos
-videos/
+# ALLOW generated videos in videos/ directory
+# !videos/
+# !videos/*.mp4
+# !videos/*.webm
+
+# Block videos everywhere else except the videos/ directory
+# (This blocks accidental video files in other locations)
 *.mp4
+*.webm
+*.avi
+*.mov
+*.mkv
+
+# Override: ALLOW videos in the videos/ directory
+!videos/
+!videos/**/*.mp4
+!videos/**/*.webm
+
+# Override: ALLOW HTML files in websites/ directories
+!websites/
+!websites/**/*.html
+!websites/**/README.md
+
+# ALLOW GitHub Actions workflow results
+!.github/scripts/*-results.json
+!workflow-summary.txt
 
 # Environment variables
 .env
@@ -131,7 +154,7 @@ public
 # VIDEO GENERATION SPECIFIC
 # ===============================
 
-# Temporary screenshot frames
+# Temporary screenshot frames (block these)
 frames/
 screenshots/
 temp-frames/
@@ -151,10 +174,10 @@ video-generation.log
 ffmpeg.log
 puppeteer.log
 
-# Business category folders (keep structure, ignore content)
-websites/*/videos/
+# Block temp files in websites but ALLOW generated content
 websites/*/frames/
 websites/*/temp/
+websites/*/screenshots/
 
 # ===============================
 # DEVELOPMENT & DEPLOYMENT

@@ -4,6 +4,10 @@ on:
   repository_dispatch:
     types: [generate_websites]
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   generate-videos:
     runs-on: ubuntu-latest
