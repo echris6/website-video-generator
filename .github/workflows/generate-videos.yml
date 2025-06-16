@@ -79,7 +79,28 @@ jobs:
       run: npm install
 
     - name: Process website payload and create HTML files
-      run: node .github/scripts/process-payload.js
+      run: |
+        echo "Processing payload..."
+        echo "Payload: $PAYLOAD"
+        
+        # Ensure processing results file exists even if empty
+        mkdir -p .github/scripts
+        
+        if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
+          echo "No payload provided, creating empty processing results"
+          echo "[]" > .github/scripts/processing-results.json
+        else
+          node .github/scripts/process-payload.js
+        fi
+        
+        # Verify processing results file exists
+        if [ ! -f ".github/scripts/processing-results.json" ]; then
+          echo "Creating empty processing results file as fallback"
+          echo "[]" > .github/scripts/processing-results.json
+        fi
+        
+        echo "Processing results:"
+        cat .github/scripts/processing-results.json
       env:
         PAYLOAD: ${{ toJson(github.event.client_payload) }}
         NODE_ENV: production
@@ -95,7 +116,27 @@ jobs:
         DISPLAY: :99.0
 
     - name: Generate videos from created websites
-      run: node .github/scripts/generate-videos.js
+      run: |
+        echo "Starting video generation..."
+        
+        # Check if processing results file has content
+        if [ -f ".github/scripts/processing-results.json" ]; then
+          WEBSITE_COUNT=$(jq length .github/scripts/processing-results.json)
+          echo "Found $WEBSITE_COUNT websites to process"
+          
+          if [ "$WEBSITE_COUNT" -gt 0 ]; then
+            node .github/scripts/generate-videos.js
+          else
+            echo "No websites to process, skipping video generation"
+            # Create empty generation results
+            echo '{"timestamp":"'$(date -u)'","totalWebsites":0,"successful":0,"failed":0,"results":[]}' > .github/scripts/generation-results.json
+          fi
+        else
+          echo "No processing results found, skipping video generation"
+          echo '{"timestamp":"'$(date -u)'","totalWebsites":0,"successful":0,"failed":0,"results":[]}' > .github/scripts/generation-results.json
+        fi
+        
+        echo "Video generation completed"
       timeout-minutes: 30
       env:
         NODE_ENV: production
@@ -109,14 +150,37 @@ jobs:
           rm server.pid
         fi
 
+    - name: Create workflow summary
+      run: |
+        echo "📊 Video Generation Summary" > workflow-summary.txt
+        echo "Generated at: $(date -u)" >> workflow-summary.txt
+        echo "Triggered by: repository_dispatch event" >> workflow-summary.txt
+        echo "" >> workflow-summary.txt
+        
+        # Count generated files
+        if [ -d "websites" ]; then
+          echo "🌐 Website files: $(find websites -name "*.html" | wc -l)" >> workflow-summary.txt
+        fi
+        
+        if [ -d "videos" ]; then
+          echo "🎬 Video files: $(find videos -name "*.mp4" -o -name "*.webm" | wc -l)" >> workflow-summary.txt
+          echo "" >> workflow-summary.txt
+          echo "📹 Generated videos:" >> workflow-summary.txt
+          find videos -name "*.mp4" -o -name "*.webm" | sort >> workflow-summary.txt
+        fi
+        
+        cat workflow-summary.txt
+
     - name: Commit and push generated files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
-        # Add all new files
-        git add websites/
-        git add videos/
+        # Add all new files and results
+        git add websites/ || true
+        git add videos/ || true
+        git add .github/scripts/*.json || true
+        git add workflow-summary.txt || true
         
         # Check if there are changes to commit
         if git diff --staged --quiet; then
