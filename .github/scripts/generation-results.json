@@ -1,13 +1,24 @@
 {
-  "timestamp": "2025-06-16T16:18:31.017Z",
+  "timestamp": "2025-06-16T16:31:41.300Z",
   "totalWebsites": 1,
   "successful": 1,
   "failed": 0,
+  "method": "screenshot-based-direct",
+  "settings": {
+    "duration": 20,
+    "fps": 60,
+    "totalFrames": 1200,
+    "resolution": "1920x1080",
+    "pageLoadWait": 5000
+  },
   "results": [
     {
       "website": "NakedMD Med Spa Newport Beach",
       "category": "professional-services",
-      "success": true
+      "success": true,
+      "filename": "nakedmd_med_spa_newport_beach_1750091443307.mp4",
+      "size": "902.87 KB",
+      "message": "Video generated using screenshot-based method"
     }
   ]
 }
