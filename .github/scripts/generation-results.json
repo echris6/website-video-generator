@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-06-16T14:35:17.952Z",
+  "timestamp": "2025-06-16T14:59:04.049Z",
   "totalWebsites": 3,
-  "successful": 2,
-  "failed": 1,
+  "successful": 3,
+  "failed": 0,
   "results": [
     {
       "website": "NakedMD Med Spa Newport Beach",
@@ -12,8 +12,7 @@
     {
       "website": "Glow Aesthetic Center Med Spa",
       "category": "medical-spa",
-      "success": false,
-      "error": "timeout of 300000ms exceeded"
+      "success": true
     },
     {
       "website": "17MedSpa",
