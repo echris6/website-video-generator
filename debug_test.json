@@ -1,0 +1,4 @@
+{
+    "business_name": "Debug Scroll Test",
+    "html_content": "<!DOCTYPE html><html><head><title>Debug Test</title><style>body{margin:0;font-family:Arial,sans-serif}.section{height:100vh;display:flex;align-items:center;justify-content:center;font-size:4em;color:white;font-weight:bold}.hero{background:#ff0000}.services{background:#00ff00}.about{background:#0000ff}.contact{background:#ffff00;color:#000}.footer{background:#ff00ff}</style></head><body><div class='section hero'>RED HERO</div><div class='section services'>GREEN SERVICES</div><div class='section about'>BLUE ABOUT</div><div class='section contact'>YELLOW CONTACT</div><div class='section footer'>PURPLE FOOTER</div></body></html>"
+} 

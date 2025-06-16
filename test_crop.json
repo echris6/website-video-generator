@@ -1,0 +1,4 @@
+{
+    "business_name": "Crop Test",
+    "html_content": "<!DOCTYPE html><html><head><title>Crop Test</title><style>body{margin:0;font-family:Arial,sans-serif}.section{height:100vh;display:flex;align-items:center;justify-content:center;font-size:6em;font-weight:bold;color:white;text-shadow:3px 3px 6px rgba(0,0,0,0.7)}.red{background:#ff0000}.green{background:#00ff00}.blue{background:#0000ff}.yellow{background:#ffff00;color:#000}.purple{background:#800080}</style></head><body><div class='section red'>RED</div><div class='section green'>GREEN</div><div class='section blue'>BLUE</div><div class='section yellow'>YELLOW</div><div class='section purple'>PURPLE</div></body></html>"
+} 
