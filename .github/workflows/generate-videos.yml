@@ -180,6 +180,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
+        # Fetch latest changes from remote
+        echo "Fetching latest changes from remote..."
+        git fetch origin main
+        
         # Add all new files and results
         git add websites/ || true
         git add videos/ || true
@@ -189,15 +193,70 @@ jobs:
         # Check if there are changes to commit
         if git diff --staged --quiet; then
           echo "No changes to commit"
-        else
-          git commit -m "🎬 Auto-generated website videos from n8n workflow
-
-          Generated at: $(date -u)
-          Triggered by: repository_dispatch event
-          Event type: generate_websites"
-          
-          git push
+          exit 0
         fi
+        
+        echo "Changes detected, preparing to commit and push..."
+        
+        # Create commit
+        git commit -m "🎬 Auto-generated website videos from n8n workflow
+
+        Generated at: $(date -u)
+        Triggered by: repository_dispatch event
+        Event type: generate_websites"
+        
+        # Attempt to push with retry logic
+        MAX_RETRIES=3
+        RETRY_COUNT=0
+        
+        while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+          echo "Push attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
+          
+          if git push origin HEAD:main; then
+            echo "✅ Successfully pushed changes!"
+            break
+          else
+            echo "❌ Push failed, attempting to sync with remote..."
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            
+            if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+              # Pull latest changes and rebase our commit
+              echo "Pulling latest changes and rebasing..."
+              
+              # Reset to before our commit, pull latest, then reapply our changes
+              git reset --soft HEAD~1
+              git stash push -m "Generated files from workflow"
+              
+              # Pull latest changes
+              git pull --rebase origin main
+              
+              # Apply our changes back
+              git stash pop || {
+                echo "Stash pop failed, manually applying changes..."
+                git add websites/ videos/ .github/scripts/*.json workflow-summary.txt || true
+              }
+              
+              # Re-commit our changes
+              git add websites/ videos/ .github/scripts/*.json workflow-summary.txt || true
+              git commit -m "🎬 Auto-generated website videos from n8n workflow
+
+              Generated at: $(date -u)
+              Triggered by: repository_dispatch event
+              Event type: generate_websites (retry $((RETRY_COUNT + 1)))" || {
+                echo "No changes to re-commit after rebase"
+                break
+              }
+              
+              echo "Waiting 5 seconds before retry..."
+              sleep 5
+            else
+              echo "❌ Max retries reached. Push failed."
+              echo "Repository may have been updated during workflow execution."
+              echo "Generated files are still available as artifacts."
+              exit 1
+            fi
+          fi
+        done
 
     - name: Upload artifacts (backup)
       uses: actions/upload-artifact@v4
