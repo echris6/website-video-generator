@@ -117,34 +117,82 @@ jobs:
         Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
         sleep 3
 
-    - name: Create videos directory
-      run: mkdir -p videos
+    - name: Clean up previous videos and create fresh directory
+      run: |
+        echo "🧹 Cleaning up videos from previous runs..."
+        
+        # Show what exists before cleanup
+        if [ -d "videos" ]; then
+          BEFORE_COUNT=$(find videos -name "*.mp4" 2>/dev/null | wc -l)
+          echo "📊 Found $BEFORE_COUNT existing video(s) before cleanup"
+          if [ "$BEFORE_COUNT" -gt 0 ]; then
+            echo "🗂️ Existing videos:"
+            find videos -name "*.mp4" -exec basename {} \; 2>/dev/null || echo "None"
+          fi
+        else
+          echo "📊 No videos directory exists yet"
+        fi
+        
+        # Remove all previous videos to ensure fresh generation
+        rm -rf videos/
+        rm -rf frames/
+        rm -rf websites/
+        
+        # Create fresh directories
+        mkdir -p videos/
+        mkdir -p frames/
+        
+        # Verify cleanup
+        AFTER_COUNT=$(find videos -name "*.mp4" 2>/dev/null | wc -l)
+        echo "✅ Created fresh videos/ and frames/ directories"
+        echo "📊 Videos after cleanup: $AFTER_COUNT (should be 0)"
+        echo "🎯 Ready for fresh video generation - exactly 1 video will be created"
 
     - name: Generate video using screenshot-based method
       run: |
-        echo "🎬 Starting video generation for n8n website..."
+        echo "🎬 Starting fresh video generation for n8n website..."
         echo "Environment:"
         echo "  NODE_ENV: $NODE_ENV"
         echo "  PUPPETEER_EXECUTABLE_PATH: $PUPPETEER_EXECUTABLE_PATH"
         echo "  DISPLAY: $DISPLAY"
         
+        # Verify cleanup worked
+        echo "🔍 Verifying clean state..."
+        if [ -d "videos" ]; then
+          EXISTING_VIDEOS=$(find videos -name "*.mp4" | wc -l)
+          echo "📊 Found $EXISTING_VIDEOS existing videos (should be 0)"
+          if [ "$EXISTING_VIDEOS" -gt 0 ]; then
+            echo "⚠️ Warning: Found existing videos, cleaning again..."
+            rm -rf videos/*.mp4
+          fi
+        fi
+        
         # Check if we have website data to process
         if [ -f ".github/scripts/processing-results.json" ]; then
           WEBSITE_COUNT=$(jq length .github/scripts/processing-results.json)
-          echo "📊 Found $WEBSITE_COUNT website to process"
+          echo "📊 Found $WEBSITE_COUNT website(s) to process"
+          
+          # Ensure we only process 1 website
+          if [ "$WEBSITE_COUNT" -gt 1 ]; then
+            echo "⚠️ Multiple websites found - will process only the first one"
+          fi
           
           if [ "$WEBSITE_COUNT" -gt 0 ]; then
-            echo "🚀 Running screenshot-based video generation..."
+            echo "🚀 Running screenshot-based video generation for 1 website only..."
             node .github/scripts/generate-videos.js
             
-            echo "📁 Checking generated videos..."
+            echo "📁 Verifying fresh video generation..."
             if [ -d "videos" ]; then
               echo "Videos directory contents:"
               ls -la videos/
               VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
-              echo "Generated $VIDEO_COUNT video file(s)"
-              if [ "$VIDEO_COUNT" -gt 0 ]; then
-                echo "✅ Video generation successful!"
+              echo "Generated $VIDEO_COUNT video file(s) (should be exactly 1)"
+              
+              if [ "$VIDEO_COUNT" -eq 1 ]; then
+                echo "✅ Perfect! Generated exactly 1 fresh video!"
+                find videos -name "*.mp4" -exec ls -lh {} \;
+              elif [ "$VIDEO_COUNT" -gt 1 ]; then
+                echo "⚠️ Warning: Generated $VIDEO_COUNT videos, expected 1"
                 find videos -name "*.mp4" -exec ls -lh {} \;
               else
                 echo "❌ No video files found after generation"
@@ -163,7 +211,7 @@ jobs:
           exit 1
         fi
         
-        echo "✅ Video generation completed successfully"
+        echo "✅ Fresh video generation completed successfully"
       timeout-minutes: 30
       env:
         NODE_ENV: production
@@ -197,7 +245,7 @@ jobs:
         
         cat workflow-summary.md
 
-    - name: Commit and push generated video
+    - name: Commit and push fresh generated video
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
@@ -205,6 +253,15 @@ jobs:
         # Fetch latest changes
         echo "📡 Fetching latest changes..."
         git fetch origin main
+        
+        # Verify we have exactly 1 fresh video
+        if [ -d "videos" ]; then
+          VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
+          echo "📊 Found $VIDEO_COUNT video(s) to commit"
+          if [ "$VIDEO_COUNT" -ne 1 ]; then
+            echo "⚠️ Expected exactly 1 video, found $VIDEO_COUNT"
+          fi
+        fi
         
         # Add generated files
         git add videos/ || true
@@ -216,14 +273,15 @@ jobs:
           exit 0
         fi
         
-        echo "💾 Committing generated video..."
+        echo "💾 Committing fresh generated video..."
         
         # Create commit
-        git commit -m "🎥 Generated website video from n8n
+        git commit -m "🎥 Generated fresh website video from n8n
 
         Generated at: $(date -u)
         Triggered by: n8n repository_dispatch
-        Event type: generate_websites"
+        Event type: generate_websites
+        Videos: 1 fresh video (previous videos cleaned)"
         
         # Push with retry logic
         MAX_RETRIES=3
