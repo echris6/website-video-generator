@@ -98,7 +98,8 @@ function processWebsiteData() {
   
   const processedWebsite = {
     name: businessName,
-    htmlFilePath
+    htmlContent: htmlContent,  // Include HTML content directly (like server.js)
+    htmlFilePath  // Keep file path for backward compatibility
   };
   
   // Save processing results for video generation script

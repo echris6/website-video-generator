@@ -207,9 +207,11 @@ async function generateVideo(website) {
         console.log('Launching Puppeteer...');
         console.log('Setting HTML content...');
         
-        // Read and set HTML content
-        const htmlContent = fs.readFileSync(website.htmlFilePath, 'utf8');
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+        // Use HTML content directly (EXACT SAME as server.js)
+        await page.setContent(website.htmlContent, { 
+            waitUntil: ['networkidle0', 'domcontentloaded'],
+            timeout: 45000 
+        });
         
         // EXACT SAME WAIT AS server.js
         console.log('⏳ Waiting 5 seconds for page to fully load...');
@@ -319,6 +321,15 @@ async function main() {
         // Process only the first website (like the local server)
         const website = websites[0];
         console.log(`🎯 Processing website: ${website.name}`);
+        
+        // Validate HTML content is available (like server.js)
+        if (!website.htmlContent) {
+            console.error('❌ No HTML content found in website data');
+            console.error('Expected htmlContent field to be present');
+            process.exit(1);
+        }
+        
+        console.log(`📄 HTML content size: ${website.htmlContent.length} characters`);
         
         // Generate the video
         const result = await generateVideo(website);
