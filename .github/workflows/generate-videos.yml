@@ -122,69 +122,13 @@ jobs:
         ls -la videos/
         echo "Videos directory created"
 
-    - name: Start video generation server
+    - name: Generate videos using screenshot-based method
       run: |
-        echo "Starting server..."
+        echo "🎬 Starting direct screenshot-based video generation..."
         echo "Environment variables:"
         echo "NODE_ENV: $NODE_ENV"
         echo "PUPPETEER_EXECUTABLE_PATH: $PUPPETEER_EXECUTABLE_PATH"
         echo "DISPLAY: $DISPLAY"
-        
-        # Start server with output logging
-        npm start > server.log 2>&1 &
-        SERVER_PID=$!
-        echo $SERVER_PID > server.pid
-        echo "Server PID: $SERVER_PID"
-        
-        # Wait for server to start and verify it's running
-        echo "Waiting for server to start..."
-        sleep 15
-        
-        # Show server log for debugging
-        echo "Server log (first 20 lines):"
-        head -20 server.log || echo "No server log available"
-        
-        # Check if server is responding
-        for i in {1..10}; do
-          if curl -f http://localhost:3000/health; then
-            echo "✅ Server is running and responding!"
-            curl http://localhost:3000/health
-            break
-          else
-            echo "⏳ Attempt $i: Server not ready yet, waiting 5 seconds..."
-            echo "Current server log:"
-            tail -10 server.log || echo "No recent server log"
-            sleep 5
-            if [ $i -eq 10 ]; then
-              echo "❌ Server failed to start properly"
-              echo "Full server log:"
-              cat server.log || echo "No server log available"
-              # Check server logs
-              echo "Checking if server process is still running..."
-              if ps -p $SERVER_PID > /dev/null; then
-                echo "Server process is running but not responding to health check"
-              else
-                echo "Server process has died"
-              fi
-              exit 1
-            fi
-          fi
-        done
-      env:
-        NODE_ENV: production
-        PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
-        DISPLAY: :99
-        VIDEO_METHOD: screenshot
-
-    - name: Generate videos from created websites
-      run: |
-        echo "🎬 Starting video generation..."
-        
-        # Verify server is still running
-        if ! curl -f http://localhost:3000/health; then
-          echo "❌ Server is not responding, cannot generate videos"
-          exit 1
-        fi
         
         # Check if processing results file has content
         if [ -f ".github/scripts/processing-results.json" ]; then
@@ -195,7 +139,7 @@ jobs:
             echo "📊 Processing results content:"
             cat .github/scripts/processing-results.json | jq '.'
             
-            echo "🚀 Running video generation script..."
+            echo "🚀 Running screenshot-based video generation script..."
             node .github/scripts/generate-videos.js
             
             echo "📁 Checking generated videos..."
@@ -223,19 +167,12 @@ jobs:
           echo '{"timestamp":"'$(date -u)'","totalWebsites":0,"successful":0,"failed":0,"results":[]}' > .github/scripts/generation-results.json
         fi
         
-        echo "✅ Video generation step completed"
+        echo "✅ Screenshot-based video generation step completed"
       timeout-minutes: 45
       env:
         NODE_ENV: production
         PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
         DISPLAY: :99
-
-    - name: Stop server
-      run: |
-        if [ -f server.pid ]; then
-          kill $(cat server.pid) || true
-          rm server.pid
-        fi
 
     - name: Create workflow summary
       run: |
