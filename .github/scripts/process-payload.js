@@ -68,15 +68,25 @@ function processWebsiteData() {
   
   payload.websites.forEach((website, index) => {
     try {
+      console.log(`Processing website ${index}:`, {
+        business_name: website.business_name ? 'present' : 'missing',
+        html_content: website.html_content ? 'present' : 'missing',
+        file_name: website.file_name || 'not provided',
+        category: website.category || 'not provided'
+      });
+      
       const {
-        name: businessName,
-        html: htmlContent,
+        business_name: businessName,
+        html_content: htmlContent,
         description = '',
-        category: providedCategory
+        category: providedCategory,
+        file_name: fileName
       } = website;
       
       if (!businessName || !htmlContent) {
-        console.error(`Skipping website ${index}: Missing name or HTML content`);
+        console.error(`Skipping website ${index}: Missing business_name or html_content`);
+        console.error(`  business_name: ${businessName ? 'present' : 'missing'}`);
+        console.error(`  html_content: ${htmlContent ? 'present' : 'missing'}`);
         return;
       }
       
