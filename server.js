@@ -46,14 +46,15 @@ const DEFAULT_VIDEO_SETTINGS = {
     videoCodec: 'libx264',  
     videoPreset: 'fast',    
     videoBitrate: 3000,     
-    duration: 15            // 15 seconds
+    duration: 25            // 25 seconds for thorough scrolling
 };
 
 // Scrolling configuration
 const SCROLL_CONFIG = {
-    totalDuration: 15,      
-    initialDelay: 500,      
-    endDelay: 500           
+    totalDuration: 25,      // Extended duration for complete page viewing
+    initialDelay: 2000,     // Longer initial delay for page loading
+    endDelay: 1000,         // End delay to show final content
+    loadWaitTime: 3000      // Additional time for page content to load
 };
 
 /**
@@ -146,39 +147,79 @@ app.post('/generate-video', upload.none(), async (req, res) => {
         // Merge video settings with defaults
         const videoSettings = { ...DEFAULT_VIDEO_SETTINGS, ...settings };
 
-        // Launch Puppeteer
+        // Launch Puppeteer with enhanced settings
         console.log('Launching Puppeteer...');
         browser = await puppeteer.launch({
             headless: 'new',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage'
+                '--disable-dev-shm-usage',
+                '--disable-extensions',
+                '--disable-gpu',
+                '--no-first-run',
+                '--no-default-browser-check',
+                '--disable-background-timer-throttling',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-renderer-backgrounding'
             ]
         });
 
         page = await browser.newPage();
+        
+        // Set larger viewport to ensure proper rendering
         await page.setViewport({
             width: videoSettings.width,
-            height: videoSettings.height
+            height: videoSettings.height,
+            deviceScaleFactor: 1
         });
 
-        // Set HTML content
+        // Set enhanced user agent
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+        // Set HTML content with extended waiting
         console.log('Setting HTML content...');
         await page.setContent(html_content, {
-            waitUntil: 'networkidle0',
-            timeout: 30000
+            waitUntil: ['networkidle0', 'domcontentloaded'],
+            timeout: 45000
         });
 
-        // Wait for page to fully render
-        await page.waitForTimeout(2000);
+        // Wait for page to fully render and load all content
+        console.log('Waiting for page to fully load...');
+        await page.waitForTimeout(SCROLL_CONFIG.loadWaitTime);
 
-        // Get total scrollable height
-        const totalHeight = await page.evaluate(() => document.body.scrollHeight);
+        // Wait for any images to load
+        try {
+            await page.waitForFunction(() => {
+                const images = document.querySelectorAll('img');
+                return Array.from(images).every(img => img.complete || img.naturalHeight > 0);
+            }, { timeout: 5000 });
+        } catch (e) {
+            console.log('Some images may still be loading, continuing...');
+        }
+
+        // Get comprehensive page dimensions
+        const pageInfo = await page.evaluate(() => {
+            const body = document.body;
+            const html = document.documentElement;
+            
+            return {
+                scrollHeight: Math.max(body.scrollHeight, html.scrollHeight),
+                clientHeight: Math.max(body.clientHeight, html.clientHeight),
+                offsetHeight: Math.max(body.offsetHeight, html.offsetHeight),
+                viewportHeight: window.innerHeight,
+                bodyScrollHeight: body.scrollHeight,
+                documentScrollHeight: document.documentElement.scrollHeight
+            };
+        });
+
+        console.log('Page dimensions:', pageInfo);
+        
+        const totalHeight = Math.max(pageInfo.scrollHeight, pageInfo.bodyScrollHeight, pageInfo.documentScrollHeight);
         const viewportHeight = videoSettings.height;
-        const scrollableHeight = totalHeight - viewportHeight;
+        const scrollableHeight = Math.max(0, totalHeight - viewportHeight);
 
-        console.log(`Total height: ${totalHeight}px, Scrollable height: ${scrollableHeight}px`);
+        console.log(`Total height: ${totalHeight}px, Viewport: ${viewportHeight}px, Scrollable height: ${scrollableHeight}px`);
 
         // Capture screenshots for smooth scrolling
         await captureScrollingScreenshots(page, scrollableHeight, frameDir, videoSettings);
@@ -237,54 +278,105 @@ app.post('/generate-video', upload.none(), async (req, res) => {
  * Capture screenshots at precise intervals for smooth scrolling
  */
 async function captureScrollingScreenshots(page, scrollableHeight, frameDir, videoSettings) {
+    const { fps, duration } = videoSettings;
+    
     if (scrollableHeight <= 0) {
-        console.log('Page content fits in viewport, capturing single frame');
-        await page.screenshot({
-            path: path.join(frameDir, 'frame_000001.png'),
-            fullPage: false
-        });
+        console.log('Page content fits in viewport, creating static video');
+        // Create multiple frames for minimum duration
+        const minFrames = Math.max(fps * 3, 180); // Minimum 3 seconds
+        
+        for (let i = 0; i < minFrames; i++) {
+            const frameNumber = String(i + 1).padStart(6, '0');
+            await page.screenshot({
+                path: path.join(frameDir, `frame_${frameNumber}.png`),
+                fullPage: false,
+                clip: { x: 0, y: 0, width: videoSettings.width, height: videoSettings.height }
+            });
+        }
+        console.log(`Created ${minFrames} static frames for short content`);
         return;
     }
 
     console.log('Starting SCREENSHOT-BASED smooth scrolling...');
-    const { fps, duration } = videoSettings;
-    const totalFrames = fps * duration; // e.g., 60 * 15 = 900 frames
-    const scrollPerFrame = scrollableHeight / totalFrames;
     
-    console.log(`Capturing ${totalFrames} frames at ${scrollPerFrame.toFixed(4)}px per frame`);
+    // Calculate frames and scrolling
+    const totalFrames = fps * duration; // e.g., 60 * 25 = 1500 frames
+    const effectiveScrollTime = duration - 5; // Reserve 5 seconds for viewing (2s start + 3s end)
+    const scrollFrames = fps * effectiveScrollTime;
+    const scrollPerFrame = scrollableHeight / scrollFrames;
+    
+    console.log(`Capturing ${totalFrames} frames (${scrollFrames} scrolling frames) at ${scrollPerFrame.toFixed(4)}px per frame`);
 
-    // Initial delay
-    await page.waitForTimeout(SCROLL_CONFIG.initialDelay);
-
-    // Capture frames
-    for (let frame = 0; frame < totalFrames; frame++) {
-        const currentScroll = frame * scrollPerFrame;
+    // Initial viewing period (2 seconds at top)
+    const initialFrames = fps * 2;
+    console.log('Capturing initial static frames (showing top of page)...');
+    
+    for (let frame = 0; frame < initialFrames; frame++) {
+        await page.evaluate(() => window.scrollTo(0, 0));
         
-        // Scroll to position
-        await page.evaluate((scrollY) => {
-            window.scrollTo(0, scrollY);
-        }, currentScroll);
-
-        // Small delay to ensure scroll is applied
-        await page.waitForTimeout(5);
-
-        // Capture screenshot
         const frameNumber = String(frame + 1).padStart(6, '0');
         await page.screenshot({
             path: path.join(frameDir, `frame_${frameNumber}.png`),
-            fullPage: false
+            fullPage: false,
+            clip: { x: 0, y: 0, width: videoSettings.width, height: videoSettings.height }
+        });
+    }
+
+    // Scrolling phase
+    console.log('Starting smooth scrolling phase...');
+    for (let scrollFrame = 0; scrollFrame < scrollFrames; scrollFrame++) {
+        const currentScroll = scrollFrame * scrollPerFrame;
+        const frameNumber = initialFrames + scrollFrame + 1;
+        
+        // Smooth scroll to position
+        await page.evaluate((scrollY) => {
+            window.scrollTo({
+                top: scrollY,
+                behavior: 'instant'
+            });
+        }, currentScroll);
+
+        // Ensure scroll is applied
+        await page.waitForTimeout(8);
+
+        // Capture screenshot
+        const frameNumberStr = String(frameNumber).padStart(6, '0');
+        await page.screenshot({
+            path: path.join(frameDir, `frame_${frameNumberStr}.png`),
+            fullPage: false,
+            clip: { x: 0, y: 0, width: videoSettings.width, height: videoSettings.height }
         });
 
         // Progress logging
-        if (frame % 60 === 0) {
-            console.log(`Captured frame ${frame + 1}/${totalFrames} (${((frame + 1) / totalFrames * 100).toFixed(1)}%)`);
+        if (scrollFrame % 60 === 0) {
+            console.log(`Captured scrolling frame ${scrollFrame + 1}/${scrollFrames} (${((scrollFrame + 1) / scrollFrames * 100).toFixed(1)}%)`);
         }
     }
 
-    // End delay
-    await page.waitForTimeout(SCROLL_CONFIG.endDelay);
+    // Final viewing period (3 seconds at bottom)
+    const finalFrames = fps * 3;
+    console.log('Capturing final static frames (showing bottom of page)...');
     
-    console.log(`Screenshot capture completed! Generated ${totalFrames} frames`);
+    // Ensure we're at the bottom
+    await page.evaluate(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    for (let frame = 0; frame < finalFrames; frame++) {
+        const frameNumber = initialFrames + scrollFrames + frame + 1;
+        const frameNumberStr = String(frameNumber).padStart(6, '0');
+        
+        await page.screenshot({
+            path: path.join(frameDir, `frame_${frameNumberStr}.png`),
+            fullPage: false,
+            clip: { x: 0, y: 0, width: videoSettings.width, height: videoSettings.height }
+        });
+    }
+    
+    console.log(`Screenshot capture completed! Generated ${totalFrames} frames total`);
+    console.log(`  - ${initialFrames} initial frames (top view)`);
+    console.log(`  - ${scrollFrames} scrolling frames`);
+    console.log(`  - ${finalFrames} final frames (bottom view)`);
 }
 
 /**
