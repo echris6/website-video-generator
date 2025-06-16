@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  video-generator:
+    build: .
+    container_name: website-scrolling-video-generator
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Persist generated videos
+      - ./videos:/app/videos
+    restart: unless-stopped
+    # Add security options for Puppeteer
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_ADMIN 

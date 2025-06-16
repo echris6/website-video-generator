@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Business Website</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        .services {
+            background: #f8f9fa;
+        }
+        
+        .services h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            color: #667eea;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .about {
+            background: white;
+        }
+        
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .about h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #764ba2;
+        }
+        
+        .about p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        
+        .contact {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+        }
+        
+        .contact h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .contact-info {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .extra-section {
+            background: #f0f0f0;
+            min-height: 50vh;
+            padding: 4rem 2rem;
+        }
+        
+        .extra-section h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div>
+            <h1>Welcome to Our Business</h1>
+            <p>Transforming Ideas into Digital Reality</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div>
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Web Development</h3>
+                    <p>Custom websites built with modern technologies and best practices.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Mobile Apps</h3>
+                    <p>Native and cross-platform mobile applications for iOS and Android.</p>
+                </div>
+                <div class="service-card">
+                    <h3>UI/UX Design</h3>
+                    <p>Beautiful, intuitive designs that enhance user experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Extra content to demonstrate scrolling -->
+    <section class="extra-section">
+        <div>
+            <h3>Why Choose Us?</h3>
+            <p>We bring years of experience and a passion for excellence to every project.</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="about-content">
+            <h2>About Us</h2>
+            <p>We are a team of passionate developers and designers dedicated to creating exceptional digital experiences. With over a decade of combined experience, we've helped businesses of all sizes achieve their digital goals.</p>
+            <p>Our approach combines cutting-edge technology with timeless design principles to deliver solutions that not only look great but also drive results. We believe in building long-term partnerships with our clients, working together to navigate the ever-evolving digital landscape.</p>
+        </div>
+    </section>
+
+    <!-- Another extra section -->
+    <section class="extra-section">
+        <div>
+            <h3>Our Process</h3>
+            <p>Discovery → Design → Development → Deployment → Support</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div>
+            <h2>Get In Touch</h2>
+            <div class="contact-info">📧 hello@business.com</div>
+            <div class="contact-info">📱 +1 (555) 123-4567</div>
+            <div class="contact-info">📍 123 Business St, City, State 12345</div>
+            <a href="#" class="cta-button">Start Your Project</a>
+        </div>
+    </section>
+</body>
+</html> 

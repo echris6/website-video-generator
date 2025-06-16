@@ -1,0 +1,4 @@
+{
+  "html_content": "<!DOCTYPE html><html><head><style>body{font-family:Arial;padding:50px;line-height:1.6}.section{height:500px;padding:50px;margin:20px 0;border-radius:10px;font-size:24px}.hero{background:linear-gradient(45deg,#3498db,#2980b9);color:white}.services{background:#f8f9fa}.about{background:#e8f4f8}.contact{background:#34495e;color:white}</style></head><body><div class='section hero'><h1>Test Website</h1><p>This is a test website to verify smooth scrolling works perfectly.</p></div><div class='section services'><h2>Services Section</h2><p>Testing smooth 60fps scrolling motion...</p></div><div class='section about'><h2>About Section</h2><p>The scrolling should be perfectly smooth now!</p></div><div class='section contact'><h2>Contact Section</h2><p>Time-based animation with easing curves.</p></div></body></html>",
+  "business_name": "Test Smooth Scrolling"
+} 
