@@ -1,0 +1,100 @@
+name: Generate Website Videos
+
+on:
+  repository_dispatch:
+    types: [generate_websites]
+
+jobs:
+  generate-videos:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+        
+    - name: Install Node.js dependencies
+      run: npm install
+
+    - name: Install Puppeteer dependencies
+      run: |
+        sudo apt-get install -y \
+          libnss3 \
+          libatk-bridge2.0-0 \
+          libdrm2 \
+          libxkbcommon0 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          libgbm1 \
+          libgtk-3-0 \
+          libasound2
+
+    - name: Process website payload and create HTML files
+      run: node .github/scripts/process-payload.js
+      env:
+        PAYLOAD: ${{ toJson(github.event.client_payload) }}
+
+    - name: Start video generation server
+      run: |
+        npm start &
+        echo $! > server.pid
+        sleep 10  # Wait for server to start
+      env:
+        NODE_ENV: production
+
+    - name: Generate videos from created websites
+      run: node .github/scripts/generate-videos.js
+      timeout-minutes: 30
+
+    - name: Stop server
+      run: |
+        if [ -f server.pid ]; then
+          kill $(cat server.pid) || true
+          rm server.pid
+        fi
+
+    - name: Commit and push generated files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add all new files
+        git add websites/
+        git add videos/
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "🎬 Auto-generated website videos from n8n workflow
+
+          Generated at: $(date -u)
+          Triggered by: repository_dispatch event
+          Event type: generate_websites"
+          
+          git push
+        fi
+
+    - name: Upload artifacts (backup)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: generated-videos-${{ github.run_number }}
+        path: |
+          videos/*.mp4
+          websites/**/*.html
+        retention-days: 30 
