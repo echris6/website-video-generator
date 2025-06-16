@@ -57,95 +57,68 @@ function createProjectStructure(category, projectName) {
 
 function processWebsiteData() {
   const payload = JSON.parse(process.env.PAYLOAD || '{}');
-  console.log('Processing payload:', JSON.stringify(payload, null, 2));
+  console.log('🔍 Processing n8n payload...');
   
-  if (!payload.websites || !Array.isArray(payload.websites)) {
-    console.log('No websites array found in payload');
+  // Handle both single website object and websites array (to support both formats)
+  let websiteData = null;
+  
+  if (payload.business_name && payload.html_content) {
+    // Direct website data (preferred format)
+    websiteData = payload;
+  } else if (payload.websites && Array.isArray(payload.websites) && payload.websites.length > 0) {
+    // Array format - take the first one only
+    websiteData = payload.websites[0];
+    console.log(`📋 Found ${payload.websites.length} websites, processing the first one only`);
+  } else {
+    console.error('❌ No valid website data found in payload');
+    console.error('Expected format: { business_name: "...", html_content: "..." }');
     return [];
   }
   
-  const processedWebsites = [];
+  const { business_name: businessName, html_content: htmlContent } = websiteData;
   
-  payload.websites.forEach((website, index) => {
-    try {
-      console.log(`Processing website ${index}:`, {
-        business_name: website.business_name ? 'present' : 'missing',
-        html_content: website.html_content ? 'present' : 'missing',
-        file_name: website.file_name || 'not provided',
-        category: website.category || 'not provided'
-      });
-      
-      const {
-        business_name: businessName,
-        html_content: htmlContent,
-        description = '',
-        category: providedCategory,
-        file_name: fileName
-      } = website;
-      
-      if (!businessName || !htmlContent) {
-        console.error(`Skipping website ${index}: Missing business_name or html_content`);
-        console.error(`  business_name: ${businessName ? 'present' : 'missing'}`);
-        console.error(`  html_content: ${htmlContent ? 'present' : 'missing'}`);
-        return;
-      }
-      
-      // Determine category
-      const category = providedCategory || categorizeWebsite(businessName, description);
-      const sanitizedName = sanitizeFilename(businessName);
-      
-      // Create project structure
-      const projectPath = createProjectStructure(category, sanitizedName);
-      const htmlFilePath = path.join(projectPath, 'index.html');
-      
-      // Write HTML file
-      fs.writeFileSync(htmlFilePath, htmlContent, 'utf8');
-      console.log(`Created HTML file: ${htmlFilePath}`);
-      
-      // Create project metadata
-      const metadata = {
-        name: businessName,
-        category,
-        description,
-        created: new Date().toISOString(),
-        htmlFile: 'index.html'
-      };
-      
-      const metadataPath = path.join(projectPath, 'project.json');
-      fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf8');
-      console.log(`Created metadata: ${metadataPath}`);
-      
-      processedWebsites.push({
-        name: businessName,
-        category,
-        sanitizedName,
-        htmlFilePath,
-        projectPath
-      });
-      
-    } catch (error) {
-      console.error(`Error processing website ${index}:`, error);
-    }
-  });
+  if (!businessName || !htmlContent) {
+    console.error('❌ Missing required fields:');
+    console.error(`  business_name: ${businessName ? '✅' : '❌'}`);
+    console.error(`  html_content: ${htmlContent ? '✅' : '❌'}`);
+    return [];
+  }
   
-  // Save processing results for next script
+  console.log(`✅ Processing website: ${businessName}`);
+  
+  // Create simple structure - just save the HTML for video generation
+  ensureDirectoryExists('websites');
+  
+  const safeFileName = businessName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  const htmlFilePath = path.join('websites', `${safeFileName}.html`);
+  
+  // Write HTML file
+  fs.writeFileSync(htmlFilePath, htmlContent, 'utf8');
+  console.log(`📄 Created HTML file: ${htmlFilePath}`);
+  
+  const processedWebsite = {
+    name: businessName,
+    htmlFilePath
+  };
+  
+  // Save processing results for video generation script
   const resultsPath = path.join('.github', 'scripts', 'processing-results.json');
   ensureDirectoryExists(path.dirname(resultsPath));
-  fs.writeFileSync(resultsPath, JSON.stringify(processedWebsites, null, 2), 'utf8');
-  console.log(`Saved processing results to: ${resultsPath}`);
+  fs.writeFileSync(resultsPath, JSON.stringify([processedWebsite], null, 2), 'utf8');
+  console.log(`💾 Saved processing results to: ${resultsPath}`);
   
-  console.log(`\n✅ Successfully processed ${processedWebsites.length} websites:`);
-  processedWebsites.forEach(site => {
-    console.log(`  - ${site.name} (${site.category}): ${site.htmlFilePath}`);
-  });
-  
-  return processedWebsites;
+  console.log(`\n🎯 Ready to generate video for: ${businessName}`);
+  return [processedWebsite];
 }
 
 // Run the processing
 if (require.main === module) {
   try {
-    processWebsiteData();
+    const result = processWebsiteData();
+    if (result.length === 0) {
+      console.error('❌ No websites processed successfully');
+      process.exit(1);
+    }
   } catch (error) {
     console.error('❌ Error processing payload:', error);
     process.exit(1);

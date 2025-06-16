@@ -82,28 +82,29 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
-    - name: Process website payload and create HTML files
+    - name: Process n8n website payload
       run: |
-        echo "Processing payload..."
-        echo "Payload: $PAYLOAD"
+        echo "🔍 Processing website from n8n..."
+        echo "Payload received: $PAYLOAD"
         
-        # Ensure processing results file exists even if empty
+        # Ensure .github/scripts directory exists
         mkdir -p .github/scripts
         
         if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
-          echo "No payload provided, creating empty processing results"
-          echo "[]" > .github/scripts/processing-results.json
+          echo "❌ No payload provided from n8n"
+          exit 1
         else
+          echo "✅ Processing website data..."
           node .github/scripts/process-payload.js
         fi
         
-        # Verify processing results file exists
+        # Verify processing was successful
         if [ ! -f ".github/scripts/processing-results.json" ]; then
-          echo "Creating empty processing results file as fallback"
-          echo "[]" > .github/scripts/processing-results.json
+          echo "❌ Failed to process website data"
+          exit 1
         fi
         
-        echo "Processing results:"
+        echo "📋 Processing results:"
         cat .github/scripts/processing-results.json
       env:
         PAYLOAD: ${{ toJson(github.event.client_payload) }}
@@ -117,58 +118,53 @@ jobs:
         sleep 3
 
     - name: Create videos directory
-      run: |
-        mkdir -p videos
-        ls -la videos/
-        echo "Videos directory created"
+      run: mkdir -p videos
 
-    - name: Generate videos using screenshot-based method
+    - name: Generate video using screenshot-based method
       run: |
-        echo "🎬 Starting direct screenshot-based video generation..."
-        echo "Environment variables:"
-        echo "NODE_ENV: $NODE_ENV"
-        echo "PUPPETEER_EXECUTABLE_PATH: $PUPPETEER_EXECUTABLE_PATH"
-        echo "DISPLAY: $DISPLAY"
+        echo "🎬 Starting video generation for n8n website..."
+        echo "Environment:"
+        echo "  NODE_ENV: $NODE_ENV"
+        echo "  PUPPETEER_EXECUTABLE_PATH: $PUPPETEER_EXECUTABLE_PATH"
+        echo "  DISPLAY: $DISPLAY"
         
-        # Check if processing results file has content
+        # Check if we have website data to process
         if [ -f ".github/scripts/processing-results.json" ]; then
           WEBSITE_COUNT=$(jq length .github/scripts/processing-results.json)
-          echo "Found $WEBSITE_COUNT websites to process"
+          echo "📊 Found $WEBSITE_COUNT website to process"
           
           if [ "$WEBSITE_COUNT" -gt 0 ]; then
-            echo "📊 Processing results content:"
-            cat .github/scripts/processing-results.json | jq '.'
-            
-            echo "🚀 Running screenshot-based video generation script..."
+            echo "🚀 Running screenshot-based video generation..."
             node .github/scripts/generate-videos.js
             
             echo "📁 Checking generated videos..."
             if [ -d "videos" ]; then
               echo "Videos directory contents:"
               ls -la videos/
-              VIDEO_COUNT=$(find videos -name "*.mp4" -o -name "*.webm" | wc -l)
-              echo "Generated $VIDEO_COUNT video files"
+              VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
+              echo "Generated $VIDEO_COUNT video file(s)"
               if [ "$VIDEO_COUNT" -gt 0 ]; then
                 echo "✅ Video generation successful!"
-                find videos -name "*.mp4" -o -name "*.webm" -exec ls -lh {} \;
+                find videos -name "*.mp4" -exec ls -lh {} \;
               else
-                echo "⚠️ No video files found after generation"
+                echo "❌ No video files found after generation"
+                exit 1
               fi
             else
               echo "❌ Videos directory not found"
+              exit 1
             fi
           else
-            echo "No websites to process, skipping video generation"
-            # Create empty generation results
-            echo '{"timestamp":"'$(date -u)'","totalWebsites":0,"successful":0,"failed":0,"results":[]}' > .github/scripts/generation-results.json
+            echo "❌ No website data to process"
+            exit 1
           fi
         else
-          echo "No processing results found, skipping video generation"
-          echo '{"timestamp":"'$(date -u)'","totalWebsites":0,"successful":0,"failed":0,"results":[]}' > .github/scripts/generation-results.json
+          echo "❌ No processing results found"
+          exit 1
         fi
         
-        echo "✅ Screenshot-based video generation step completed"
-      timeout-minutes: 45
+        echo "✅ Video generation completed successfully"
+      timeout-minutes: 30
       env:
         NODE_ENV: production
         PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
@@ -176,139 +172,104 @@ jobs:
 
     - name: Create workflow summary
       run: |
-        echo "📊 Video Generation Summary" > workflow-summary.txt
-        echo "Generated at: $(date -u)" >> workflow-summary.txt
-        echo "Triggered by: repository_dispatch event" >> workflow-summary.txt
-        echo "" >> workflow-summary.txt
-        
-        # Count generated files
-        if [ -d "websites" ]; then
-          echo "🌐 Website files: $(find websites -name "*.html" | wc -l)" >> workflow-summary.txt
-        fi
+        echo "# 🎬 Video Generation Summary" > workflow-summary.md
+        echo "" >> workflow-summary.md
+        echo "**Generated at:** $(date -u)" >> workflow-summary.md
+        echo "**Triggered by:** n8n via repository_dispatch" >> workflow-summary.md
+        echo "" >> workflow-summary.md
         
         if [ -d "videos" ]; then
-          echo "🎬 Video files: $(find videos -name "*.mp4" -o -name "*.webm" | wc -l)" >> workflow-summary.txt
-          echo "" >> workflow-summary.txt
-          echo "📹 Generated videos:" >> workflow-summary.txt
-          find videos -name "*.mp4" -o -name "*.webm" | sort >> workflow-summary.txt
+          VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
+          echo "**Videos generated:** $VIDEO_COUNT" >> workflow-summary.md
+          echo "" >> workflow-summary.md
+          
+          if [ "$VIDEO_COUNT" -gt 0 ]; then
+            echo "## 📹 Generated Videos:" >> workflow-summary.md
+            find videos -name "*.mp4" | while read video; do
+              size=$(ls -lh "$video" | awk '{print $5}')
+              filename=$(basename "$video")
+              echo "- \`$filename\` ($size)" >> workflow-summary.md
+            done
+          fi
+        else
+          echo "**Videos generated:** 0" >> workflow-summary.md
         fi
         
-        cat workflow-summary.txt
+        cat workflow-summary.md
 
-    - name: Commit and push generated files
+    - name: Commit and push generated video
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
-        # Fetch latest changes from remote
-        echo "Fetching latest changes from remote..."
+        # Fetch latest changes
+        echo "📡 Fetching latest changes..."
         git fetch origin main
         
-        # Add all new files and results
-        git add websites/ || true
+        # Add generated files
         git add videos/ || true
-        git add .github/scripts/*.json || true
-        git add workflow-summary.txt || true
+        git add workflow-summary.md || true
         
         # Check if there are changes to commit
         if git diff --staged --quiet; then
-          echo "No changes to commit"
+          echo "ℹ️ No changes to commit"
           exit 0
         fi
         
-        echo "Changes detected, preparing to commit and push..."
+        echo "💾 Committing generated video..."
         
         # Create commit
-        git commit -m "🎬 Auto-generated website videos from n8n workflow
+        git commit -m "🎥 Generated website video from n8n
 
         Generated at: $(date -u)
-        Triggered by: repository_dispatch event
+        Triggered by: n8n repository_dispatch
         Event type: generate_websites"
         
-        # Attempt to push with retry logic
+        # Push with retry logic
         MAX_RETRIES=3
         RETRY_COUNT=0
         
         while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-          echo "Push attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
+          echo "📤 Push attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
           
           if git push origin HEAD:main; then
-            echo "✅ Successfully pushed changes!"
+            echo "✅ Successfully pushed video to repository!"
             break
           else
-            echo "❌ Push failed, attempting to sync with remote..."
+            echo "❌ Push failed, syncing with remote..."
             RETRY_COUNT=$((RETRY_COUNT + 1))
             
             if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-              # Pull latest changes and rebase our commit
-              echo "Pulling latest changes and rebasing..."
-              
-              # Reset to before our commit, pull latest, then reapply our changes
+              # Reset and pull latest changes
               git reset --soft HEAD~1
-              git stash push -m "Generated files from workflow"
-              
-              # Pull latest changes
+              git stash push -m "Generated video from n8n"
               git pull --rebase origin main
+              git stash pop || true
               
-              # Apply our changes back
-              git stash pop || {
-                echo "Stash pop failed, manually applying changes..."
-                git add websites/ videos/ .github/scripts/*.json workflow-summary.txt || true
-              }
-              
-              # Re-commit our changes
-              git add websites/ videos/ .github/scripts/*.json workflow-summary.txt || true
-              git commit -m "🎬 Auto-generated website videos from n8n workflow
+              # Re-add and commit
+              git add videos/ workflow-summary.md || true
+              git commit -m "🎥 Generated website video from n8n
 
               Generated at: $(date -u)
-              Triggered by: repository_dispatch event
-              Event type: generate_websites (retry $((RETRY_COUNT + 1)))" || {
+              Triggered by: n8n repository_dispatch (retry $((RETRY_COUNT + 1)))" || {
                 echo "No changes to re-commit after rebase"
                 break
               }
               
-              echo "Waiting 5 seconds before retry..."
               sleep 5
             else
               echo "❌ Max retries reached. Push failed."
-              echo "Repository may have been updated during workflow execution."
-              echo "Generated files are still available as artifacts."
               exit 1
             fi
           fi
         done
 
-    - name: Debug - List all generated files
-      if: always()
-      run: |
-        echo "🔍 Final file listing for debugging:"
-        echo "Current directory:"
-        ls -la
-        echo ""
-        if [ -d "videos" ]; then
-          echo "Videos directory:"
-          ls -la videos/
-          echo "Video file details:"
-          find videos -name "*.mp4" -o -name "*.webm" -exec ls -lh {} \; || echo "No video files found"
-        else
-          echo "❌ Videos directory does not exist"
-        fi
-        echo ""
-        if [ -d "websites" ]; then
-          echo "Websites directory:"
-          find websites -name "*.html" -exec ls -lh {} \; || echo "No HTML files found"
-        else
-          echo "❌ Websites directory does not exist"
-        fi
-
-    - name: Upload artifacts (backup)
+    - name: Upload video as artifact (backup)
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: generated-videos-${{ github.run_number }}
+        name: generated-video-${{ github.run_number }}
         path: |
           videos/
-          websites/
-          .github/scripts/*.json
-          workflow-summary.txt
+          workflow-summary.md
         retention-days: 30 
