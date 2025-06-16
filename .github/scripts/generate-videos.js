@@ -38,8 +38,8 @@ async function generateVideo(website) {
     
     // Prepare the request payload
     const payload = {
-      name: name,
-      html: htmlContent
+      business_name: name,
+      html_content: htmlContent
     };
     
     console.log(`📤 Sending request to video generation API...`);
