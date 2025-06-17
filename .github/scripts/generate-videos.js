@@ -42,8 +42,8 @@ function getDynamicSection(scrollY, scrollableHeight) {
     
     if (progress < 0.2) return "Hero/Top";
     if (progress < 0.4) return "Services";
-    if (progress < 0.7) return "About";
-    if (progress < 0.9) return "Contact";
+    if (progress < 0.6) return "About";
+    if (progress < 0.8) return "Contact";
     return "Footer/Bottom";
 }
 
@@ -75,47 +75,53 @@ async function captureScrollingScreenshots(page, videoFilename, totalFrames, scr
     
     console.log('📸 Taking full page screenshot for cropping approach...');
     
-    // Take one full-page screenshot
-    const fullScreenshot = await page.screenshot({
+    // Take one full page screenshot (EXACT SAME as server.js)
+    const fullPageScreenshot = await page.screenshot({
         fullPage: true,
         type: 'png'
     });
     
-    const fullImage = sharp(fullScreenshot);
-    const metadata = await fullImage.metadata();
-    console.log(`📐 Full page height: ${metadata.height}px`);
+    // Get the full page dimensions to calculate crop positions (EXACT SAME as server.js)
+    const fullPageHeight = await page.evaluate(() => document.body.scrollHeight);
+    console.log(`📐 Full page height: ${fullPageHeight}px`);
     
+    // Calculate scroll increment per frame for smooth scrolling (EXACT SAME as server.js)
     const scrollPerFrame = scrollableHeight / totalFrames;
     
-    // Generate frames by cropping the full screenshot
+    // Capture all frames by cropping from the full page screenshot (EXACT SAME as server.js)
     for (let frame = 0; frame < totalFrames; frame++) {
-        const currentTime = frame / SCROLL_CONFIG.fps;
-        const targetScrollY = Math.round(frame * scrollPerFrame);
-        const section = getDynamicSection(targetScrollY, scrollableHeight);
-        const progress = ((frame + 1) / totalFrames * 100).toFixed(1);
+        const currentScrollPosition = Math.round(frame * scrollPerFrame);
+        const secondsElapsed = frame / SCROLL_CONFIG.fps;
         
-        // Log progress every 60 frames (1 second)
-        if (frame % 60 === 0 || frame === totalFrames - 1) {
-            console.log(`🎬 Frame ${frame + 1}/${totalFrames} | ${currentTime.toFixed(1)}s | Crop Y: ${targetScrollY}px | Section: ${section} | Progress: ${progress}%`);
+        // Calculate crop position (ensure we don't go beyond the page) - EXACT SAME as server.js
+        const cropY = Math.min(currentScrollPosition, fullPageHeight - DEFAULT_VIDEO_SETTINGS.height);
+        
+        // Enhanced debugging every 60 frames (every second) - EXACT SAME as server.js
+        if (frame % 60 === 0) {
+            const currentSection = getDynamicSection(currentScrollPosition, scrollableHeight);
+            console.log(`🎬 Frame ${frame + 1}/${totalFrames} | ${secondsElapsed.toFixed(1)}s | Crop Y: ${cropY}px | Section: ${currentSection} | Progress: ${((frame + 1) / totalFrames * 100).toFixed(1)}%`);
         }
         
-        // Crop the full screenshot to simulate scrolling
-        const croppedImage = fullImage.clone().extract({
-            left: 0,
-            top: targetScrollY,
-            width: DEFAULT_VIDEO_SETTINGS.width,
-            height: DEFAULT_VIDEO_SETTINGS.height
-        });
+        // Crop the frame from the full page screenshot - EXACT SAME as server.js
+        const frameNumber = String(frame + 1).padStart(6, '0');
+        const framePath = path.join(framesDir, `frame_${frameNumber}.png`);
         
-        const frameFilename = path.join(framesDir, `frame_${String(frame + 1).padStart(6, '0')}.png`);
-        await croppedImage.png().toFile(frameFilename);
+        await sharp(fullPageScreenshot)
+            .extract({ 
+                left: 0, 
+                top: cropY, 
+                width: DEFAULT_VIDEO_SETTINGS.width, 
+                height: DEFAULT_VIDEO_SETTINGS.height 
+            })
+            .png()
+            .toFile(framePath);
     }
     
     console.log('✅ Screenshot capture completed!');
     console.log(`📊 Final stats:`);
     console.log(`  - Generated ${totalFrames} frames`);
     console.log(`  - Duration: ${SCROLL_CONFIG.recordingDuration} seconds`);
-    console.log(`  - Scrolled from 0px to ${scrollableHeight}px`);
+    console.log(`  - Scrolled from 0px to ${(totalFrames * scrollPerFrame).toFixed(0)}px`);
     
     return framesDir;
 }
