@@ -26,7 +26,7 @@ const DEFAULT_VIDEO_SETTINGS = {
 // EXACT SAME SCROLL CONFIG AS WORKING server.js
 const SCROLL_CONFIG = {
     pageLoadWait: 5000,     // 5 seconds wait after page load
-    recordingDuration: 20,  // 20 seconds recording time
+    recordingDuration: 18,  // 18 seconds recording time (10% faster)
     fps: 60,                // 60 frames per second
     scrollIncrementMs: 16.67 // 60fps timing
 };
@@ -260,9 +260,9 @@ async function generateVideo(website) {
         }
         
         // EXACT SAME SETTINGS AS server.js
-        const totalFrames = SCROLL_CONFIG.recordingDuration * SCROLL_CONFIG.fps; // 1200 frames
+        const totalFrames = SCROLL_CONFIG.recordingDuration * SCROLL_CONFIG.fps; // 1080 frames (18s × 60fps)
         
-        console.log('🎬 Starting 20-second video generation...');
+        console.log('🎬 Starting 18-second video generation...');
         console.log('📊 Video specs:');
         console.log(`  - Total frames: ${totalFrames}`);
         console.log(`  - Duration: ${SCROLL_CONFIG.recordingDuration} seconds`);
