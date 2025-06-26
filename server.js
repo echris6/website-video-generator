@@ -226,7 +226,7 @@ app.post('/generate-video', upload.none(), async (req, res) => {
         await createVideoFromScreenshots(frameDir, filePath, videoSettings);
 
         // Clean up frame directory
-        await fs.rmdir(frameDir, { recursive: true });
+        await fs.rm(frameDir, { recursive: true });
         console.log('Cleaned up frame directory');
 
         // Get file stats
@@ -252,7 +252,7 @@ app.post('/generate-video', upload.none(), async (req, res) => {
         // Clean up frame directory on error
         if (frameDir && existsSync(frameDir)) {
             try {
-                await fs.rmdir(frameDir, { recursive: true });
+                await fs.rm(frameDir, { recursive: true });
             } catch (cleanupError) {
                 console.error('Error cleaning up frame directory:', cleanupError);
             }
