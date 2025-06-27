@@ -3,6 +3,36 @@ name: Generate Website Videos
 on:
   repository_dispatch:
     types: [generate_websites]
+  workflow_dispatch:
+    inputs:
+      html_content:
+        description: 'HTML content to record'
+        required: true
+        type: string
+      business_name:
+        description: 'Business name'
+        required: true
+        type: string
+      industry:
+        description: 'Industry type'
+        required: true
+        type: choice
+        options:
+          - 'Medical Spa'
+          - 'Real Estate'
+          - 'HVAC Services'
+      template:
+        description: 'Template to use'
+        required: true
+        type: choice
+        options:
+          - 'medical_spa'
+          - 'real_estate'
+          - 'hvac'
+      workflow_id:
+        description: 'Unique workflow ID'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -82,20 +112,48 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
 
-    - name: Process n8n website payload
+    - name: Process workflow inputs
       run: |
-        echo "🔍 Processing website from n8n..."
-        echo "Payload received: $PAYLOAD"
+        echo "🔍 Processing workflow inputs..."
+        echo "Trigger event: ${{ github.event_name }}"
         
         # Ensure .github/scripts directory exists
         mkdir -p .github/scripts
         
-        if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
-          echo "❌ No payload provided from n8n"
-          exit 1
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "✅ Processing workflow_dispatch inputs..."
+          
+          # Create HTML file from input
+          echo '${{ github.event.inputs.html_content }}' > website.html
+          echo "📄 HTML content saved to website.html"
+          
+          # Create processing results for workflow_dispatch
+          cat > .github/scripts/processing-results.json << EOF
+        [
+          {
+            "business_name": "${{ github.event.inputs.business_name }}",
+            "industry": "${{ github.event.inputs.industry }}",
+            "template": "${{ github.event.inputs.template }}",
+            "workflow_id": "${{ github.event.inputs.workflow_id }}",
+            "html_file": "website.html"
+          }
+        ]
+        EOF
+          
+        elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          echo "✅ Processing repository_dispatch payload..."
+          
+          if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
+            echo "❌ No payload provided from n8n"
+            exit 1
+          else
+            echo "✅ Processing website data..."
+            node .github/scripts/process-payload.js
+          fi
+          
         else
-          echo "✅ Processing website data..."
-          node .github/scripts/process-payload.js
+          echo "❌ Unsupported trigger event: ${{ github.event_name }}"
+          exit 1
         fi
         
         # Verify processing was successful
@@ -150,7 +208,8 @@ jobs:
 
     - name: Generate video using screenshot-based method
       run: |
-        echo "🎬 Starting fresh video generation for n8n website..."
+        echo "🎬 Starting fresh video generation..."
+        echo "Trigger: ${{ github.event_name }}"
         echo "Environment:"
         echo "  NODE_ENV: $NODE_ENV"
         echo "  PUPPETEER_EXECUTABLE_PATH: $PUPPETEER_EXECUTABLE_PATH"
@@ -179,7 +238,51 @@ jobs:
           
           if [ "$WEBSITE_COUNT" -gt 0 ]; then
             echo "🚀 Running screenshot-based video generation for 1 website only..."
-            node .github/scripts/generate-videos.js
+            
+            # Handle different trigger types for video generation
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "📝 Using workflow_dispatch inputs for video generation..."
+              # Run the appropriate server based on template
+              case "${{ github.event.inputs.template }}" in
+                "hvac")
+                  echo "🔧 Running HVAC video generation..."
+                  node server-hvac-step5.js &
+                  SERVER_PID=$!
+                  sleep 5
+                  curl -X POST http://localhost:3025/generate-video \
+                    -H "Content-Type: application/json" \
+                    -d '{"businessName":"${{ github.event.inputs.business_name }}","niche":"hvac"}'
+                  kill $SERVER_PID 2>/dev/null || true
+                  ;;
+                "medical_spa")
+                  echo "💉 Running Medical Spa video generation..."
+                  node server-medical-spa-test.js &
+                  SERVER_PID=$!
+                  sleep 5
+                  curl -X POST http://localhost:3020/generate-video \
+                    -H "Content-Type: application/json" \
+                    -d '{"businessName":"${{ github.event.inputs.business_name }}","niche":"medical_spa"}'
+                  kill $SERVER_PID 2>/dev/null || true
+                  ;;
+                "real_estate")
+                  echo "🏠 Running Real Estate video generation..."
+                  node server-step5-tour.js &
+                  SERVER_PID=$!
+                  sleep 5
+                  curl -X POST http://localhost:3005/generate-video \
+                    -H "Content-Type: application/json" \
+                    -d '{"businessName":"${{ github.event.inputs.business_name }}","niche":"real_estate"}'
+                  kill $SERVER_PID 2>/dev/null || true
+                  ;;
+                *)
+                  echo "❌ Unknown template: ${{ github.event.inputs.template }}"
+                  exit 1
+                  ;;
+              esac
+            else
+              echo "📝 Using repository_dispatch payload for video generation..."
+              node .github/scripts/generate-videos.js
+            fi
             
             echo "📁 Verifying fresh video generation..."
             if [ -d "videos" ]; then
@@ -223,7 +326,17 @@ jobs:
         echo "# 🎬 Video Generation Summary" > workflow-summary.md
         echo "" >> workflow-summary.md
         echo "**Generated at:** $(date -u)" >> workflow-summary.md
-        echo "**Triggered by:** n8n via repository_dispatch" >> workflow-summary.md
+        
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "**Triggered by:** n8n via workflow_dispatch API" >> workflow-summary.md
+          echo "**Business:** ${{ github.event.inputs.business_name }}" >> workflow-summary.md
+          echo "**Industry:** ${{ github.event.inputs.industry }}" >> workflow-summary.md
+          echo "**Template:** ${{ github.event.inputs.template }}" >> workflow-summary.md
+          echo "**Workflow ID:** ${{ github.event.inputs.workflow_id }}" >> workflow-summary.md
+        else
+          echo "**Triggered by:** n8n via repository_dispatch" >> workflow-summary.md
+        fi
+        
         echo "" >> workflow-summary.md
         
         if [ -d "videos" ]; then
@@ -275,13 +388,25 @@ jobs:
         
         echo "💾 Committing fresh generated video..."
         
-        # Create commit
-        git commit -m "🎥 Generated fresh website video from n8n
+        # Create commit message based on trigger type
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          git commit -m "🎥 Generated website video via workflow_dispatch
+
+        Generated at: $(date -u)
+        Triggered by: n8n workflow_dispatch API
+        Business: ${{ github.event.inputs.business_name }}
+        Industry: ${{ github.event.inputs.industry }}
+        Template: ${{ github.event.inputs.template }}
+        Workflow ID: ${{ github.event.inputs.workflow_id }}
+        Videos: 1 fresh video (previous videos cleaned)"
+        else
+          git commit -m "🎥 Generated fresh website video from n8n
 
         Generated at: $(date -u)
         Triggered by: n8n repository_dispatch
         Event type: generate_websites
         Videos: 1 fresh video (previous videos cleaned)"
+        fi
         
         # Push with retry logic
         MAX_RETRIES=3
@@ -304,15 +429,29 @@ jobs:
               git pull --rebase origin main
               git stash pop || true
               
-              # Re-add and commit
+              # Re-add and commit with trigger-specific message
               git add videos/ workflow-summary.md || true
-              git commit -m "🎥 Generated website video from n8n
+              
+              if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+                git commit -m "🎥 Generated website video via workflow_dispatch (retry)
 
-              Generated at: $(date -u)
-              Triggered by: n8n repository_dispatch (retry $((RETRY_COUNT + 1)))" || {
-                echo "No changes to re-commit after rebase"
-                break
-              }
+                Generated at: $(date -u)
+                Triggered by: n8n workflow_dispatch API (retry $((RETRY_COUNT + 1)))
+                Business: ${{ github.event.inputs.business_name }}
+                Template: ${{ github.event.inputs.template }}
+                Workflow ID: ${{ github.event.inputs.workflow_id }}" || {
+                  echo "No changes to re-commit after rebase"
+                  break
+                }
+              else
+                git commit -m "🎥 Generated website video from n8n
+
+                Generated at: $(date -u)
+                Triggered by: n8n repository_dispatch (retry $((RETRY_COUNT + 1)))" || {
+                  echo "No changes to re-commit after rebase"
+                  break
+                }
+              fi
               
               sleep 5
             else
@@ -326,7 +465,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: generated-video-${{ github.run_number }}
+        name: ${{ github.event_name == 'workflow_dispatch' && format('video-{0}-{1}-{2}', github.event.inputs.template, github.event.inputs.workflow_id, github.run_number) || format('generated-video-{0}', github.run_number) }}
         path: |
           videos/
           workflow-summary.md
