@@ -24,42 +24,49 @@ try {
 // **LUXURY SITE ANTI-GLITCH FIXES** - No HTML modifications, just stabilization
 const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
-        console.log('🔧 Applying LUXURY SITE anti-glitch fixes (no HTML changes)...');
+        console.log('🔧 Applying CHATBOT-FRIENDLY anti-glitch fixes...');
         
-        // 1. ELIMINATE SITE GLITCHING - Disable floating circle animations
-        const floatingElements = document.querySelectorAll('.floating-circle');
+        // 1. TARGETED FLOATING CIRCLE FIXES - Don't affect chatbot
+        const floatingElements = document.querySelectorAll('.floating-circle:not([class*="chat"]):not([id*="chat"])');
         floatingElements.forEach(element => {
             element.style.setProperty('animation', 'none', 'important');
             element.style.setProperty('transform', 'none', 'important');
-            element.style.setProperty('opacity', '0.02', 'important');
+            element.style.setProperty('opacity', '0.1', 'important'); // Increased from 0.02 to be visible
         });
-        console.log('✅ Floating circles disabled - no more glitching!');
+        console.log('✅ Floating circles disabled (chatbot preserved)');
         
-        // 2. COMPREHENSIVE ANIMATION & CURSOR BLINKING ELIMINATION
+        // 2. CHATBOT-SAFE ANIMATION FIXES - Target specific elements, not everything
         const style = document.createElement('style');
         style.innerHTML = \`
-            *, *::before, *::after {
-                animation-duration: 0s !important;
-                animation-delay: 0s !important;
-                transition-duration: 0s !important;
-                caret-color: transparent !important;
-            }
-            .floating-circle {
+            /* Target specific glitchy elements, not everything */
+            .floating-circle:not([class*="chat"]):not([id*="chat"]) {
                 animation: none !important;
                 transform: none !important;
             }
-            .chatbot-input, .chatbot-input:focus, #chatbot-input, #chatbot-input:focus {
+            
+            /* Hero section specific fixes */
+            .hero *:not([class*="chat"]):not([id*="chat"]) {
+                animation-duration: 0s !important;
+                transition-duration: 0s !important;
+            }
+            
+            /* Text cursor fixes only for inputs */
+            .chatbot-input, .chatbot-input:focus, #chatbot-input, #chatbot-input:focus, #messageInput {
                 caret-color: transparent !important;
                 transition: none !important;
                 border-color: rgba(232, 180, 184, 0.5) !important;
                 background: rgba(255, 255, 255, 0.3) !important;
             }
-            input, textarea {
-                caret-color: transparent !important;
+            
+            /* Preserve chatbot visibility and functionality */
+            [class*="chat"], [id*="chat"], [class*="bot"], [id*="bot"] {
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: block !important;
             }
         \`;
         document.head.appendChild(style);
-        console.log('✅ All animations & text cursor blinking disabled');
+        console.log('✅ Targeted anti-glitch fixes applied (chatbot preserved)');
         
         // 3. Fix text cutoff WITHOUT changing UI appearance - INVISIBLE FIXES ONLY
         // lux.html uses #messageInput, not #chatbot-input
