@@ -132,10 +132,9 @@ jobs:
           # and treats all content literally, safely handling <, >, ", ', (, ), &, etc.
           echo "📄 Creating HTML file safely with heredoc method..."
           
-          # Write HTML content to file using environment variable (safest approach)
-          echo "📝 Writing HTML content safely using environment variable..."
-          export HTML_CONTENT='${{ github.event.inputs.html_content }}'
-          printf '%s' "$HTML_CONTENT" > website.html
+          # Write HTML content to file using Node.js (completely safe from shell interpretation)
+          echo "📝 Writing HTML content safely using Node.js..."
+          node -e "require('fs').writeFileSync('website.html', process.env.HTML_CONTENT, 'utf8'); console.log('✅ HTML content written successfully');"
           
           # Verify HTML file was created successfully
           if [ -f "website.html" ] && [ -s "website.html" ]; then
@@ -185,6 +184,7 @@ jobs:
       env:
         PAYLOAD: ${{ toJson(github.event.client_payload) }}
         NODE_ENV: production
+        HTML_CONTENT: ${{ github.event.inputs.html_content }}
 
     - name: Setup Xvfb for headless display
       run: |
