@@ -285,7 +285,7 @@ function interpolatePosition(startPos, endPos, progress) {
 
 async function generateVideo(businessName, niche) {
     const browser = await puppeteer.launch({
-        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         headless: true,
         args: [
             '--no-sandbox',
