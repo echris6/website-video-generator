@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 

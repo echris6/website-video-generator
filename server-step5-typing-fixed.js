@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -97,7 +100,7 @@ async function generateVideo(businessName, niche) {
             .replace(/{{accentColor}}/g, '#c9a96e');
 
         await page.setContent(finalHtml);
-        await page.waitForTimeout(2000);
+        await delay(2000);
 
         // Inject all functions
         await page.evaluate(TYPING_FIXES);

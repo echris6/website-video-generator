@@ -4,6 +4,9 @@ const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3009;
 
@@ -265,7 +268,7 @@ async function generateVideo(businessName) {
         
         // Wait and stabilize
         await page.evaluate(() => document.fonts.ready);
-        await page.waitForTimeout(3000);
+        await delay(3000);
         
         await page.evaluate(() => {
             document.querySelectorAll('.reveal-element').forEach(element => {
@@ -279,7 +282,7 @@ async function generateVideo(businessName) {
             });
         });
         
-        await page.waitForTimeout(2000);
+        await delay(2000);
         
         // Test elements
         const elementInfo = await page.evaluate(() => {
@@ -303,7 +306,7 @@ async function generateVideo(businessName) {
                 window.updateCursorForFrame(frameIdx, totalFrames);
             }, frameIndex, totalFrames);
             
-            await page.waitForTimeout(10);
+            await delay(10);
             
             const framePath = path.join(framesDir, `frame_${String(frameIndex + 1).padStart(6, '0')}.png`);
             await page.screenshot({

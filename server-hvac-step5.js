@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -344,7 +347,7 @@ async function generateHVACVideo(businessName, niche) {
         console.log(`🚨 HVAC Emergency Service Demo - Complete Professional Showcase (30 seconds)`);
         
         // EXTENDED WAIT - Let all animations fully settle before recording
-        await page.waitForDelay(5000);
+        await delay(5000);
         console.log('⏳ HVAC site loading with extended wait - all animations should be settled...');
         
         // Inject HVAC functions and apply professional fixes IMMEDIATELY
@@ -461,7 +464,7 @@ async function generateHVACVideo(businessName, niche) {
             console.log('✅ ULTRA-AGGRESSIVE FIXES APPLIED - HERO SECTION SHOULD BE STABLE!');
         });
         
-        await page.waitForDelay(2000);
+        await delay(2000);
         console.log('✅ HVAC site completely stabilized - NO MORE GLITCHING!');
         
         // Get page dimensions for professional tour
@@ -506,7 +509,7 @@ async function generateHVACVideo(businessName, niche) {
                     await page.evaluate(() => clickHVACChatButton());
                     console.log(`🚨 CLICKED HVAC emergency chat at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotOpened = true;
-                    await page.waitForDelay(1000); // Give chatbot time to fully open and settle
+                    await delay(1000); // Give chatbot time to fully open and settle
                     console.log('✅ Chatbot opened - proceeding with original design intact');
                 }
                 
@@ -547,7 +550,7 @@ async function generateHVACVideo(businessName, niche) {
                 if (i === sendClickFrame) {
                     await page.evaluate(() => clickHVACSendButton());
                     console.log(`🚨 SENT emergency message at frame ${i} (${(i/fps).toFixed(1)}s)`);
-                    await page.waitForDelay(300);
+                    await delay(300);
                 }
                 
                 // Professional minimize
@@ -555,7 +558,7 @@ async function generateHVACVideo(businessName, niche) {
                     await page.evaluate(() => clickHVACMinimizeButton());
                     console.log(`🖱️ MINIMIZED HVAC chat at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotMinimized = true;
-                    await page.waitForDelay(500);
+                    await delay(500);
                 }
                 
                 frameBuffer = await page.screenshot({ 
@@ -592,7 +595,7 @@ async function generateHVACVideo(businessName, niche) {
                     });
                     
                     // Professional content rendering time
-                    await page.waitForDelay(1000);
+                    await delay(1000);
                     
                     // Professional full page screenshot
                     fullPageBuffer = await page.screenshot({ 

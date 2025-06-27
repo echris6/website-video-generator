@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -80,9 +83,9 @@ async function generateVideo(businessName, niche) {
         await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0' });
         
         // Wait for content to load
-        await page.waitForTimeout(2000);
+        await delay(2000);
         console.log('⏳ Waiting for fonts and CSS to fully load...');
-        await page.waitForTimeout(2000);
+        await delay(2000);
         
         // Inject the text cutoff fixes
         await page.addScriptTag({
@@ -99,17 +102,17 @@ async function generateVideo(businessName, niche) {
         // Open the chatbot widget
         console.log('🖱️ Opening chatbot widget...');
         await page.click('.chat-toggle');
-        await page.waitForTimeout(1000);
+        await delay(1000);
         
         // Click on input field to focus it
         console.log('🖱️ Focusing input field...');
         await page.click('#messageInput');
-        await page.waitForTimeout(500);
+        await delay(500);
         
         // Type the full message
         console.log('⌨️ Typing "I want to buy a house"...');
         await page.type('#messageInput', 'I want to buy a house');
-        await page.waitForTimeout(1000);
+        await delay(1000);
         
         // Take a screenshot to verify the fix
         console.log('📸 Taking screenshot for verification...');

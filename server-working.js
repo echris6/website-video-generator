@@ -5,6 +5,9 @@ const path = require('path');
 const { existsSync } = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3001; // Different port to avoid conflicts
 
@@ -61,7 +64,7 @@ app.post('/generate-video', async (req, res) => {
         console.log('📄 Loading website content...');
         const htmlContent = await fs.readFile('testttt.html', 'utf8');
         await page.setContent(htmlContent);
-        await page.waitForTimeout(3000); // Let page fully load
+        await delay(3000); // Let page fully load
         
         // Get page dimensions
         const dimensions = await page.evaluate(() => ({

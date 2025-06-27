@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -193,7 +196,7 @@ async function generateVideo(req, res) {
         await page.goto(`file://${htmlPath}`);
         
         // **MINIMAL STABILIZATION** - Prevent hero glitching
-        await page.waitForTimeout(500);  // Reduced from 1000ms+
+        await delay(500);  // Reduced from 1000ms+
         console.log('⏳ Content loaded');
         
         // Inject functions
@@ -233,7 +236,7 @@ async function generateVideo(req, res) {
             // **CHATBOT INTERACTIONS** - Precise timing
             if (currentTime >= 4.4 && !chatbotOpened) {
                 await page.evaluate(() => clickChatbotButton());
-                await page.waitForTimeout(200);
+                await delay(200);
                 chatbotOpened = true;
                 
                 // Apply text fixes AFTER chatbot opens
@@ -261,7 +264,7 @@ async function generateVideo(req, res) {
             
             if (currentTime >= 15 && messageSent && !chatbotMinimized) {
                 await page.evaluate(() => clickMinimizeButton());
-                await page.waitForTimeout(300);
+                await delay(300);
                 chatbotMinimized = true;
                 console.log('🖱️ MINIMIZED chatbot at frame', i, `(${currentTime.toFixed(1)}s)`);
                 
@@ -278,7 +281,7 @@ async function generateVideo(req, res) {
                     window.scrollTo(0, 0);
                 });
                 
-                await page.waitForTimeout(500);
+                await delay(500);
                 fullPageScreenshot = await page.screenshot({ fullPage: true, type: 'png' });
                 console.log('📸 Full page screenshot captured');
             }

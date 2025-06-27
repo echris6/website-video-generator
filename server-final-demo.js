@@ -5,6 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3012;
 
@@ -59,7 +62,7 @@ async function generateVideo(businessName = 'Demo Site', niche = 'real_estate') 
 
         console.log(`🚀 Loading website...`);
         await page.setContent(websiteTemplate, { waitUntil: 'networkidle0' });
-        await page.waitForTimeout(3000); // Let it stabilize
+        await delay(3000); // Let it stabilize
 
         // Get page dimensions for scrolling
         const pageHeight = await page.evaluate(() => document.body.scrollHeight);

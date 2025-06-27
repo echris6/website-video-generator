@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -148,7 +151,7 @@ async function generateVideo(req, res) {
         await page.goto(`file://${htmlPath}`);
         
         // Wait for content to load (reduced from 4000ms to prevent hero glitching)
-        await page.waitForTimeout(1000);
+        await delay(1000);
         console.log('⏳ Waiting for content to fully load...');
         
         // Inject the working text fixes function
@@ -198,7 +201,7 @@ async function generateVideo(req, res) {
             };
         });
         
-        await page.waitForTimeout(500);
+        await delay(500);
         console.log('✅ All functions injected and content ready!');
         
         // Set up frame generation
@@ -226,7 +229,7 @@ async function generateVideo(req, res) {
                 // Click chatbot button
                 if (i === clickChatbotFrame && !chatbotOpened) {
                     await page.evaluate(() => clickChatbotButton());
-                    await page.waitForTimeout(500);
+                    await delay(500);
                     
                     // Apply text fixes IMMEDIATELY after chatbot opens
                     await page.evaluate(() => applyWorkingTextFixes());
@@ -238,7 +241,7 @@ async function generateVideo(req, res) {
                 // Focus input field
                 if (i === focusInputFrame && chatbotOpened && !inputFocused) {
                     await page.evaluate(() => focusInputField());
-                    await page.waitForTimeout(200);
+                    await delay(200);
                     inputFocused = true;
                 }
                 
@@ -266,19 +269,19 @@ async function generateVideo(req, res) {
                 // Send message
                 if (i === sendMessageFrame && textCompleted && !messageSent) {
                     await page.evaluate(() => clickSendButton());
-                    await page.waitForTimeout(200);
+                    await delay(200);
                     messageSent = true;
                 }
                 
                 // Minimize chatbot
                 if (i === minimizeFrame && messageSent && !chatbotMinimized) {
                     await page.evaluate(() => clickMinimizeButton());
-                    await page.waitForTimeout(300);
+                    await delay(300);
                     chatbotMinimized = true;
                     
                     // Take full page screenshot for scrolling phase
                     console.log('📸 Taking full page screenshot for scrolling...');
-                    await page.waitForTimeout(500); // Ensure minimize animation completes
+                    await delay(500); // Ensure minimize animation completes
                     
                     fullPageScreenshot = await page.screenshot({
                         fullPage: true,

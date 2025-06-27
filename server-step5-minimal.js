@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -109,7 +112,7 @@ async function generateVideo(businessName, niche) {
         console.log(`📐 Step 5: Step 4 (0-12s) + Minimize (12-15s) + Site Tour (15-25s)`);
         
         // EXACT SAME LOADING AS STEP 4
-        await page.waitForTimeout(4000);
+        await delay(4000);
         console.log('⏳ Waiting for fonts and CSS to fully load...');
         
         await page.evaluate(() => {
@@ -193,7 +196,7 @@ async function generateVideo(businessName, niche) {
             document.head.appendChild(style);
         });
         
-        await page.waitForTimeout(2000);
+        await delay(2000);
         console.log('✅ Hero section fully stabilized and glitch-free!');
         
         try {
@@ -236,7 +239,7 @@ async function generateVideo(businessName, niche) {
             console.log('All sections forced visible:', sections.length);
         });
         
-        await page.waitForTimeout(1000);
+        await delay(1000);
         console.log('✅ All sections loaded and visible');
         
         console.log('📸 Step 5: Complete interaction + site tour...');
@@ -329,7 +332,7 @@ async function generateVideo(businessName, niche) {
                         document.documentElement.scrollTop = 0;
                         document.body.scrollTop = 0;
                     });
-                    await page.waitForTimeout(200);
+                    await delay(200);
                 }
                 
                 // Verify we're actually at top

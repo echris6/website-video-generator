@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -275,7 +278,7 @@ async function generateVideo(testId) {
         console.log(`💬 Message: "What are your hours?"`);
         
         // Wait for content to load - MINIMAL wait to prevent hero glitching
-        await page.waitForDelay(500);
+        await delay(500);
         console.log('⏳ Waiting for content to fully load...');
         
         // Inject chatbot functions and text fix function (but don't apply fixes yet - wait until chatbot opens)
@@ -290,7 +293,7 @@ async function generateVideo(testId) {
             });
         });
         
-        await page.waitForDelay(500);
+        await delay(500);
         console.log('✅ All fixes applied and content ready!');
         
         // Get page dimensions
@@ -334,7 +337,7 @@ async function generateVideo(testId) {
                     await page.evaluate(() => clickChatbotButton());
                     console.log(`🖱️ CLICKED chatbot button at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotOpened = true;
-                    await page.waitForDelay(500);
+                    await delay(500);
                     
                     // **APPLY TEXT CUTOFF FIXES AFTER CHATBOT OPENS**
                     await page.evaluate(() => {
@@ -345,7 +348,7 @@ async function generateVideo(testId) {
                         }
                     });
                     console.log('🔧 Applied text cutoff fixes after chatbot opened');
-                    await page.waitForDelay(200);
+                    await delay(200);
                 }
                 
                 if (i === inputFocusFrame) {
@@ -370,7 +373,7 @@ async function generateVideo(testId) {
                 if (i === sendClickFrame) {
                     await page.evaluate(() => clickSendButton());
                     console.log(`🖱️ PRESSED ENTER to send message at frame ${i} (${(i/fps).toFixed(1)}s)`);
-                    await page.waitForDelay(300);
+                    await delay(300);
                 }
                 
                 // **FIXED MINIMIZE CLICKING** - Use dynamic coordinates
@@ -378,7 +381,7 @@ async function generateVideo(testId) {
                     await page.evaluate(() => clickMinimizeButton());
                     console.log(`🖱️ MINIMIZED chatbot at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotMinimized = true;
-                    await page.waitForDelay(500);
+                    await delay(500);
                 }
                 
                 frameBuffer = await page.screenshot({ 
@@ -415,7 +418,7 @@ async function generateVideo(testId) {
                     });
                     
                     // Give content time to fully render
-                    await page.waitForDelay(1000);
+                    await delay(1000);
                     
                     // Take full page screenshot with proper dimensions
                     fullPageBuffer = await page.screenshot({ 

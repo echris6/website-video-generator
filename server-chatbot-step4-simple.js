@@ -5,6 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3009; // New port for simple version
 
@@ -319,7 +322,7 @@ async function generateVideo(businessName, niche = 'real_estate') {
         
         // Wait for fonts and basic loading
         await page.evaluate(() => document.fonts.ready);
-        await page.waitForTimeout(3000);
+        await delay(3000);
         
         // Stabilize page
         await page.evaluate(() => {
@@ -338,7 +341,7 @@ async function generateVideo(businessName, niche = 'real_estate') {
             });
         });
         
-        await page.waitForTimeout(2000);
+        await delay(2000);
         console.log(`🎯 Page stabilized!`);
         
         // Test element detection
@@ -375,7 +378,7 @@ async function generateVideo(businessName, niche = 'real_estate') {
                     window.updateCursorForFrame(frameIdx, totalFrames);
                 }, frameIndex, totalFrames);
                 
-                await page.waitForTimeout(15);
+                await delay(15);
                 
                 // Take screenshot
                 const framePath = path.join(framesDir, `frame_${String(frameIndex + 1).padStart(6, '0')}.png`);

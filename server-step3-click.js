@@ -5,6 +5,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -83,7 +86,7 @@ async function generateVideo(businessName, niche) {
         console.log(`📐 Step 3: ULTRA FAST cursor movement + clicking (8 seconds total)`);
         
         // Wait for content to load
-        await page.waitForTimeout(4000);
+        await delay(4000);
         console.log('⏳ Waiting for fonts and CSS to fully load...');
         
         // Wait for all content to be revealed
@@ -132,7 +135,7 @@ async function generateVideo(businessName, niche) {
         });
         
         // Wait for stabilization
-        await page.waitForTimeout(2000);
+        await delay(2000);
         console.log('✅ Hero section fully stabilized and glitch-free!');
         
         // Wait for chatbot to be visible

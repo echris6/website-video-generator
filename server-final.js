@@ -6,6 +6,9 @@ const { existsSync } = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3002; // Different port to avoid conflicts
 
@@ -133,7 +136,7 @@ app.post('/generate-video', async (req, res) => {
         console.log('📄 Loading website content...');
         const htmlContent = await fs.readFile('testttt.html', 'utf8');
         await page.setContent(htmlContent);
-        await page.waitForTimeout(3000);
+        await delay(3000);
         
         // Inject simple cursor
         console.log('🖱️ Injecting cursor functionality...');

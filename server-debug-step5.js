@@ -3,6 +3,9 @@ const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const path = require('path');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 app.use(express.json());
 
@@ -60,7 +63,7 @@ app.post('/debug-step5', async (req, res) => {
         // Click chatbot to open widget
         if (chatbotCoords.found) {
             await page.click('.chat-toggle');
-            await page.waitForTimeout(1000);
+            await delay(1000);
             console.log('✅ Chatbot opened');
             
             // **DEBUG 2: Check input field details BEFORE any fixes**

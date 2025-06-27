@@ -4,6 +4,9 @@ const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3011;
 
@@ -219,7 +222,7 @@ async function generateVideo(businessName = 'Real Estate Demo', niche = 'real_es
         await page.setContent(websiteTemplate, { waitUntil: 'networkidle0' });
 
         console.log(`⏳ Waiting for fonts and CSS to fully load...`);
-        await page.waitForTimeout(4000);
+        await delay(4000);
 
         console.log(`🎯 Applying simple fixes...`);
         
@@ -260,7 +263,7 @@ async function generateVideo(businessName = 'Real Estate Demo', niche = 'real_es
             else if (timeInSeconds <= 2.5) {
                 if (frame === Math.floor(2 * 60)) { // At 2 seconds
                     await page.evaluate(() => clickChatbotButton());
-                    await page.waitForTimeout(200); // Wait for widget to open
+                    await delay(200); // Wait for widget to open
                 }
             }
             // Phase 3: Move to input field (2.5-3.5s)
@@ -287,7 +290,7 @@ async function generateVideo(businessName = 'Real Estate Demo', niche = 'real_es
             else if (timeInSeconds <= 6) {
                 if (frame === Math.floor(3.5 * 60)) { // At 3.5 seconds
                     await page.evaluate(() => clickInputField());
-                    await page.waitForTimeout(100);
+                    await delay(100);
                 }
                 
                 if (frame === Math.floor(4 * 60)) { // At 4 seconds, start typing

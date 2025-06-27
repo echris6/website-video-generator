@@ -5,6 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
+// Universal delay function compatible with all Puppeteer versions
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = 3000;
 
@@ -145,7 +148,7 @@ async function generateVideo(businessName, niche = 'real_estate') {
         });
         
         // Additional wait for CSS animations and layout to settle
-        await page.waitForTimeout(3000);
+        await delay(3000);
         
         // Wait for specific content sections to be visible
         await page.waitForSelector('.hero', { visible: true, timeout: 5000 });
@@ -164,7 +167,7 @@ async function generateVideo(businessName, niche = 'real_estate') {
         });
         
         // Final wait to ensure everything is settled
-        await page.waitForTimeout(2000);
+        await delay(2000);
         
         console.log(`✅ All content fully loaded and revealed!`);
         
