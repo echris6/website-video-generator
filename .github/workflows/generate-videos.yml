@@ -110,7 +110,10 @@ jobs:
         sudo apt-get install -y google-chrome-stable
 
     - name: Install Node.js dependencies
-      run: npm install
+      run: |
+        echo "📦 Installing Node.js dependencies..."
+        npm ci --prefer-offline
+        echo "✅ Dependencies installed successfully"
 
     - name: Process workflow inputs
       run: |
