@@ -126,9 +126,43 @@ jobs:
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           echo "✅ Processing workflow_dispatch inputs..."
           
-          # Create HTML file from input
-          echo '${{ github.event.inputs.html_content }}' > website.html
-          echo "📄 HTML content saved to website.html"
+          # Safely create HTML file from input using heredoc to avoid shell character issues
+          # The quoted delimiter 'WORKFLOW_HTML_CONTENT_EOF' prevents variable expansion
+          # and treats all content literally, safely handling <, >, ", ', (, ), &, etc.
+          echo "📄 Creating HTML file safely with heredoc method..."
+          
+          # Try primary method (heredoc)
+          if cat > website.html << 'WORKFLOW_HTML_CONTENT_EOF'
+${{ github.event.inputs.html_content }}
+WORKFLOW_HTML_CONTENT_EOF
+          then
+            echo "✅ Primary method (heredoc) successful"
+          else
+            echo "⚠️ Primary method failed, trying environment variable method..."
+            # Alternative method using environment variable (backup)
+            # Set content as environment variable and write to file safely
+            export HTML_CONTENT='${{ github.event.inputs.html_content }}'
+            printf '%s' "$HTML_CONTENT" > website.html || {
+              echo "❌ Both methods failed to create HTML file"
+              exit 1
+            }
+            echo "✅ Backup method (env var) successful"
+          fi
+          
+          # Verify HTML file was created successfully
+          if [ -f "website.html" ] && [ -s "website.html" ]; then
+            HTML_SIZE=$(wc -c < website.html)
+            echo "✅ HTML content saved to website.html ($HTML_SIZE bytes)"
+            
+            # Show first 200 characters for verification (truncated for logs)
+            echo "📋 HTML preview:"
+            head -c 200 website.html | tr -d '\0' || echo "(binary content detected)"
+            echo ""
+            echo "... (truncated)"
+          else
+            echo "❌ Failed to create HTML file or file is empty"
+            exit 1
+          fi
           
           # Create processing results for workflow_dispatch
           cat > .github/scripts/processing-results.json << EOF
@@ -245,37 +279,65 @@ jobs:
             # Handle different trigger types for video generation
             if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
               echo "📝 Using workflow_dispatch inputs for video generation..."
-              # Run the appropriate server based on template
+              
+              # Verify the HTML file exists and is readable
+              if [ ! -f "website.html" ] || [ ! -s "website.html" ]; then
+                echo "❌ HTML file missing or empty, cannot proceed"
+                exit 1
+              fi
+              
+              # Run the appropriate server based on template with custom HTML
               case "${{ github.event.inputs.template }}" in
                 "hvac")
-                  echo "🔧 Running HVAC video generation..."
+                  echo "🔧 Running HVAC video generation with custom HTML..."
+                  # Backup original and use custom HTML
+                  [ -f "hvac.html" ] && cp hvac.html hvac.html.backup
+                  cp website.html hvac.html
+                  
                   node server-hvac-step5.js &
                   SERVER_PID=$!
                   sleep 5
                   curl -X POST http://localhost:3025/generate-video \
                     -H "Content-Type: application/json" \
-                    -d '{"businessName":"${{ github.event.inputs.business_name }}","niche":"hvac"}'
+                    -d "{\"businessName\":\"${{ github.event.inputs.business_name }}\",\"niche\":\"hvac\"}"
                   kill $SERVER_PID 2>/dev/null || true
+                  
+                  # Restore original if backup exists
+                  [ -f "hvac.html.backup" ] && mv hvac.html.backup hvac.html
                   ;;
                 "medical_spa")
-                  echo "💉 Running Medical Spa video generation..."
+                  echo "💉 Running Medical Spa video generation with custom HTML..."
+                  # Backup original and use custom HTML
+                  [ -f "lux.html" ] && cp lux.html lux.html.backup
+                  cp website.html lux.html
+                  
                   node server-medical-spa-test.js &
                   SERVER_PID=$!
                   sleep 5
                   curl -X POST http://localhost:3020/generate-video \
                     -H "Content-Type: application/json" \
-                    -d '{"businessName":"${{ github.event.inputs.business_name }}","niche":"medical_spa"}'
+                    -d "{\"businessName\":\"${{ github.event.inputs.business_name }}\",\"niche\":\"medical_spa\"}"
                   kill $SERVER_PID 2>/dev/null || true
+                  
+                  # Restore original if backup exists
+                  [ -f "lux.html.backup" ] && mv lux.html.backup lux.html
                   ;;
                 "real_estate")
-                  echo "🏠 Running Real Estate video generation..."
+                  echo "🏠 Running Real Estate video generation with custom HTML..."
+                  # Backup original and use custom HTML
+                  [ -f "testttt.html" ] && cp testttt.html testttt.html.backup
+                  cp website.html testttt.html
+                  
                   node server-step5-tour.js &
                   SERVER_PID=$!
                   sleep 5
                   curl -X POST http://localhost:3005/generate-video \
                     -H "Content-Type: application/json" \
-                    -d '{"businessName":"${{ github.event.inputs.business_name }}","niche":"real_estate"}'
+                    -d "{\"businessName\":\"${{ github.event.inputs.business_name }}\",\"niche\":\"real_estate\"}"
                   kill $SERVER_PID 2>/dev/null || true
+                  
+                  # Restore original if backup exists
+                  [ -f "testttt.html.backup" ] && mv testttt.html.backup testttt.html
                   ;;
                 *)
                   echo "❌ Unknown template: ${{ github.event.inputs.template }}"
