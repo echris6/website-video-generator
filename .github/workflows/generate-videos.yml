@@ -132,43 +132,31 @@ jobs:
           # and treats all content literally, safely handling <, >, ", ', (, ), &, etc.
           echo "📄 Creating HTML file safely with heredoc method..."
           
-          # Use environment variable method to safely handle HTML content
-          echo "📝 Writing HTML content using environment variable method..."
+          # Write HTML content to file using environment variable (safest approach)
+          echo "📝 Writing HTML content safely using environment variable..."
           export HTML_CONTENT='${{ github.event.inputs.html_content }}'
-          printf '%s' "$HTML_CONTENT" > website.html || {
-            echo "❌ Failed to create HTML file"
-            exit 1
-          }
-          echo "✅ HTML content written successfully"
+          printf '%s' "$HTML_CONTENT" > website.html
           
           # Verify HTML file was created successfully
           if [ -f "website.html" ] && [ -s "website.html" ]; then
             HTML_SIZE=$(wc -c < website.html)
             echo "✅ HTML content saved to website.html ($HTML_SIZE bytes)"
-            
-            # Show first 200 characters for verification (truncated for logs)
-            echo "📋 HTML preview:"
-            head -c 200 website.html | tr -d '\0' || echo "(binary content detected)"
+            echo "📋 HTML preview (first 200 chars):"
+            head -c 200 website.html || echo "(binary content detected)"
             echo ""
-            echo "... (truncated)"
           else
             echo "❌ Failed to create HTML file or file is empty"
             exit 1
           fi
           
-          # Create processing results for workflow_dispatch
+          # Create processing results JSON using printf for safety
           echo "📝 Creating processing results JSON..."
-          cat > .github/scripts/processing-results.json << 'JSON_EOF'
-          [
-            {
-              "business_name": "${{ github.event.inputs.business_name }}",
-              "industry": "${{ github.event.inputs.industry }}",
-              "template": "${{ github.event.inputs.template }}",
-              "workflow_id": "${{ github.event.inputs.workflow_id }}",
-              "html_file": "website.html"
-            }
-          ]
-          JSON_EOF
+          printf '[{"business_name":"%s","industry":"%s","template":"%s","workflow_id":"%s","html_file":"website.html"}]' \
+            "${{ github.event.inputs.business_name }}" \
+            "${{ github.event.inputs.industry }}" \
+            "${{ github.event.inputs.template }}" \
+            "${{ github.event.inputs.workflow_id }}" \
+            > .github/scripts/processing-results.json
           
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
           echo "✅ Processing repository_dispatch payload..."
