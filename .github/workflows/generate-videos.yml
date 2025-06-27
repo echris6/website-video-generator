@@ -1,5 +1,6 @@
 name: Generate Website Videos
 
+# Updated workflow with workflow_dispatch trigger for n8n integration
 on:
   repository_dispatch:
     types: [generate_websites]
@@ -131,23 +132,14 @@ jobs:
           # and treats all content literally, safely handling <, >, ", ', (, ), &, etc.
           echo "📄 Creating HTML file safely with heredoc method..."
           
-          # Try primary method (heredoc)
-          if cat > website.html << 'WORKFLOW_HTML_CONTENT_EOF'
-${{ github.event.inputs.html_content }}
-WORKFLOW_HTML_CONTENT_EOF
-          then
-            echo "✅ Primary method (heredoc) successful"
-          else
-            echo "⚠️ Primary method failed, trying environment variable method..."
-            # Alternative method using environment variable (backup)
-            # Set content as environment variable and write to file safely
-            export HTML_CONTENT='${{ github.event.inputs.html_content }}'
-            printf '%s' "$HTML_CONTENT" > website.html || {
-              echo "❌ Both methods failed to create HTML file"
-              exit 1
-            }
-            echo "✅ Backup method (env var) successful"
-          fi
+          # Use environment variable method to safely handle HTML content
+          echo "📝 Writing HTML content using environment variable method..."
+          export HTML_CONTENT='${{ github.event.inputs.html_content }}'
+          printf '%s' "$HTML_CONTENT" > website.html || {
+            echo "❌ Failed to create HTML file"
+            exit 1
+          }
+          echo "✅ HTML content written successfully"
           
           # Verify HTML file was created successfully
           if [ -f "website.html" ] && [ -s "website.html" ]; then
@@ -165,17 +157,18 @@ WORKFLOW_HTML_CONTENT_EOF
           fi
           
           # Create processing results for workflow_dispatch
-          cat > .github/scripts/processing-results.json << EOF
-        [
-          {
-            "business_name": "${{ github.event.inputs.business_name }}",
-            "industry": "${{ github.event.inputs.industry }}",
-            "template": "${{ github.event.inputs.template }}",
-            "workflow_id": "${{ github.event.inputs.workflow_id }}",
-            "html_file": "website.html"
-          }
-        ]
-        EOF
+          echo "📝 Creating processing results JSON..."
+          cat > .github/scripts/processing-results.json << 'JSON_EOF'
+          [
+            {
+              "business_name": "${{ github.event.inputs.business_name }}",
+              "industry": "${{ github.event.inputs.industry }}",
+              "template": "${{ github.event.inputs.template }}",
+              "workflow_id": "${{ github.event.inputs.workflow_id }}",
+              "html_file": "website.html"
+            }
+          ]
+          JSON_EOF
           
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
           echo "✅ Processing repository_dispatch payload..."
