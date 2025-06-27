@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxe Aesthetics & Wellness Spa | Transform Your Beauty Naturally</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #E8B4CB;
+            --secondary-color: #DCA0B9;
+            --background-color: #FEFEFE;
+            --text-color: #1F2937;
+            --accent-color: #D08FA7;
+            
+            /* Ultra-luxury color palette */
+            --glass-white: rgba(255, 255, 255, 0.1);
+            --glass-white-strong: rgba(255, 255, 255, 0.18);
+            --glass-dark: rgba(0, 0, 0, 0.1);
+            --rose-gold: linear-gradient(135deg, #E8B4B8 0%, #D4A574 50%, #C39BD3 100%);
+            --premium-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            --premium-shadow-hover: 0 35px 70px rgba(0, 0, 0, 0.15);
+            --shimmer: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--background-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating Background Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--rose-gold);
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -5s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        .floating-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 30%;
+            right: 30%;
+            animation-delay: -15s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(-40px) rotate(180deg); }
+            75% { transform: translateY(-20px) rotate(270deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Reveal Animation */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-element.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Premium Header */
+        header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-white-strong);
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: var(--premium-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 200;
+            background: var(--rose-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.02em;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 300;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--rose-gold);
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Cinematic Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--background-color) 0%, rgba(248, 249, 251, 0.8) 100%);
+            padding-top: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 200;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            background: var(--rose-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: #6B7280;
+            margin-bottom: 4rem;
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--rose-gold);
+            color: white;
+            padding: 1.5rem 4rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 400;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--premium-shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--shimmer);
+            transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--premium-shadow-hover);
+        }
+
+        /* Premium Services Section */
+        .services {
+            padding: 10rem 0;
+            position: relative;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 200;
+            margin-bottom: 6rem;
+            background: var(--rose-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-white-strong);
+            padding: 1.8rem 1.2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--premium-shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--rose-gold);
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 24px;
+        }
+
+        .service-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--premium-shadow-hover);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .service-image {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 12px;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .service-card:hover .service-image img {
+            transform: scale(1.05);
+        }
+
+        .service-card h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card p {
+            font-size: 1rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-price {
+            font-size: 1.2rem;
+            font-weight: 400;
+            background: var(--rose-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-cta {
+            background: transparent;
+            color: white;
+            border: 2px solid;
+            border-image: var(--rose-gold) 1;
+            padding: 0.8rem 1.8rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-transform: none;
+            letter-spacing: 0.01em;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .service-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--rose-gold);
+            border-radius: 25px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: -1;
+        }
+
+        .service-cta::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--rose-gold);
+            border-radius: 27px;
+            z-index: -2;
+        }
+
+        .service-cta:hover::before {
+            opacity: 1;
+        }
+
+        .service-cta:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Luxury Contact Section */
+        .contact {
+            padding: 10rem 0;
+            background: linear-gradient(135deg, #F8F9FB 0%, rgba(248, 249, 251, 0.5) 100%);
+            position: relative;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .contact h2 {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 200;
+            margin-bottom: 4rem;
+            background: var(--rose-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: stretch;
+        }
+
+        .map-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: var(--premium-shadow);
+            overflow: hidden;
+            position: relative;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--rose-gold);
+            opacity: 0.02;
+            pointer-events: none;
+        }
+
+        .map-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .map-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-color);
+            height: 100%;
+        }
+
+        .map-placeholder .map-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .map-placeholder h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            background: var(--rose-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .map-placeholder p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #6B7280;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .map-placeholder p:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--premium-shadow);
+            position: relative;
+            z-index: 2;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .form-group:last-of-type {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            color: var(--text-color);
+            font-size: 0.85rem;
+            letter-spacing: 0.01em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(229, 231, 235, 0.25);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-group textarea {
+            flex: 1;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .contact-form .cta-button {
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+
+
+        /* Sophisticated Footer */
+        footer {
+            background: linear-gradient(135deg, var(--text-color) 0%, rgba(31, 41, 55, 0.95) 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--rose-gold);
+            opacity: 0.05;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        /* Responsive Excellence */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+                         .services-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                 gap: 2rem;
+                 max-width: 900px;
+             }
+             
+             .service-card {
+                 max-width: none;
+             }
+             
+             .floating-circle {
+                 opacity: 0.05;
+             }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            nav ul {
+                gap: 1.5rem;
+            }
+
+            nav a {
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding-top: 120px;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                margin-bottom: 3rem;
+            }
+
+            .services {
+                padding: 6rem 0;
+            }
+
+            .services h2 {
+                margin-bottom: 4rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                max-width: 100%;
+            }
+
+            .service-card {
+                padding: 2rem 1.5rem;
+                max-width: none;
+            }
+
+            .service-image {
+                height: 130px;
+                margin-bottom: 1.2rem;
+            }
+
+            .service-image img {
+                border-radius: 10px;
+            }
+
+            .service-card h3 {
+                font-size: 1.3rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .service-card p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .service-price {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .service-cta {
+                padding: 0.7rem 1.6rem;
+                font-size: 0.85rem;
+                border-radius: 22px;
+            }
+
+            .service-cta::after {
+                border-radius: 24px;
+            }
+
+             .contact {
+                 padding: 6rem 0;
+             }
+
+             .contact h2 {
+                 margin-bottom: 3rem;
+             }
+
+             .contact-content {
+                 gap: 2rem;
+             }
+
+             .map-container,
+             .contact-form {
+                 height: 500px;
+             }
+
+             .map-placeholder {
+                 padding: 1.8rem;
+             }
+
+             .map-placeholder .map-icon {
+                 font-size: 3.5rem;
+                 margin-bottom: 1.5rem;
+             }
+
+             .map-placeholder h3 {
+                 font-size: 1.5rem;
+                 margin-bottom: 1.2rem;
+             }
+
+             .map-placeholder p {
+                 font-size: 1rem;
+             }
+
+             .contact-form {
+                 padding: 1.8rem;
+             }
+
+             .form-group {
+                 margin-bottom: 1.3rem;
+             }
+
+             .form-group input,
+             .form-group textarea {
+                 padding: 0.9rem;
+                 font-size: 0.85rem;
+             }
+
+             .form-group textarea {
+                 min-height: 80px;
+             }
+
+
+
+            .floating-circle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .cta-button {
+                padding: 1.2rem 2.5rem;
+                font-size: 1rem;
+            }
+
+            .service-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .service-card h3 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .service-card p {
+                font-size: 0.9rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .service-price {
+                font-size: 1rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .service-cta {
+                padding: 0.7rem 1.4rem;
+                font-size: 0.8rem;
+                border-radius: 20px;
+            }
+
+            .service-cta::before {
+                border-radius: 20px;
+            }
+
+            .service-cta::after {
+                border-radius: 22px;
+            }
+
+            .service-image {
+                height: 120px;
+                margin-bottom: 1rem;
+            }
+
+            .service-image img {
+                border-radius: 8px;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .map-container {
+                height: 350px;
+                order: 1;
+            }
+
+            .map-placeholder {
+                padding: 1.5rem;
+            }
+
+            .map-placeholder .map-icon {
+                font-size: 3rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .map-placeholder h3 {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+            }
+
+            .map-placeholder p {
+                font-size: 0.95rem;
+            }
+
+            .contact-form {
+                height: 400px;
+                padding: 1.5rem;
+                order: 2;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 0.9rem;
+                font-size: 0.85rem;
+            }
+
+            .form-group textarea {
+                min-height: 70px;
+            }
+        }
+
+        /* Performance Optimizations */
+        .service-card,
+        .cta-button {
+            will-change: transform;
+        }
+
+        /* Accessibility Improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .floating-circle {
+                animation: none;
+            }
+        }
+
+        /* Simple Medical Spa Chatbot */
+        .chatbot-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chatbot-trigger {
+            width: 60px;
+            height: 60px;
+            background: var(--rose-gold);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--premium-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-trigger:hover {
+            transform: scale(1.05);
+            box-shadow: var(--premium-shadow-hover);
+        }
+
+        .chatbot-container {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: var(--premium-shadow);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbot-container.active {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: var(--rose-gold);
+            color: white;
+            padding: 16px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .chatbot-close {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .message.bot {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            color: #333;
+            border-radius: 12px 12px 12px 4px;
+        }
+
+        .message.user {
+            background: var(--rose-gold);
+            color: white;
+            border-radius: 12px 12px 4px 12px;
+            margin-left: 30px;
+        }
+
+        .chatbot-input-area {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chatbot-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            color: #333;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input:focus {
+            border-color: rgba(232, 180, 184, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chatbot-input::placeholder {
+            color: rgba(51, 51, 51, 0.6);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chatbot-widget {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .chatbot-container {
+                width: 300px;
+                height: 400px;
+            }
+
+            .chatbot-trigger {
+                width: 55px;
+                height: 55px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: calc(100vw - 40px);
+                right: -10px;
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <!-- Premium Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Luxe Aesthetics & Wellness Spa</div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cinematic Hero Section -->
+    <section class="hero reveal-element" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Transform Your Beauty Naturally</h1>
+                <p>Experience the pinnacle of aesthetic excellence at Beverly Hills' premier medical spa. Our board-certified professionals deliver transformative results with the latest in non-invasive treatments.</p>
+                <a href="#services" class="cta-button">Book Free Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="reveal-element">Signature Treatments</h2>
+            <div class="services-grid reveal-element">
+                <!-- Service Card 1: Botox & Dermal Fillers -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Botox & Dermal Fillers" />
+                    </div>
+                    <h3>Botox & Dermal Fillers</h3>
+                    <p>Professional injectable treatments to smooth wrinkles and enhance facial contours with natural-looking results</p>
+                    <div class="service-price">From $295</div>
+                    <button class="service-cta">Book Consultation</button>
+                </div>
+
+                <!-- Service Card 2: Laser Hair Removal -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Laser Hair Removal" />
+                    </div>
+                    <h3>Laser Hair Removal</h3>
+                    <p>Advanced laser technology for safe, effective, and permanent hair reduction on all skin types</p>
+                    <div class="service-price">From $195</div>
+                    <button class="service-cta">Book Consultation</button>
+                </div>
+
+                <!-- Service Card 3: HydraFacial Rejuvenation -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1616391182219-e080b4d1043a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="HydraFacial Rejuvenation" />
+                    </div>
+                    <h3>HydraFacial Rejuvenation</h3>
+                    <p>Multi-step facial treatment that cleanses, extracts, and hydrates for instantly glowing skin</p>
+                    <div class="service-price">From $175</div>
+                    <button class="service-cta">Book Consultation</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Luxury Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="reveal-element">Begin Your Journey</h2>
+            <div class="contact-content reveal-element">
+                <!-- Map Container -->
+                <div class="map-container">
+                    <div class="map-embed">
+                        
+                    </div>
+                    <div class="map-placeholder">
+                        <span class="map-icon">📍</span>
+                        <h3>Visit Our Clinic</h3>
+                        <p>9876 Rodeo Drive, Suite 200<br>Beverly Hills, CA 90210</p>
+                        <p>(310) 555-LUXE (5893)</p>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Treatment Interests</label>
+                        <textarea id="message" name="message" placeholder="Tell us about your aesthetic goals..."></textarea>
+                    </div>
+                    <button type="submit" class="cta-button">Book Free Consultation</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Sophisticated Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Luxe Aesthetics & Wellness Spa. All rights reserved.</p>
+            <p>9876 Rodeo Drive, Suite 200, Beverly Hills, CA 90210 | (310) 555-LUXE (5893)</p>
+        </div>
+    </footer>
+
+    <!-- Simple Chatbot Widget -->
+    <div class="chatbot-widget">
+        <button class="chatbot-trigger" id="chatbot-trigger">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 11.5C21.0034 12.8199 20.6951 14.1219 20.1 15.3C19.3944 16.7118 18.3098 17.8992 16.9674 18.7293C15.6251 19.5594 14.0782 19.9994 12.5 20C11.1801 20.0035 9.87812 19.6951 8.7 19.1L3 21L4.9 15.3C4.30493 14.1219 3.99656 12.8199 4 11.5C4.00061 9.92179 4.44061 8.37488 5.27072 7.03258C6.10083 5.69028 7.28825 4.6056 8.7 3.90003C9.87812 3.30496 11.1801 2.99659 12.5 3.00003H13C15.0843 3.11502 17.053 3.99479 18.5291 5.47089C20.0052 6.94699 20.885 8.91568 21 11V11.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="chatbot-container" id="chatbot-container">
+            <div class="chatbot-header">
+                <button class="chatbot-close" id="chatbot-close">×</button>
+                <h3>Ask Us Anything</h3>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot">
+                    Hi! I can answer questions about our treatments, pricing, and hours. What would you like to know?
+                </div>
+            </div>
+            
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask a question...">
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Advanced JavaScript for Premium Interactions -->
+    <script>
+        // Smooth Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer for Reveal Animations
+        const revealElements = document.querySelectorAll('.reveal-element');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+
+
+        // Smooth Scroll for Navigation Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Premium Form Interactions
+        const formInputs = document.querySelectorAll('input, textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Service Card Hover Effects
+        const serviceCards = document.querySelectorAll('.service-card');
+        serviceCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.willChange = 'transform';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.willChange = 'auto';
+            });
+        });
+
+        // Map Display Logic
+        function handleMapDisplay() {
+            const mapEmbed = document.querySelector('.map-embed');
+            const mapPlaceholder = document.querySelector('.map-placeholder');
+            
+            // Check if map embed code exists and has content
+            if (mapEmbed && mapEmbed.innerHTML.trim() && mapEmbed.innerHTML.trim() !== '') {
+                mapEmbed.style.display = 'block';
+                mapPlaceholder.style.display = 'none';
+            } else {
+                mapEmbed.style.display = 'none';
+                mapPlaceholder.style.display = 'flex';
+                mapPlaceholder.style.flexDirection = 'column';
+                mapPlaceholder.style.alignItems = 'center';
+                mapPlaceholder.style.justifyContent = 'center';
+            }
+        }
+
+        // Initialize map display
+        handleMapDisplay();
+
+        // Performance Optimization
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                // Preload any heavy resources here
+                console.log('Premium medical spa experience ready');
+            });
+        }
+
+
+
+        // Simple Chatbot Functionality
+        class SimpleChatbot {
+            constructor() {
+                this.trigger = document.getElementById('chatbot-trigger');
+                this.container = document.getElementById('chatbot-container');
+                this.closeBtn = document.getElementById('chatbot-close');
+                this.messagesContainer = document.getElementById('chatbot-messages');
+                this.chatInput = document.getElementById('chatbot-input');
+                this.isOpen = false;
+                
+                this.responses = {
+                    greeting: "Hi! I can help you with information about our treatments and services.",
+                    botox: "Botox reduces wrinkles and costs $295+ per area. Results last 3-4 months.",
+                    fillers: "Dermal fillers add volume and smooth lines. Starting at $495 per syringe.",
+                    laser: "Laser hair removal provides permanent results. $195+ per session.",
+                    hydrafacial: "HydraFacial cleanses and hydrates skin. $175 per treatment.",
+                    pricing: "Treatment prices: HydraFacial $175, Laser $195+, Botox $295+, Fillers $495+",
+                    hours: "We're open Monday-Friday 9am-6pm, Saturday 9am-4pm. Closed Sundays.",
+                    booking: "To book an appointment, please call us at (310) 555-LUXE or use our contact form.",
+                    default: "I can help with questions about treatments, pricing, hours, or booking appointments. What would you like to know?"
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.trigger.addEventListener('click', () => this.toggle());
+                this.closeBtn.addEventListener('click', () => this.close());
+                this.chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleUserMessage();
+                });
+            }
+            
+            toggle() {
+                if (this.isOpen) {
+                    this.close();
+                } else {
+                    this.open();
+                }
+            }
+            
+            open() {
+                this.container.classList.add('active');
+                this.isOpen = true;
+            }
+            
+            close() {
+                this.container.classList.remove('active');
+                this.isOpen = false;
+            }
+            
+            addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+                messageDiv.textContent = message;
+                this.messagesContainer.appendChild(messageDiv);
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+            
+            handleUserMessage() {
+                const message = this.chatInput.value.trim();
+                if (!message) return;
+                
+                this.addMessage(message, true);
+                this.chatInput.value = '';
+                
+                setTimeout(() => {
+                    const response = this.generateResponse(message);
+                    this.addMessage(response);
+                }, 500);
+            }
+            
+            generateResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                if (lowerMessage.includes('hi') || lowerMessage.includes('hello')) {
+                    return this.responses.greeting;
+                } else if (lowerMessage.includes('botox')) {
+                    return this.responses.botox;
+                } else if (lowerMessage.includes('filler')) {
+                    return this.responses.fillers;
+                } else if (lowerMessage.includes('laser') || lowerMessage.includes('hair')) {
+                    return this.responses.laser;
+                } else if (lowerMessage.includes('hydrafacial') || lowerMessage.includes('facial')) {
+                    return this.responses.hydrafacial;
+                } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+                    return this.responses.pricing;
+                } else if (lowerMessage.includes('hours') || lowerMessage.includes('open')) {
+                    return this.responses.hours;
+                } else if (lowerMessage.includes('book') || lowerMessage.includes('appointment') || lowerMessage.includes('schedule')) {
+                    return this.responses.booking;
+                } else {
+                    return this.responses.default;
+                }
+            }
+        }
+        
+        // Initialize the simple chatbot
+        const simpleChatbot = new SimpleChatbot();
+    </script>
+</body>
+</html>
