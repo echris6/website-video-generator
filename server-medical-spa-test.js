@@ -21,96 +21,75 @@ try {
     process.exit(1);
 }
 
-// **LUXURY SITE ANTI-GLITCH FIXES** - No HTML modifications, just stabilization
+// **TARGETED STABILIZATION** - Preserve chatbot functionality while fixing hero glitching
 const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
-        console.log('🔧 Applying HERO STABILIZATION + minimal fixes for M.HTML...');
+        console.log('🔧 Applying TARGETED STABILIZATION - preserving chatbot...');
         
-        // 1. ULTRA-AGGRESSIVE HERO STABILIZATION - Eliminate ALL glitching from frame 1
+        // 1. TARGETED HERO STABILIZATION - Don't interfere with chatbot
         const heroStabilizationCSS = \`
-            /* NUCLEAR HERO STABILIZATION - Zero tolerance for glitching */
-            .hero, [class*="hero"], #hero, .hero-section, #hero-section {
+            /* HERO STABILIZATION - Preserve chatbot functionality */
+            .hero, [class*="hero"]:not([class*="chatbot"]), #hero, .hero-section, #hero-section {
                 animation: none !important;
                 transform: none !important;
-                transition: none !important;
                 animation-play-state: paused !important;
                 will-change: auto !important;
             }
             
-            /* Stabilize ALL hero pseudo-elements */
+            /* Stabilize hero pseudo-elements only */
             .hero::before, .hero::after,
-            [class*="hero"]::before, [class*="hero"]::after,
             .hero-section::before, .hero-section::after {
                 animation: none !important;
                 transform: none !important;
-                transition: none !important;
                 animation-play-state: paused !important;
-                will-change: auto !important;
                 opacity: 1 !important;
                 visibility: visible !important;
             }
             
-            /* ELIMINATE ALL FLOATING ELEMENTS that cause hero instability */
+            /* ELIMINATE FLOATING ELEMENTS - Preserve chatbot */
             .floating-elements, .floating-square, .floating-circle, 
             .floating-animation, [class*="floating"]:not([class*="chat"]):not([id*="chat"]) {
                 animation: none !important;
                 transform: none !important;
-                transition: none !important;
                 animation-play-state: paused !important;
                 opacity: 0 !important;
                 visibility: hidden !important;
                 display: none !important;
             }
             
-            /* FORCE STABILIZE reveal animations immediately */
-            .reveal-element, [class*="reveal"], [class*="fade"], .aos-animate {
-                animation: none !important;
-                transform: translateY(0) !important;
-                transition: none !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-                animation-play-state: paused !important;
-            }
-            
-            /* NUCLEAR OPTION: Disable ALL animations site-wide during video */
-            *, *::before, *::after {
-                animation-duration: 0s !important;
-                animation-delay: 0s !important;
-                animation-iteration-count: 1 !important;
-                animation-play-state: paused !important;
-                transition-duration: 0s !important;
-                transition-delay: 0s !important;
+            /* PRESERVE CHATBOT TRANSITIONS - Essential for functionality */
+            .chatbot-widget, .chatbot-container, .chatbot-trigger, .chatbot-header, 
+            .chatbot-messages, .chatbot-input-area, .chatbot-input, .chatbot-close {
+                animation-play-state: running !important;
+                transition-duration: 0.3s !important;
                 will-change: auto !important;
             }
             
-            /* Force stable state for common animation libraries */
-            .animate__animated, .aos-item, .wow {
+            /* Force reveal animations to be instant but preserve chatbot */
+            .reveal-element:not([class*="chatbot"]), [class*="reveal"]:not([class*="chatbot"]) {
                 animation: none !important;
-                transform: none !important;
+                transform: translateY(0) !important;
                 opacity: 1 !important;
+                visibility: visible !important;
             }
         \`;
         
         const heroStyle = document.createElement('style');
         heroStyle.textContent = heroStabilizationCSS;
         document.head.appendChild(heroStyle);
-        console.log('✅ Hero section stabilized - no more glitching!');
+        console.log('✅ Hero stabilized - chatbot functionality preserved!');
         
-        // 2. ZERO CHATBOT LAYOUT INTERFERENCE - Let M.HTML chatbot work 100% naturally
-        console.log('✅ No chatbot layout interference - M.HTML chatbot works naturally');
-        
-        // 3. DISABLE TEXT CURSOR BLINKING during video
+        // 2. DISABLE ONLY TEXT CURSOR BLINKING - Preserve all other chatbot functionality
         const cursorStyle = document.createElement('style');
         cursorStyle.textContent = \`
-            /* ONLY disable text cursor blinking during video - no layout changes */
-            #chatbot-input, .chatbot-input, #messageInput {
+            .chatbot-input, #chatbot-input {
                 caret-color: transparent !important;
             }
         \`;
         document.head.appendChild(cursorStyle);
-        console.log('✅ Text cursor blinking disabled only - no layout interference');
+        console.log('✅ Text cursor blinking disabled - chatbot styling preserved');
         
-        console.log('🔧 Hero stabilization + minimal fixes applied - M.HTML preserved!');
+        console.log('🔧 Targeted stabilization applied - chatbot functionality intact!');
     }
 `;
 
@@ -336,14 +315,14 @@ const chatbotFunctions = `
     }
 `;
 
-// **STEP 5 CURSOR POSITIONING** - EXACT COORDINATES from diagnostic script
-function getCursorPositionForFrame(frameIndex, totalFrames) {
-    // EXACT COORDINATES from screenshot analysis
+// **DYNAMIC CURSOR POSITIONING** - Detects actual element positions instead of hard-coded coordinates
+function getCursorPositionForFrame(frameIndex, totalFrames, dynamicPositions = {}) {
+    // Use dynamic positions if available, otherwise fallback to defaults
     const startPosition = { x: 200, y: 200 };
-    const chatbotPosition = { x: 1860, y: 1020 };    // EXACT: Chatbot trigger button 
-    const inputPosition = { x: 1715, y: 935 };       // EXACT: Input field center
-    const sendPosition = { x: 1715, y: 935 };        // EXACT: No send button - use Enter at input position
-    const minimizePosition = { x: 1862, y: 545 };    // EXACT: Close "×" button position
+    const chatbotPosition = dynamicPositions.chatbot || { x: 1860, y: 1020 };
+    const inputPosition = dynamicPositions.input || { x: 1715, y: 935 };
+    const sendPosition = dynamicPositions.input || { x: 1715, y: 935 };  // Same as input for Enter key
+    const minimizePosition = dynamicPositions.minimize || { x: 1862, y: 545 };
     
     // **PROFESSIONAL TIMING** - 30 seconds marketing video with immediate send
     const moveToButtonEnd = 0.15;      // 0-15%: Move to chatbot (0-4.5s)
@@ -416,38 +395,39 @@ async function generateVideo(businessName, niche, htmlContent = null) {
         const websiteContent = htmlContent || fs.readFileSync(path.join(__dirname, 'm.html'), 'utf8');
         console.log('📄 Using HTML content:', htmlContent ? 'from n8n request' : 'from m.html file');
         
-        // INJECT ULTRA-AGGRESSIVE STABILIZATION INTO HTML BEFORE LOADING
+        // INJECT TARGETED STABILIZATION - Preserve chatbot functionality
         const stabilizedHTML = websiteContent.replace('</head>', `
             <style>
-                /* IMMEDIATE HERO STABILIZATION - Applied before any JavaScript runs */
-                .hero, [class*="hero"], #hero, .hero-section, #hero-section {
+                /* TARGETED HERO STABILIZATION - Don't interfere with chatbot */
+                .hero, [class*="hero"]:not([class*="chatbot"]), #hero, .hero-section, #hero-section {
                     animation: none !important;
                     transform: none !important;
-                    transition: none !important;
                     animation-play-state: paused !important;
                     will-change: auto !important;
                 }
                 
-                /* ELIMINATE ALL FLOATING ELEMENTS immediately */
+                /* ELIMINATE FLOATING ELEMENTS - Preserve chatbot */
                 .floating-elements, .floating-square, .floating-circle, 
                 .floating-animation, [class*="floating"]:not([class*="chat"]):not([id*="chat"]) {
                     animation: none !important;
                     transform: none !important;
-                    transition: none !important;
                     animation-play-state: paused !important;
                     opacity: 0 !important;
                     visibility: hidden !important;
                     display: none !important;
                 }
                 
-                /* NUCLEAR ANIMATION KILLER */
-                *, *::before, *::after {
-                    animation-duration: 0s !important;
-                    animation-delay: 0s !important;
-                    animation-play-state: paused !important;
-                    transition-duration: 0s !important;
-                    transition-delay: 0s !important;
+                /* PRESERVE CHATBOT FUNCTIONALITY - Only disable problematic animations */
+                .chatbot-widget, .chatbot-container, .chatbot-trigger, .chatbot-header, 
+                .chatbot-messages, .chatbot-input-area, .chatbot-input, .chatbot-close {
+                    animation-play-state: running !important;
+                    transition-duration: 0.3s !important;
                     will-change: auto !important;
+                }
+                
+                /* DISABLE TEXT CURSOR BLINKING ONLY */
+                .chatbot-input, #chatbot-input {
+                    caret-color: transparent !important;
                 }
             </style>
         </head>`);
@@ -486,6 +466,57 @@ async function generateVideo(businessName, niche, htmlContent = null) {
         
         await delay(500);
         console.log('✅ All fixes applied and content ready!');
+        
+        // **DETECT ACTUAL ELEMENT POSITIONS** for dynamic cursor movement
+        const dynamicPositions = await page.evaluate(() => {
+            const positions = {};
+            
+            // Find chatbot trigger button
+            const chatbotTrigger = document.querySelector('#chatbot-trigger');
+            if (chatbotTrigger) {
+                const rect = chatbotTrigger.getBoundingClientRect();
+                positions.chatbot = {
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2
+                };
+                console.log('🎯 DYNAMIC: Chatbot trigger detected at', positions.chatbot);
+            }
+            
+            // Find input field (simulate click to make it appear)
+            const chatbotContainer = document.querySelector('.chatbot-container');
+            if (chatbotContainer) {
+                // Temporarily show chatbot to detect input position
+                chatbotContainer.classList.add('active');
+                
+                const chatbotInput = document.querySelector('#chatbot-input');
+                if (chatbotInput) {
+                    const rect = chatbotInput.getBoundingClientRect();
+                    positions.input = {
+                        x: rect.left + rect.width / 2,
+                        y: rect.top + rect.height / 2
+                    };
+                    console.log('🎯 DYNAMIC: Input field detected at', positions.input);
+                }
+                
+                // Find close button
+                const closeButton = document.querySelector('#chatbot-close');
+                if (closeButton) {
+                    const rect = closeButton.getBoundingClientRect();
+                    positions.minimize = {
+                        x: rect.left + rect.width / 2,
+                        y: rect.top + rect.height / 2
+                    };
+                    console.log('🎯 DYNAMIC: Close button detected at', positions.minimize);
+                }
+                
+                // Hide chatbot again
+                chatbotContainer.classList.remove('active');
+            }
+            
+            return positions;
+        });
+        
+        console.log('🎯 DYNAMIC POSITIONS DETECTED:', dynamicPositions);
         
         // Get page dimensions
         const pageHeight = await page.evaluate(() => document.body.scrollHeight);
@@ -529,8 +560,8 @@ async function generateVideo(businessName, niche, htmlContent = null) {
                     console.log(`🖱️ CLICKED chatbot button at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotOpened = true;
                     
-                    // **CRITICAL FIX**: Wait longer for chatbot to fully appear
-                    await delay(1000); // Increased wait time
+                    // **CHATBOT STABILIZATION**: Wait for new design to fully appear
+                    await delay(1500); // Extra time for new chatbot design
                     
                     // **ENSURE CHATBOT IS VISIBLE**: Force active state if needed
                     await page.evaluate(() => {
@@ -665,8 +696,8 @@ async function generateVideo(businessName, niche, htmlContent = null) {
                     .toBuffer();
             }
             
-            // Add cursor overlay
-            const cursorPos = getCursorPositionForFrame(i, totalFrames);
+            // Add cursor overlay with dynamic positions
+            const cursorPos = getCursorPositionForFrame(i, totalFrames, dynamicPositions);
             const frameWithCursor = await sharp(frameBuffer)
                 .composite([{
                     input: cursorBuffer,
