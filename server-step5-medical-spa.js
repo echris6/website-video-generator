@@ -24,34 +24,50 @@ try {
 // **SIMPLE PROVEN TEXT FIXES** - Exact copy from debug analysis that worked
 const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
-        console.log('🔧 Applying PROVEN working text fixes...');
+        console.log('🔧 Applying MINIMAL targeted fixes (chatbot-safe)...');
         
-        // Check for different chatbot structures
-        let chatWidget = document.querySelector('.chat-widget');
-        if (!chatWidget) {
-            chatWidget = document.querySelector('.chatbot-container');
-        }
+        // 1. STOP HERO SECTION GLITCHING - Target specific problematic elements
+        const style = document.createElement('style');
+        style.innerHTML = \`
+            /* Stop specific animations that cause glitching - PRESERVE CHATBOT */
+            .hero-section *, .hero *, [class*="hero"] * {
+                animation: none !important;
+                transition: none !important;
+            }
+            
+            /* Stop floating elements that glitch (but not chatbot elements) */
+            .floating-element:not([class*="chat"]):not([id*="chat"]):not([class*="bot"]):not([id*="bot"]),
+            .floating-circle:not([class*="chat"]):not([id*="chat"]):not([class*="bot"]):not([id*="bot"]),
+            .floating-shape:not([class*="chat"]):not([id*="chat"]):not([class*="bot"]):not([id*="bot"]) {
+                animation: none !important;
+                transform: none !important;
+                opacity: 0.1 !important;
+            }
+            
+            /* PRESERVE CHATBOT VISIBILITY - Override any hiding */
+            [class*="chat"], [id*="chat"], [class*="bot"], [id*="bot"] {
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: block !important;
+                z-index: 9999 !important;
+            }
+            
+            /* Text input fixes */
+            #messageInput, #chatbot-input {
+                flex: 0 0 auto !important;
+                width: 320px !important;
+                min-width: 320px !important;
+            }
+            
+            .chat-widget, .chatbot-container {
+                width: 420px !important;
+                min-width: 420px !important;
+            }
+        \`;
+        document.head.appendChild(style);
+        console.log('✅ Applied targeted fixes: hero stabilized, chatbot preserved');
         
-        let inputField = document.querySelector('#messageInput');
-        if (!inputField) {
-            inputField = document.querySelector('#chatbot-input');
-        }
-        
-        if (chatWidget) {
-            chatWidget.style.setProperty('width', '420px', 'important');
-            chatWidget.style.setProperty('min-width', '420px', 'important');
-            console.log('✅ Chat widget widened to 420px');
-        }
-        
-        if (inputField) {
-            // CRITICAL: Remove flex and set explicit width (this is what fixes the cutoff)
-            inputField.style.setProperty('flex', '0 0 auto', 'important');
-            inputField.style.setProperty('width', '320px', 'important');
-            inputField.style.setProperty('min-width', '320px', 'important');
-            console.log('✅ Input field width set to 320px (was 260px)');
-        }
-        
-        console.log('🔧 Simple text cutoff fixes applied successfully');
+        console.log('🔧 Minimal safe fixes applied - no more glitching or invisible chatbot!');
     }
 `;
 
