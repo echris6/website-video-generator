@@ -24,32 +24,68 @@ try {
 // **LUXURY SITE ANTI-GLITCH FIXES** - No HTML modifications, just stabilization
 const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
-        console.log('🔧 Applying MINIMAL INTERFERENCE fixes for M.HTML...');
+        console.log('🔧 Applying HERO STABILIZATION + minimal fixes for M.HTML...');
         
-        // 1. ZERO CHATBOT LAYOUT INTERFERENCE - Let M.HTML chatbot work 100% naturally
+        // 1. COMPREHENSIVE HERO SECTION STABILIZATION - Fix glitching from the start
+        const heroStabilizationCSS = \`
+            /* HERO SECTION STABILIZATION - Prevent glitching */
+            .hero, [class*="hero"], #hero {
+                animation: none !important;
+                transform: none !important;
+                transition: none !important;
+            }
+            
+            /* Stabilize hero background and overlays */
+            .hero::before, .hero::after,
+            [class*="hero"]::before, [class*="hero"]::after {
+                animation: none !important;
+                transform: none !important;
+                transition: none !important;
+            }
+            
+            /* Disable all floating animations that cause glitching */
+            .floating-elements, .floating-square, .floating-circle:not([class*="chat"]):not([id*="chat"]) {
+                animation: none !important;
+                transform: none !important;
+                transition: none !important;
+                opacity: 0.1 !important;
+            }
+            
+            /* Stabilize any reveal animations */
+            .reveal-element, [class*="reveal"], [class*="fade"] {
+                animation: none !important;
+                transform: none !important;
+                transition: none !important;
+                opacity: 1 !important;
+            }
+            
+            /* Prevent any CSS transitions during video */
+            * {
+                transition: none !important;
+                animation-duration: 0s !important;
+            }
+        \`;
+        
+        const heroStyle = document.createElement('style');
+        heroStyle.textContent = heroStabilizationCSS;
+        document.head.appendChild(heroStyle);
+        console.log('✅ Hero section stabilized - no more glitching!');
+        
+        // 2. ZERO CHATBOT LAYOUT INTERFERENCE - Let M.HTML chatbot work 100% naturally
         console.log('✅ No chatbot layout interference - M.HTML chatbot works naturally');
         
-        // 2. ONLY DISABLE TEXT CURSOR BLINKING - No width/layout changes
-        const style = document.createElement('style');
-        style.textContent = \`
+        // 3. DISABLE TEXT CURSOR BLINKING during video
+        const cursorStyle = document.createElement('style');
+        cursorStyle.textContent = \`
             /* ONLY disable text cursor blinking during video - no layout changes */
             #chatbot-input, .chatbot-input, #messageInput {
                 caret-color: transparent !important;
             }
         \`;
-        document.head.appendChild(style);
+        document.head.appendChild(cursorStyle);
         console.log('✅ Text cursor blinking disabled only - no layout interference');
         
-        // 3. ONLY disable floating animations that might cause glitching
-        const floatingElements = document.querySelectorAll('.floating-circle:not([class*="chat"]):not([id*="chat"])');
-        floatingElements.forEach(element => {
-            element.style.setProperty('animation', 'none', 'important');
-            element.style.setProperty('transform', 'none', 'important');
-            element.style.setProperty('opacity', '0.1', 'important');
-        });
-        console.log('✅ Floating animations disabled (chatbot preserved)');
-        
-        console.log('🔧 Minimal fixes applied - M.HTML chatbot UI preserved!');
+        console.log('🔧 Hero stabilization + minimal fixes applied - M.HTML preserved!');
     }
 `;
 
@@ -671,7 +707,7 @@ app.post('/generate-video', async (req, res) => {
         console.log(`🎥 STEP 5: COMPLETE SITE TOUR - ACTUALLY FIXED!`);
         console.log(`📋 Business: ${businessName}`);
         console.log(`🏢 Niche: ${niche}`);
-        console.log(`🔧 FIXES: EXACT coordinates from diagnostic (1860,1020) → (1715,935) → (1862,545)`);
+        console.log(`🔧 FIXES: HERO STABILIZATION + exact coordinates (1860,1020) → (1715,935) → (1862,545)`);
         console.log(`🎬 Complete Flow: Interaction → Minimize → Site Tour (30s)`);
         
         const result = await generateVideo(businessName, niche);
