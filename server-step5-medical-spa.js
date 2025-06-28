@@ -35,83 +35,23 @@ const applyWorkingFixesFunction = `
         });
         console.log('✅ Disabled ' + floatingCircles.length + ' floating circles causing glitching');
         
-        // 2. CHATBOT VISIBILITY PROTECTION - Force show ALL chatbot elements
-        const chatbotElements = [
-            '#chatbot-trigger',
-            '.chatbot-trigger', 
-            '#chatbot-container',
-            '.chatbot-container',
-            '#chatbot-close',
-            '.chatbot-close',
-            '#chatbot-input',
-            '.chatbot-input',
-            '.chatbot-widget',
-            '.chatbot-header',
-            '.chatbot-messages',
-            '.chatbot-input-area'
-        ];
-        
-        chatbotElements.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-                element.style.setProperty('opacity', '1', 'important');
-                element.style.setProperty('visibility', 'visible', 'important');
-                element.style.setProperty('display', 'block', 'important');
-                element.style.setProperty('z-index', '9999', 'important');
-            });
-        });
-        console.log('✅ Forced visibility for all chatbot elements');
-        
-        // 3. TEXT INPUT WIDTH FIX - Target the ACTUAL input element
-        const chatInput = document.querySelector('#chatbot-input');
-        if (chatInput) {
-            chatInput.style.setProperty('width', '300px', 'important');
-            chatInput.style.setProperty('min-width', '300px', 'important');
-            chatInput.style.setProperty('flex', 'none', 'important');
-            console.log('✅ Fixed #chatbot-input width to 300px');
-        }
-        
-        // 4. CHATBOT CONTAINER WIDTH FIX
-        const chatContainer = document.querySelector('.chatbot-container');
-        if (chatContainer) {
-            chatContainer.style.setProperty('width', '380px', 'important');
-            chatContainer.style.setProperty('min-width', '380px', 'important');
-            console.log('✅ Fixed .chatbot-container width to 380px');
-        }
-        
-        // 5. DISABLE PROBLEMATIC ANIMATIONS GLOBALLY
+        // 2. ZERO LAYOUT IMPACT - Only fix floating circles
         const style = document.createElement('style');
         style.innerHTML = \`
-            /* Stop all floating animations */
+            /* ONLY stop floating circles glitching - NOTHING ELSE */
             .floating-circle {
                 animation: none !important;
-                transform: none !important;
-                opacity: 0.05 !important;
+                opacity: 0.02 !important;
             }
             
-            /* Force chatbot visibility */
-            .chatbot-trigger, #chatbot-trigger {
-                opacity: 1 !important;
-                visibility: visible !important;
-                display: block !important;
-                z-index: 9999 !important;
-                position: fixed !important;
-            }
-            
-            .chatbot-container, #chatbot-container {
-                opacity: 1 !important;
-                visibility: visible !important;
-                z-index: 9999 !important;
-                position: absolute !important;
-            }
-            
-            .chatbot-container.active {
-                display: flex !important;
+            /* ONLY cursor blinking fix - NO layout changes whatsoever */
+            * {
+                caret-color: transparent !important;
             }
         \`;
         document.head.appendChild(style);
         
-        console.log('🎯 PRECISION fixes applied - targeted floating circles + forced chatbot visibility!');
+        console.log('🎯 ULTRA MINIMAL fixes applied - only floating circles + cursor blinking (ZERO layout impact)!');
     }
 `;
 
@@ -203,12 +143,25 @@ const chatbotFunctions = `
     }
     
     function clickMinimizeButton() {
-        // Use ACTUAL selector from test22.html
-        const closeButton = document.querySelector('#chatbot-close');
-        if (closeButton) {
-            closeButton.click();
-            console.log('✅ Minimize button clicked using #chatbot-close');
-            return true;
+        // Use ACTUAL selector from test22.html with multiple attempts
+        const selectors = ['#chatbot-close', '.chatbot-close', '#close-button', '.close-btn'];
+        
+        for (const selector of selectors) {
+            const button = document.querySelector(selector);
+            if (button) {
+                button.click();
+                console.log('✅ Minimize button clicked using: ' + selector);
+                
+                // Wait a bit then verify it worked
+                setTimeout(() => {
+                    const container = document.querySelector('.chatbot-container');
+                    if (container && !container.classList.contains('active')) {
+                        console.log('✅ Chatbot successfully minimized');
+                    }
+                }, 100);
+                
+                return true;
+            }
         }
         
         // Fallback: try clicking chat trigger to close
@@ -219,7 +172,7 @@ const chatbotFunctions = `
             return true;
         }
         
-        console.log('❌ Could not minimize chatbot - no #chatbot-close or #chatbot-trigger found');
+        console.log('❌ Could not minimize chatbot - no minimize button found');
         return false;
     }
 `;
@@ -240,9 +193,9 @@ function getCursorPositionForFrame(frameIndex, totalFrames) {
     const typingEnd = 0.4;             // 25-40%: Typing (6.25-10s)
     const moveToSendEnd = 0.476;       // 40-47.6%: Move to send (10-11.9s)
     const sendPause = 0.5;             // 47.6-50%: Send message (11.9-12.5s)
-    const moveToMinimizeEnd = 0.56;    // 50-56%: SLOW SMOOTH movement to minimize (12.5-14s)
-    const minimizePause = 0.58;        // 56-58%: Minimize click (14-14.5s)
-    // 60-100%: Scrolling phase (15-25s) - TRULY GRADUAL & READABLE
+    const moveToMinimizeEnd = 0.53;    // 50-53%: FASTER movement to minimize (12.5-13.25s)
+    const minimizePause = 0.55;        // 53-55%: Minimize click (13.25-13.75s)
+    // 58-100%: Scrolling phase (14.5-25s) - MORE time for scrolling
     
     const progress = frameIndex / totalFrames;
     
@@ -267,8 +220,8 @@ function getCursorPositionForFrame(frameIndex, totalFrames) {
     } else if (progress <= minimizePause) {
         return minimizePosition;
     } else {
-        // During scrolling - cursor in corner
-        return { x: 100, y: 100 };
+        // During scrolling - cursor STAYS at minimize position (no jumping!)
+        return minimizePosition;
     }
 }
 
@@ -350,8 +303,8 @@ async function generateVideo(testId) {
         const typingStartFrame = Math.floor(totalFrames * 0.25);    // Start typing at 6.25s
         const typingEndFrame = Math.floor(totalFrames * 0.4);       // End typing at 10s
         const sendClickFrame = Math.floor(totalFrames * 0.476);     // Send at 11.9s
-        const minimizeClickFrame = Math.floor(totalFrames * 0.56);  // Minimize at 14s
-        const scrollStartFrame = Math.floor(totalFrames * 0.6);     // Scroll at 15s - AFTER MINIMIZE COMPLETES
+        const minimizeClickFrame = Math.floor(totalFrames * 0.55);  // Minimize at 13.75s
+        const scrollStartFrame = Math.floor(totalFrames * 0.58);    // Scroll at 14.5s - AFTER MINIMIZE COMPLETES
         
         const message = "What are your hours?"; // Medical spa appropriate question
         let chatbotOpened = false;
@@ -415,7 +368,18 @@ async function generateVideo(testId) {
                     await page.evaluate(() => clickMinimizeButton());
                     console.log(`🖱️ MINIMIZED chatbot at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotMinimized = true;
-                    await delay(500);
+                    
+                    // Give extra time for minimize animation to complete
+                    await delay(800);
+                    
+                    // Force hide chatbot container to ensure it's minimized
+                    await page.evaluate(() => {
+                        const container = document.querySelector('.chatbot-container');
+                        if (container) {
+                            container.style.display = 'none';
+                            console.log('✅ Forced chatbot container hidden');
+                        }
+                    });
                 }
                 
                 frameBuffer = await page.screenshot({ 
@@ -463,15 +427,32 @@ async function generateVideo(testId) {
                 }
                 
                 const scrollProgress = (i - scrollStartFrame) / (totalFrames - scrollStartFrame);
-                // EXTRA SLOW & READABLE: Very gradual scrolling over 14 seconds, guaranteed to reach 100%
-                const slowProgress = Math.min(scrollProgress * 1.05, 1.0); // Very slow pace but reaches 100%
-                const scrollY = Math.round(slowProgress * maxScroll); // Full 100% scroll guaranteed
+                // GUARANTEED 100% SCROLL: Ensure we reach the very end of the site
+                const scrollY = Math.round(scrollProgress * maxScroll); // Full 100% scroll guaranteed
                 
-                // Crop full page screenshot to simulate smooth scrolling
-                frameBuffer = await sharp(fullPageBuffer)
-                    .extract({ left: 0, top: scrollY, width: 1920, height: 1080 })
-                    .png()
-                    .toBuffer();
+                // Get fullPageBuffer dimensions for safe extraction
+                const { width: imageWidth, height: imageHeight } = await sharp(fullPageBuffer).metadata();
+                
+                // Ensure extract coordinates are within bounds
+                const safeScrollY = Math.max(0, Math.min(scrollY, imageHeight - 1080));
+                const extractHeight = Math.min(1080, imageHeight - safeScrollY);
+                
+                // Only extract if we have valid dimensions
+                if (extractHeight > 0 && imageWidth >= 1920) {
+                    // Crop full page screenshot to simulate smooth scrolling
+                    frameBuffer = await sharp(fullPageBuffer)
+                        .extract({ left: 0, top: safeScrollY, width: 1920, height: extractHeight })
+                        .resize(1920, 1080, { fit: 'fill' }) // Ensure consistent output size
+                        .png()
+                        .toBuffer();
+                } else {
+                    // Fallback: use viewport screenshot
+                    console.log(`⚠️ Invalid extract dimensions at frame ${i}, using viewport screenshot`);
+                    frameBuffer = await page.screenshot({ 
+                        type: 'png',
+                        clip: { x: 0, y: 0, width: 1920, height: 1080 }
+                    });
+                }
             }
             
             // Add cursor overlay
