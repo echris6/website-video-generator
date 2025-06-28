@@ -2,8 +2,6 @@ name: Generate Website Videos
 
 # Updated workflow with workflow_dispatch trigger for n8n integration
 on:
-  repository_dispatch:
-    types: [generate_websites]
   workflow_dispatch:
     inputs:
       html_content:
@@ -14,24 +12,8 @@ on:
         description: 'Business name'
         required: true
         type: string
-      industry:
-        description: 'Industry type'
-        required: true
-        type: choice
-        options:
-          - 'Medical Spa'
-          - 'Real Estate'
-          - 'HVAC Services'
-      template:
-        description: 'Template to use'
-        required: true
-        type: choice
-        options:
-          - 'medical_spa'
-          - 'real_estate'
-          - 'hvac'
-      workflow_id:
-        description: 'Unique workflow ID'
+      business_niche:
+        description: 'Business niche (medical_spa, hvac, real_estate)'
         required: true
         type: string
 
@@ -116,76 +98,6 @@ jobs:
         npm ci --prefer-offline
         echo "✅ Dependencies installed successfully"
 
-    - name: Process workflow inputs
-      run: |
-        echo "🔍 Processing workflow inputs..."
-        echo "Trigger event: ${{ github.event_name }}"
-        
-        # Ensure .github/scripts directory exists
-        mkdir -p .github/scripts
-        
-        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          echo "✅ Processing workflow_dispatch inputs..."
-          
-          # Safely create HTML file from input using heredoc to avoid shell character issues
-          # The quoted delimiter 'WORKFLOW_HTML_CONTENT_EOF' prevents variable expansion
-          # and treats all content literally, safely handling <, >, ", ', (, ), &, etc.
-          echo "📄 Creating HTML file safely with heredoc method..."
-          
-          # Write HTML content to file using Node.js (completely safe from shell interpretation)
-          echo "📝 Writing HTML content safely using Node.js..."
-          node -e "require('fs').writeFileSync('website.html', process.env.HTML_CONTENT, 'utf8'); console.log('✅ HTML content written successfully');"
-          
-          # Verify HTML file was created successfully
-          if [ -f "website.html" ] && [ -s "website.html" ]; then
-            HTML_SIZE=$(wc -c < website.html)
-            echo "✅ HTML content saved to website.html ($HTML_SIZE bytes)"
-            echo "📋 HTML preview (first 200 chars):"
-            head -c 200 website.html || echo "(binary content detected)"
-            echo ""
-          else
-            echo "❌ Failed to create HTML file or file is empty"
-            exit 1
-          fi
-          
-          # Create processing results JSON using printf for safety
-          echo "📝 Creating processing results JSON..."
-          printf '[{"business_name":"%s","industry":"%s","template":"%s","workflow_id":"%s","html_file":"website.html"}]' \
-            "${{ github.event.inputs.business_name }}" \
-            "${{ github.event.inputs.industry }}" \
-            "${{ github.event.inputs.template }}" \
-            "${{ github.event.inputs.workflow_id }}" \
-            > .github/scripts/processing-results.json
-          
-        elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-          echo "✅ Processing repository_dispatch payload..."
-        
-        if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
-          echo "❌ No payload provided from n8n"
-          exit 1
-        else
-          echo "✅ Processing website data..."
-          node .github/scripts/process-payload.js
-          fi
-          
-        else
-          echo "❌ Unsupported trigger event: ${{ github.event_name }}"
-          exit 1
-        fi
-        
-        # Verify processing was successful
-        if [ ! -f ".github/scripts/processing-results.json" ]; then
-          echo "❌ Failed to process website data"
-          exit 1
-        fi
-        
-        echo "📋 Processing results:"
-        cat .github/scripts/processing-results.json
-      env:
-        PAYLOAD: ${{ toJson(github.event.client_payload) }}
-        NODE_ENV: production
-        HTML_CONTENT: ${{ github.event.inputs.html_content }}
-
     - name: Setup Xvfb for headless display
       run: |
         sudo apt-get install -y xvfb
@@ -196,193 +108,109 @@ jobs:
     - name: Clean up previous videos and create fresh directory
       run: |
         echo "🧹 Cleaning up videos from previous runs..."
-        
-        # Show what exists before cleanup
-        if [ -d "videos" ]; then
-          BEFORE_COUNT=$(find videos -name "*.mp4" 2>/dev/null | wc -l)
-          echo "📊 Found $BEFORE_COUNT existing video(s) before cleanup"
-          if [ "$BEFORE_COUNT" -gt 0 ]; then
-            echo "🗂️ Existing videos:"
-            find videos -name "*.mp4" -exec basename {} \; 2>/dev/null || echo "None"
-          fi
-        else
-          echo "📊 No videos directory exists yet"
-        fi
-        
-        # Remove all previous videos to ensure fresh generation
-        rm -rf videos/
-        rm -rf frames/
-        rm -rf websites/
-        
-        # Create fresh directories
-        mkdir -p videos/
-        mkdir -p frames/
-        
-        # Verify cleanup
-        AFTER_COUNT=$(find videos -name "*.mp4" 2>/dev/null | wc -l)
+        rm -rf videos/ frames/
+        mkdir -p videos/ frames/
         echo "✅ Created fresh videos/ and frames/ directories"
-        echo "📊 Videos after cleanup: $AFTER_COUNT (should be 0)"
-        echo "🎯 Ready for fresh video generation - exactly 1 video will be created"
 
-    - name: Generate video using screenshot-based method
+    - name: Generate video with animation-free HTML
       run: |
-        echo "🎬 Starting fresh video generation..."
-        echo "Trigger: ${{ github.event_name }}"
-        echo "Environment:"
-        echo "  NODE_ENV: $NODE_ENV"
-        echo "  PUPPETEER_EXECUTABLE_PATH: $PUPPETEER_EXECUTABLE_PATH"
-        echo "  DISPLAY: $DISPLAY"
+        echo "🎬 Starting video generation with animation-free HTML..."
+        echo "📋 Business: ${{ github.event.inputs.business_name }}"
+        echo "🏢 Niche: ${{ github.event.inputs.business_niche }}"
+        echo "📄 HTML Length: ${#HTML_CONTENT} characters"
         
-        # Verify cleanup worked
-        echo "🔍 Verifying clean state..."
-        if [ -d "videos" ]; then
-          EXISTING_VIDEOS=$(find videos -name "*.mp4" | wc -l)
-          echo "📊 Found $EXISTING_VIDEOS existing videos (should be 0)"
-          if [ "$EXISTING_VIDEOS" -gt 0 ]; then
-            echo "⚠️ Warning: Found existing videos, cleaning again..."
-            rm -rf videos/*.mp4
-          fi
-        fi
+        # Start the updated server that accepts HTML content directly
+        echo "🚀 Starting server-medical-spa-test.js on port 3020..."
+        node server-medical-spa-test.js &
+        SERVER_PID=$!
         
-        # Check if we have website data to process
-        if [ -f ".github/scripts/processing-results.json" ]; then
-          WEBSITE_COUNT=$(jq length .github/scripts/processing-results.json)
-          echo "📊 Found $WEBSITE_COUNT website(s) to process"
-          
-          # Ensure we only process 1 website
-          if [ "$WEBSITE_COUNT" -gt 1 ]; then
-            echo "⚠️ Multiple websites found - will process only the first one"
-          fi
-          
-          if [ "$WEBSITE_COUNT" -gt 0 ]; then
-            echo "🚀 Running screenshot-based video generation for 1 website only..."
-            
-            # Handle different trigger types for video generation
-            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-              echo "📝 Using workflow_dispatch inputs for video generation..."
-              
-              # Verify the HTML file exists and is readable
-              if [ ! -f "website.html" ] || [ ! -s "website.html" ]; then
-                echo "❌ HTML file missing or empty, cannot proceed"
-                exit 1
-              fi
-              
-              # Run the appropriate server based on template with custom HTML
-              case "${{ github.event.inputs.template }}" in
-                "hvac")
-                  echo "🔧 Running HVAC video generation with custom HTML..."
-                  # Backup original and use custom HTML
-                  [ -f "hvac.html" ] && cp hvac.html hvac.html.backup
-                  cp website.html hvac.html
-                  
-                  node server-hvac-step5.js &
-                  SERVER_PID=$!
-                  sleep 5
-                  curl -X POST http://localhost:3025/generate-video \
-                    -H "Content-Type: application/json" \
-                    -d "{\"businessName\":\"${{ github.event.inputs.business_name }}\",\"niche\":\"hvac\"}"
-                  kill $SERVER_PID 2>/dev/null || true
-                  
-                  # Restore original if backup exists
-                  [ -f "hvac.html.backup" ] && mv hvac.html.backup hvac.html
-                  ;;
-                "medical_spa")
-                  echo "💉 Running Medical Spa video generation with custom HTML..."
-                  # Backup original and use custom HTML
-                  [ -f "test22.html" ] && cp test22.html test22.html.backup
-                  cp website.html test22.html
-                  
-                  node server-step5-medical-spa.js &
-                  SERVER_PID=$!
-                  sleep 5
-                  curl -X POST http://localhost:3006/generate-video \
-                    -H "Content-Type: application/json" \
-                    -d "{\"testId\":\"${{ github.event.inputs.workflow_id }}\"}"
-                  kill $SERVER_PID 2>/dev/null || true
-                  
-                  # Restore original if backup exists
-                  [ -f "test22.html.backup" ] && mv test22.html.backup test22.html
-                  ;;
-                "real_estate")
-                  echo "🏠 Running Real Estate video generation with custom HTML..."
-                  # Backup original and use custom HTML
-                  [ -f "testttt.html" ] && cp testttt.html testttt.html.backup
-                  cp website.html testttt.html
-                  
-                  node server-step5-tour.js &
-                  SERVER_PID=$!
-                  sleep 5
-                  curl -X POST http://localhost:3005/generate-video \
-                    -H "Content-Type: application/json" \
-                    -d "{\"businessName\":\"${{ github.event.inputs.business_name }}\",\"niche\":\"real_estate\"}"
-                  kill $SERVER_PID 2>/dev/null || true
-                  
-                  # Restore original if backup exists
-                  [ -f "testttt.html.backup" ] && mv testttt.html.backup testttt.html
-                  ;;
-                *)
-                  echo "❌ Unknown template: ${{ github.event.inputs.template }}"
-                  exit 1
-                  ;;
-              esac
-            else
-              echo "📝 Using repository_dispatch payload for video generation..."
-            node .github/scripts/generate-videos.js
-            fi
-            
-            echo "📁 Verifying fresh video generation..."
-            if [ -d "videos" ]; then
-              echo "Videos directory contents:"
-              ls -la videos/
-              VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
-              echo "Generated $VIDEO_COUNT video file(s) (should be exactly 1)"
-              
-              if [ "$VIDEO_COUNT" -eq 1 ]; then
-                echo "✅ Perfect! Generated exactly 1 fresh video!"
-                find videos -name "*.mp4" -exec ls -lh {} \;
-              elif [ "$VIDEO_COUNT" -gt 1 ]; then
-                echo "⚠️ Warning: Generated $VIDEO_COUNT videos, expected 1"
-                find videos -name "*.mp4" -exec ls -lh {} \;
-              else
-                echo "❌ No video files found after generation"
-                exit 1
-              fi
-            else
-              echo "❌ Videos directory not found"
-              exit 1
-            fi
-          else
-            echo "❌ No website data to process"
-            exit 1
-          fi
+        # Wait for server to start
+        sleep 10
+        
+        # Test server health
+        echo "🩺 Testing server health..."
+        if curl -f http://localhost:3020/health; then
+          echo "✅ Server is healthy"
         else
-          echo "❌ No processing results found"
+          echo "❌ Server health check failed"
           exit 1
         fi
         
-        echo "✅ Fresh video generation completed successfully"
+        # Create JSON payload file to handle large HTML content safely
+        echo "📝 Creating request payload..."
+        node -e "
+        const fs = require('fs');
+        const businessName = process.env.BUSINESS_NAME;
+        const niche = process.env.BUSINESS_NICHE;
+        const htmlContent = process.env.HTML_CONTENT;
+        
+        const payload = {
+          businessName: businessName,
+          niche: niche,
+          htmlContent: htmlContent
+        };
+        
+        fs.writeFileSync('request_payload.json', JSON.stringify(payload, null, 2));
+        console.log('✅ Request payload created successfully');
+        console.log('📊 Payload size:', JSON.stringify(payload).length, 'bytes');
+        "
+        
+        # Generate video with animation-free HTML
+        echo "🎥 Generating video with animation-free HTML..."
+        response=$(curl -s -w "%{http_code}" -X POST http://localhost:3020/generate-video \
+          -H "Content-Type: application/json" \
+          -d @request_payload.json)
+        
+        http_code=$(echo "$response" | tail -n1)
+        response_body=$(echo "$response" | sed '$d')
+        
+        echo "📡 HTTP Response Code: $http_code"
+        echo "📋 Response Body: $response_body"
+        
+        if [ "$http_code" != "200" ]; then
+          echo "❌ Video generation failed with HTTP $http_code"
+          echo "Response: $response_body"
+          exit 1
+        fi
+        
+        # Clean up
+        kill $SERVER_PID 2>/dev/null || true
+        rm -f request_payload.json
+        
+        # Verify video was generated
+        if [ -d "videos" ]; then
+          VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
+          echo "📊 Generated $VIDEO_COUNT video(s)"
+          
+          if [ "$VIDEO_COUNT" -eq 1 ]; then
+            find videos -name "*.mp4" -exec ls -lh {} \;
+            echo "✅ Video generation completed successfully!"
+          else
+            echo "❌ Expected 1 video, found $VIDEO_COUNT"
+            exit 1
+          fi
+        else
+          echo "❌ Videos directory not found"
+          exit 1
+        fi
       timeout-minutes: 30
       env:
         NODE_ENV: production
         PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
         DISPLAY: :99
+        BUSINESS_NAME: ${{ github.event.inputs.business_name }}
+        BUSINESS_NICHE: ${{ github.event.inputs.business_niche }}
+        HTML_CONTENT: ${{ github.event.inputs.html_content }}
 
     - name: Create workflow summary
       run: |
         echo "# 🎬 Video Generation Summary" > workflow-summary.md
         echo "" >> workflow-summary.md
         echo "**Generated at:** $(date -u)" >> workflow-summary.md
-        
-        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          echo "**Triggered by:** n8n via workflow_dispatch API" >> workflow-summary.md
-          echo "**Business:** ${{ github.event.inputs.business_name }}" >> workflow-summary.md
-          echo "**Industry:** ${{ github.event.inputs.industry }}" >> workflow-summary.md
-          echo "**Template:** ${{ github.event.inputs.template }}" >> workflow-summary.md
-          echo "**Workflow ID:** ${{ github.event.inputs.workflow_id }}" >> workflow-summary.md
-        else
-        echo "**Triggered by:** n8n via repository_dispatch" >> workflow-summary.md
-        fi
-        
+        echo "**Triggered by:** n8n via workflow_dispatch API" >> workflow-summary.md
+        echo "**Business:** ${{ github.event.inputs.business_name }}" >> workflow-summary.md
+        echo "**Niche:** ${{ github.event.inputs.business_niche }}" >> workflow-summary.md
+        echo "**HTML Content:** Animation-free template" >> workflow-summary.md
         echo "" >> workflow-summary.md
         
         if [ -d "videos" ]; then
@@ -404,27 +232,16 @@ jobs:
         
         cat workflow-summary.md
 
-    - name: Commit and push fresh generated video
+    - name: Commit and push generated video
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
         # Fetch latest changes
-        echo "📡 Fetching latest changes..."
         git fetch origin main
         
-        # Verify we have exactly 1 fresh video
-        if [ -d "videos" ]; then
-          VIDEO_COUNT=$(find videos -name "*.mp4" | wc -l)
-          echo "📊 Found $VIDEO_COUNT video(s) to commit"
-          if [ "$VIDEO_COUNT" -ne 1 ]; then
-            echo "⚠️ Expected exactly 1 video, found $VIDEO_COUNT"
-          fi
-        fi
-        
         # Add generated files
-        git add videos/ || true
-        git add workflow-summary.md || true
+        git add videos/ workflow-summary.md || true
         
         # Check if there are changes to commit
         if git diff --staged --quiet; then
@@ -432,27 +249,15 @@ jobs:
           exit 0
         fi
         
-        echo "💾 Committing fresh generated video..."
-        
-        # Create commit message based on trigger type
-        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          git commit -m "🎥 Generated website video via workflow_dispatch
+        echo "💾 Committing animation-free video..."
+        git commit -m "🎥 Generated animation-free website video
 
         Generated at: $(date -u)
-        Triggered by: n8n workflow_dispatch API
         Business: ${{ github.event.inputs.business_name }}
-        Industry: ${{ github.event.inputs.industry }}
-        Template: ${{ github.event.inputs.template }}
-        Workflow ID: ${{ github.event.inputs.workflow_id }}
-        Videos: 1 fresh video (previous videos cleaned)"
-        else
-        git commit -m "🎥 Generated fresh website video from n8n
-
-        Generated at: $(date -u)
-        Triggered by: n8n repository_dispatch
-        Event type: generate_websites
-        Videos: 1 fresh video (previous videos cleaned)"
-        fi
+        Niche: ${{ github.event.inputs.business_niche }}
+        Template: Animation-free from n8n
+        Server: server-medical-spa-test.js (accepts HTML directly)
+        Result: Stable video with no hero glitching 🎯"
         
         # Push with retry logic
         MAX_RETRIES=3
@@ -462,43 +267,12 @@ jobs:
           echo "📤 Push attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
           
           if git push origin HEAD:main; then
-            echo "✅ Successfully pushed video to repository!"
+            echo "✅ Successfully pushed animation-free video to repository!"
             break
           else
-            echo "❌ Push failed, syncing with remote..."
             RETRY_COUNT=$((RETRY_COUNT + 1))
-            
             if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-              # Reset and pull latest changes
-              git reset --soft HEAD~1
-              git stash push -m "Generated video from n8n"
               git pull --rebase origin main
-              git stash pop || true
-              
-              # Re-add and commit with trigger-specific message
-              git add videos/ workflow-summary.md || true
-              
-              if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-                git commit -m "🎥 Generated website video via workflow_dispatch (retry)
-
-                Generated at: $(date -u)
-                Triggered by: n8n workflow_dispatch API (retry $((RETRY_COUNT + 1)))
-                Business: ${{ github.event.inputs.business_name }}
-                Template: ${{ github.event.inputs.template }}
-                Workflow ID: ${{ github.event.inputs.workflow_id }}" || {
-                  echo "No changes to re-commit after rebase"
-                  break
-                }
-              else
-              git commit -m "🎥 Generated website video from n8n
-
-              Generated at: $(date -u)
-              Triggered by: n8n repository_dispatch (retry $((RETRY_COUNT + 1)))" || {
-                echo "No changes to re-commit after rebase"
-                break
-              }
-              fi
-              
               sleep 5
             else
               echo "❌ Max retries reached. Push failed."
@@ -507,11 +281,11 @@ jobs:
           fi
         done
 
-    - name: Upload video as artifact (backup)
+    - name: Upload video as artifact
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: ${{ github.event_name == 'workflow_dispatch' && format('video-{0}-{1}-{2}', github.event.inputs.template, github.event.inputs.workflow_id, github.run_number) || format('generated-video-{0}', github.run_number) }}
+        name: animation-free-video-${{ github.event.inputs.business_niche }}-${{ github.run_number }}
         path: |
           videos/
           workflow-summary.md

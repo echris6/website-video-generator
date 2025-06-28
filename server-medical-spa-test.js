@@ -395,7 +395,7 @@ function interpolatePosition(startPos, endPos, progress) {
     };
 }
 
-async function generateVideo(businessName, niche) {
+async function generateVideo(businessName, niche, htmlContent = null) {
     const browser = await puppeteer.launch({
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         headless: true,
@@ -412,8 +412,9 @@ async function generateVideo(businessName, niche) {
         const page = await browser.newPage();
         await page.setViewport({ width: 1920, height: 1080 });
 
-        // Load the m.html website (complete n8n generated HTML)
-        const websiteContent = fs.readFileSync(path.join(__dirname, 'm.html'), 'utf8');
+        // Load HTML content - either from parameter or m.html file
+        const websiteContent = htmlContent || fs.readFileSync(path.join(__dirname, 'm.html'), 'utf8');
+        console.log('📄 Using HTML content:', htmlContent ? 'from n8n request' : 'from m.html file');
         
         // INJECT ULTRA-AGGRESSIVE STABILIZATION INTO HTML BEFORE LOADING
         const stabilizedHTML = websiteContent.replace('</head>', `
@@ -763,15 +764,16 @@ app.get('/health', (req, res) => {
 // Video generation endpoint
 app.post('/generate-video', async (req, res) => {
     try {
-        const { businessName, niche } = req.body;
+        const { businessName, niche, htmlContent } = req.body;
         
         console.log(`🎥 STEP 5: COMPLETE SITE TOUR - ACTUALLY FIXED!`);
         console.log(`📋 Business: ${businessName}`);
         console.log(`🏢 Niche: ${niche}`);
+        console.log(`📄 HTML: ${htmlContent ? 'Provided from n8n' : 'Will use m.html file'}`);
         console.log(`🔧 FIXES: ULTRA-AGGRESSIVE hero stabilization + exact coordinates (1860,1020) → (1715,935) → (1862,545)`);
         console.log(`🎬 Complete Flow: Interaction → Minimize → Site Tour (30s)`);
         
-        const result = await generateVideo(businessName, niche);
+        const result = await generateVideo(businessName, niche, htmlContent);
         res.json(result);
         
     } catch (error) {
