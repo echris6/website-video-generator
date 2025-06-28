@@ -157,12 +157,13 @@ jobs:
         
         # Generate video with animation-free HTML
         echo "🎥 Generating video with animation-free HTML..."
-        response=$(curl -s -w "%{http_code}" -X POST http://localhost:3020/generate-video \
+        
+        # Use separate curl calls for cleaner response parsing
+        http_code=$(curl -s -o response_body.json -w "%{http_code}" -X POST http://localhost:3020/generate-video \
           -H "Content-Type: application/json" \
           -d @request_payload.json)
         
-        http_code=$(echo "$response" | tail -n1)
-        response_body=$(echo "$response" | sed '$d')
+        response_body=$(cat response_body.json)
         
         echo "📡 HTTP Response Code: $http_code"
         echo "📋 Response Body: $response_body"
@@ -170,6 +171,14 @@ jobs:
         if [ "$http_code" != "200" ]; then
           echo "❌ Video generation failed with HTTP $http_code"
           echo "Response: $response_body"
+          exit 1
+        fi
+        
+        # Check if response indicates success
+        if echo "$response_body" | grep -q '"success":true'; then
+          echo "✅ Video generation completed successfully!"
+        else
+          echo "❌ Video generation reported failure in response"
           exit 1
         fi
         
