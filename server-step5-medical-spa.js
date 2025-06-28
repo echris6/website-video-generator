@@ -24,184 +24,202 @@ try {
 // **SIMPLE PROVEN TEXT FIXES** - Exact copy from debug analysis that worked
 const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
-        console.log('🔧 Applying MINIMAL targeted fixes (chatbot-safe)...');
+        console.log('🎯 Applying PRECISION fixes based on ACTUAL HTML structure...');
         
-        // 1. STOP HERO SECTION GLITCHING - Target specific problematic elements
+        // 1. STOP FLOATING CIRCLES GLITCHING - These are the main culprits
+        const floatingCircles = document.querySelectorAll('.floating-circle');
+        floatingCircles.forEach(circle => {
+            circle.style.setProperty('animation', 'none', 'important');
+            circle.style.setProperty('transform', 'none', 'important');
+            circle.style.setProperty('opacity', '0.05', 'important'); // Nearly invisible
+        });
+        console.log('✅ Disabled ' + floatingCircles.length + ' floating circles causing glitching');
+        
+        // 2. CHATBOT VISIBILITY PROTECTION - Force show ALL chatbot elements
+        const chatbotElements = [
+            '#chatbot-trigger',
+            '.chatbot-trigger', 
+            '#chatbot-container',
+            '.chatbot-container',
+            '#chatbot-close',
+            '.chatbot-close',
+            '#chatbot-input',
+            '.chatbot-input',
+            '.chatbot-widget',
+            '.chatbot-header',
+            '.chatbot-messages',
+            '.chatbot-input-area'
+        ];
+        
+        chatbotElements.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                element.style.setProperty('opacity', '1', 'important');
+                element.style.setProperty('visibility', 'visible', 'important');
+                element.style.setProperty('display', 'block', 'important');
+                element.style.setProperty('z-index', '9999', 'important');
+            });
+        });
+        console.log('✅ Forced visibility for all chatbot elements');
+        
+        // 3. TEXT INPUT WIDTH FIX - Target the ACTUAL input element
+        const chatInput = document.querySelector('#chatbot-input');
+        if (chatInput) {
+            chatInput.style.setProperty('width', '300px', 'important');
+            chatInput.style.setProperty('min-width', '300px', 'important');
+            chatInput.style.setProperty('flex', 'none', 'important');
+            console.log('✅ Fixed #chatbot-input width to 300px');
+        }
+        
+        // 4. CHATBOT CONTAINER WIDTH FIX
+        const chatContainer = document.querySelector('.chatbot-container');
+        if (chatContainer) {
+            chatContainer.style.setProperty('width', '380px', 'important');
+            chatContainer.style.setProperty('min-width', '380px', 'important');
+            console.log('✅ Fixed .chatbot-container width to 380px');
+        }
+        
+        // 5. DISABLE PROBLEMATIC ANIMATIONS GLOBALLY
         const style = document.createElement('style');
         style.innerHTML = \`
-            /* Stop specific animations that cause glitching - PRESERVE CHATBOT */
-            .hero-section *, .hero *, [class*="hero"] * {
-                animation: none !important;
-                transition: none !important;
-            }
-            
-            /* Stop floating elements that glitch (but not chatbot elements) */
-            .floating-element:not([class*="chat"]):not([id*="chat"]):not([class*="bot"]):not([id*="bot"]),
-            .floating-circle:not([class*="chat"]):not([id*="chat"]):not([class*="bot"]):not([id*="bot"]),
-            .floating-shape:not([class*="chat"]):not([id*="chat"]):not([class*="bot"]):not([id*="bot"]) {
+            /* Stop all floating animations */
+            .floating-circle {
                 animation: none !important;
                 transform: none !important;
-                opacity: 0.1 !important;
+                opacity: 0.05 !important;
             }
             
-            /* PRESERVE CHATBOT VISIBILITY - Override any hiding */
-            [class*="chat"], [id*="chat"], [class*="bot"], [id*="bot"] {
+            /* Force chatbot visibility */
+            .chatbot-trigger, #chatbot-trigger {
                 opacity: 1 !important;
                 visibility: visible !important;
                 display: block !important;
                 z-index: 9999 !important;
+                position: fixed !important;
             }
             
-            /* Text input fixes */
-            #messageInput, #chatbot-input {
-                flex: 0 0 auto !important;
-                width: 320px !important;
-                min-width: 320px !important;
+            .chatbot-container, #chatbot-container {
+                opacity: 1 !important;
+                visibility: visible !important;
+                z-index: 9999 !important;
+                position: absolute !important;
             }
             
-            .chat-widget, .chatbot-container {
-                width: 420px !important;
-                min-width: 420px !important;
+            .chatbot-container.active {
+                display: flex !important;
             }
         \`;
         document.head.appendChild(style);
-        console.log('✅ Applied targeted fixes: hero stabilized, chatbot preserved');
         
-        console.log('🔧 Minimal safe fixes applied - no more glitching or invisible chatbot!');
+        console.log('🎯 PRECISION fixes applied - targeted floating circles + forced chatbot visibility!');
     }
 `;
 
 // **PROVEN CURSOR & CHATBOT FUNCTIONS** - From working servers
 const chatbotFunctions = `
     function findChatbotButton() {
-        // Check for different chatbot button selectors
-        const selectors = [
-            '#chatToggle', 
-            '.chat-toggle',
-            '#chatbot-trigger',
-            '.chatbot-trigger'
-        ];
-        
-        for (const selector of selectors) {
-            const button = document.querySelector(selector);
-            if (button) {
-                const rect = button.getBoundingClientRect();
-                const x = rect.left + rect.width / 2;
-                const y = rect.top + rect.height / 2;
-                console.log('✅ Chatbot button found at (' + x + ', ' + y + ') using selector: ' + selector);
-                return { x, y, element: button };
-            }
+        // Use ACTUAL selector from test22.html
+        const button = document.querySelector('#chatbot-trigger');
+        if (button) {
+            const rect = button.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            console.log('✅ Chatbot button found at (' + x + ', ' + y + ') using #chatbot-trigger');
+            return { x, y, element: button };
         }
+        console.log('❌ #chatbot-trigger not found');
         return null;
     }
     
     function findMinimizeButton() {
-        // TRY MULTIPLE SELECTORS for minimize button
-        const selectors = [
-            '#chatMinimize',
-            '.chat-minimize', 
-            '.chat-header button',
-            '.chat-toggle.active',
-            '#chatbot-close',
-            '.chatbot-close'
-        ];
-        
-        for (const selector of selectors) {
-            const button = document.querySelector(selector);
-            if (button) {
-                const rect = button.getBoundingClientRect();
-                const x = rect.left + rect.width / 2;
-                const y = rect.top + rect.height / 2;
-                console.log('✅ Minimize button found at (' + x + ', ' + y + ') using selector: ' + selector);
-                return { x, y, element: button };
-            }
+        // Use ACTUAL selector from test22.html
+        const button = document.querySelector('#chatbot-close');
+        if (button) {
+            const rect = button.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            console.log('✅ Minimize button found at (' + x + ', ' + y + ') using #chatbot-close');
+            return { x, y, element: button };
         }
-        console.log('❌ Minimize button not found');
+        console.log('❌ #chatbot-close not found');
         return null;
     }
     
     function clickChatbotButton() {
-        const selectors = ['#chatToggle', '.chat-toggle', '#chatbot-trigger', '.chatbot-trigger'];
-        for (const selector of selectors) {
-            const button = document.querySelector(selector);
-            if (button) {
-                button.click();
-                console.log('✅ Chatbot button clicked using selector: ' + selector);
-                return true;
-            }
+        // Use ACTUAL selector from test22.html
+        const button = document.querySelector('#chatbot-trigger');
+        if (button) {
+            button.click();
+            console.log('✅ Chatbot button clicked using #chatbot-trigger');
+            return true;
         }
+        console.log('❌ #chatbot-trigger not found');
         return false;
     }
     
     function clickInputField() {
-        const selectors = ['#messageInput', '#chatbot-input'];
-        for (const selector of selectors) {
-            const input = document.querySelector(selector);
-            if (input) {
-                input.click();
-                input.focus();
-                console.log('✅ Input field clicked and focused using selector: ' + selector);
-                return true;
-            }
+        // Use ACTUAL selector from test22.html
+        const input = document.querySelector('#chatbot-input');
+        if (input) {
+            input.click();
+            input.focus();
+            console.log('✅ Input field clicked and focused: #chatbot-input');
+            return true;
         }
+        console.log('❌ #chatbot-input not found');
         return false;
     }
     
     function typeInInput(text) {
-        const selectors = ['#messageInput', '#chatbot-input'];
-        for (const selector of selectors) {
-            const input = document.querySelector(selector);
-            if (input) {
-                input.value = text;
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-                console.log('✅ Typed: "' + text + '"');
-                return true;
-            }
+        // Use ACTUAL selector from test22.html
+        const input = document.querySelector('#chatbot-input');
+        if (input) {
+            input.value = text;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('✅ Typed: "' + text + '" in #chatbot-input');
+            return true;
         }
+        console.log('❌ #chatbot-input not found for typing');
         return false;
     }
     
     function clickSendButton() {
-        // Medical spa doesn't have send button - just press Enter
-        const selectors = ['#messageInput', '#chatbot-input'];
-        for (const selector of selectors) {
-            const input = document.querySelector(selector);
-            if (input) {
-                const enterEvent = new KeyboardEvent('keypress', {
-                    key: 'Enter',
-                    code: 'Enter',
-                    keyCode: 13,
-                    which: 13,
-                    bubbles: true
-                });
-                input.dispatchEvent(enterEvent);
-                console.log('✅ Enter key pressed to send message');
-                return true;
-            }
+        // Medical spa uses Enter key on #chatbot-input (confirmed from HTML)
+        const input = document.querySelector('#chatbot-input');
+        if (input) {
+            const enterEvent = new KeyboardEvent('keypress', {
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13,
+                which: 13,
+                bubbles: true
+            });
+            input.dispatchEvent(enterEvent);
+            console.log('✅ Enter key pressed on #chatbot-input to send message');
+            return true;
         }
+        console.log('❌ #chatbot-input not found for sending');
         return false;
     }
     
     function clickMinimizeButton() {
-        const minimize = findMinimizeButton();
-        if (minimize && minimize.element) {
-            minimize.element.click();
-            console.log('✅ Minimize button clicked');
+        // Use ACTUAL selector from test22.html
+        const closeButton = document.querySelector('#chatbot-close');
+        if (closeButton) {
+            closeButton.click();
+            console.log('✅ Minimize button clicked using #chatbot-close');
             return true;
         }
         
-        // Fallback: try clicking chat toggle to close
-        const selectors = ['#chatToggle', '.chat-toggle', '#chatbot-trigger', '.chatbot-trigger'];
-        for (const selector of selectors) {
-            const toggle = document.querySelector(selector);
-            if (toggle) {
-                toggle.click();
-                console.log('✅ Chat toggled closed as fallback using: ' + selector);
-                return true;
-            }
+        // Fallback: try clicking chat trigger to close
+        const trigger = document.querySelector('#chatbot-trigger');
+        if (trigger) {
+            trigger.click();
+            console.log('✅ Chat toggled closed as fallback using #chatbot-trigger');
+            return true;
         }
         
-        console.log('❌ Could not minimize chatbot');
+        console.log('❌ Could not minimize chatbot - no #chatbot-close or #chatbot-trigger found');
         return false;
     }
 `;
