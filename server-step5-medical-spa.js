@@ -60,12 +60,12 @@ const chatbotFunctions = `
     function findChatbotButton() {
         // Use ACTUAL selector from test22.html
         const button = document.querySelector('#chatbot-trigger');
-        if (button) {
-            const rect = button.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
+            if (button) {
+                const rect = button.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
             console.log('✅ Chatbot button found at (' + x + ', ' + y + ') using #chatbot-trigger');
-            return { x, y, element: button };
+                return { x, y, element: button };
         }
         console.log('❌ #chatbot-trigger not found');
         return null;
@@ -74,12 +74,12 @@ const chatbotFunctions = `
     function findMinimizeButton() {
         // Use ACTUAL selector from test22.html
         const button = document.querySelector('#chatbot-close');
-        if (button) {
-            const rect = button.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
+            if (button) {
+                const rect = button.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
             console.log('✅ Minimize button found at (' + x + ', ' + y + ') using #chatbot-close');
-            return { x, y, element: button };
+                return { x, y, element: button };
         }
         console.log('❌ #chatbot-close not found');
         return null;
@@ -88,10 +88,10 @@ const chatbotFunctions = `
     function clickChatbotButton() {
         // Use ACTUAL selector from test22.html
         const button = document.querySelector('#chatbot-trigger');
-        if (button) {
-            button.click();
+            if (button) {
+                button.click();
             console.log('✅ Chatbot button clicked using #chatbot-trigger');
-            return true;
+                return true;
         }
         console.log('❌ #chatbot-trigger not found');
         return false;
@@ -100,11 +100,11 @@ const chatbotFunctions = `
     function clickInputField() {
         // Use ACTUAL selector from test22.html
         const input = document.querySelector('#chatbot-input');
-        if (input) {
-            input.click();
-            input.focus();
+            if (input) {
+                input.click();
+                input.focus();
             console.log('✅ Input field clicked and focused: #chatbot-input');
-            return true;
+                return true;
         }
         console.log('❌ #chatbot-input not found');
         return false;
@@ -113,11 +113,11 @@ const chatbotFunctions = `
     function typeInInput(text) {
         // Use ACTUAL selector from test22.html
         const input = document.querySelector('#chatbot-input');
-        if (input) {
-            input.value = text;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
+            if (input) {
+                input.value = text;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
             console.log('✅ Typed: "' + text + '" in #chatbot-input');
-            return true;
+                return true;
         }
         console.log('❌ #chatbot-input not found for typing');
         return false;
@@ -126,17 +126,17 @@ const chatbotFunctions = `
     function clickSendButton() {
         // Medical spa uses Enter key on #chatbot-input (confirmed from HTML)
         const input = document.querySelector('#chatbot-input');
-        if (input) {
-            const enterEvent = new KeyboardEvent('keypress', {
-                key: 'Enter',
-                code: 'Enter',
-                keyCode: 13,
-                which: 13,
-                bubbles: true
-            });
-            input.dispatchEvent(enterEvent);
+            if (input) {
+                const enterEvent = new KeyboardEvent('keypress', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true
+                });
+                input.dispatchEvent(enterEvent);
             console.log('✅ Enter key pressed on #chatbot-input to send message');
-            return true;
+                return true;
         }
         console.log('❌ #chatbot-input not found for sending');
         return false;
@@ -439,12 +439,12 @@ async function generateVideo(testId) {
                 
                 // Only extract if we have valid dimensions
                 if (extractHeight > 0 && imageWidth >= 1920) {
-                    // Crop full page screenshot to simulate smooth scrolling
-                    frameBuffer = await sharp(fullPageBuffer)
+                // Crop full page screenshot to simulate smooth scrolling
+                frameBuffer = await sharp(fullPageBuffer)
                         .extract({ left: 0, top: safeScrollY, width: 1920, height: extractHeight })
                         .resize(1920, 1080, { fit: 'fill' }) // Ensure consistent output size
-                        .png()
-                        .toBuffer();
+                    .png()
+                    .toBuffer();
                 } else {
                     // Fallback: use viewport screenshot
                     console.log(`⚠️ Invalid extract dimensions at frame ${i}, using viewport screenshot`);

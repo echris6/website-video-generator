@@ -24,74 +24,32 @@ try {
 // **LUXURY SITE ANTI-GLITCH FIXES** - No HTML modifications, just stabilization
 const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
-        console.log('🔧 Applying CHATBOT-FRIENDLY anti-glitch fixes...');
+        console.log('🔧 Applying MINIMAL INTERFERENCE fixes for M.HTML...');
         
-        // 1. TARGETED FLOATING CIRCLE FIXES - Don't affect chatbot
+        // 1. ZERO CHATBOT LAYOUT INTERFERENCE - Let M.HTML chatbot work 100% naturally
+        console.log('✅ No chatbot layout interference - M.HTML chatbot works naturally');
+        
+        // 2. ONLY DISABLE TEXT CURSOR BLINKING - No width/layout changes
+        const style = document.createElement('style');
+        style.textContent = \`
+            /* ONLY disable text cursor blinking during video - no layout changes */
+            #chatbot-input, .chatbot-input, #messageInput {
+                caret-color: transparent !important;
+            }
+        \`;
+        document.head.appendChild(style);
+        console.log('✅ Text cursor blinking disabled only - no layout interference');
+        
+        // 3. ONLY disable floating animations that might cause glitching
         const floatingElements = document.querySelectorAll('.floating-circle:not([class*="chat"]):not([id*="chat"])');
         floatingElements.forEach(element => {
             element.style.setProperty('animation', 'none', 'important');
             element.style.setProperty('transform', 'none', 'important');
-            element.style.setProperty('opacity', '0.1', 'important'); // Increased from 0.02 to be visible
+            element.style.setProperty('opacity', '0.1', 'important');
         });
-        console.log('✅ Floating circles disabled (chatbot preserved)');
+        console.log('✅ Floating animations disabled (chatbot preserved)');
         
-        // 2. CHATBOT-SAFE ANIMATION FIXES - Target specific elements, not everything
-        const style = document.createElement('style');
-        style.innerHTML = \`
-            /* Target specific glitchy elements, not everything */
-            .floating-circle:not([class*="chat"]):not([id*="chat"]) {
-                animation: none !important;
-                transform: none !important;
-            }
-            
-            /* Hero section specific fixes */
-            .hero *:not([class*="chat"]):not([id*="chat"]) {
-                animation-duration: 0s !important;
-                transition-duration: 0s !important;
-            }
-            
-            /* Text cursor fixes only for inputs */
-            .chatbot-input, .chatbot-input:focus, #chatbot-input, #chatbot-input:focus, #messageInput {
-                caret-color: transparent !important;
-                transition: none !important;
-                border-color: rgba(232, 180, 184, 0.5) !important;
-                background: rgba(255, 255, 255, 0.3) !important;
-            }
-            
-            /* Preserve chatbot visibility and functionality */
-            [class*="chat"], [id*="chat"], [class*="bot"], [id*="bot"] {
-                opacity: 1 !important;
-                visibility: visible !important;
-                display: block !important;
-            }
-        \`;
-        document.head.appendChild(style);
-        console.log('✅ Targeted anti-glitch fixes applied (chatbot preserved)');
-        
-        // 3. Fix text cutoff WITHOUT changing UI appearance - INVISIBLE FIXES ONLY
-        // lux.html uses #messageInput, not #chatbot-input
-        const inputSelectors = ['#messageInput', '#chatbot-input', '.chatbot-input'];
-        
-        let inputFixed = false;
-        
-        // ULTRA MINIMAL FIX: Only change flex constraint, nothing else
-        for (const selector of inputSelectors) {
-            const input = document.querySelector(selector);
-            if (input && !inputFixed) {
-                // ONLY remove the flex constraint that causes text cutoff
-                input.style.setProperty('flex', 'none', 'important');
-                input.style.setProperty('width', '300px', 'important'); // Wider to fit "I want to buy a house"
-                console.log('✅ Fixed flex constraint for full text display using: ' + selector);
-                inputFixed = true;
-                break;
-            }
-        }
-        
-        if (!inputFixed) {
-            console.log('❌ No input field found with any selector');
-        }
-        
-        console.log('🔧 ULTRA MINIMAL fixes applied - Only flex constraint removed, UI position preserved!');
+        console.log('🔧 Minimal fixes applied - M.HTML chatbot UI preserved!');
     }
 `;
 
@@ -114,14 +72,18 @@ const chatbotFunctions = `
     }
     
     function findMinimizeButton() {
-        // TRY MULTIPLE SELECTORS for minimize button (medical spa uses different ones)
+        // PROFESSIONAL DIAGNOSTIC: Find exact close button coordinates
+        console.log('🔍 PROFESSIONAL DIAGNOSTIC: Finding exact close button position...');
+        
+        // Try multiple close button selectors
         const selectors = [
-            '#chatbot-close',
-            '.chatbot-close',
-            '#chatMinimize',
-            '.chat-minimize', 
-            '.chat-header button',
-            '.chatbot-header button'
+            '#chatbot-close',      
+            '.chatbot-close',      
+            '.chatbot-header button',
+            '[aria-label="Close"]',
+            '.close-button',
+            '.chatbot-container .close',
+            '.chatbot-container button[type="button"]'
         ];
         
         for (const selector of selectors) {
@@ -130,38 +92,95 @@ const chatbotFunctions = `
                 const rect = button.getBoundingClientRect();
                 const x = rect.left + rect.width / 2;
                 const y = rect.top + rect.height / 2;
-                console.log('✅ Minimize button found at (' + x + ', ' + y + ') using selector: ' + selector);
+                console.log('✅ FOUND close button at (' + x + ', ' + y + ') using: ' + selector);
+                console.log('📐 Button dimensions: ' + rect.width + 'x' + rect.height);
+                console.log('📍 Button bounds: left=' + rect.left + ', top=' + rect.top + ', right=' + rect.right + ', bottom=' + rect.bottom);
                 return { x, y, element: button };
             }
         }
-        console.log('❌ Minimize button not found');
+        
+        // Fallback: Find any button in chatbot header
+        const chatbotContainer = document.querySelector('.chatbot-container');
+        if (chatbotContainer) {
+            const buttons = chatbotContainer.querySelectorAll('button');
+            console.log('🔍 Found ' + buttons.length + ' buttons in chatbot container');
+            
+            for (let i = 0; i < buttons.length; i++) {
+                const button = buttons[i];
+                const rect = button.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+                console.log('🔘 Button ' + (i+1) + ' at (' + x + ', ' + y + ') - text: "' + button.textContent.trim() + '"');
+                
+                // Look for close button indicators
+                if (button.textContent.includes('×') || button.textContent.includes('✕') || 
+                    button.textContent.includes('Close') || button.innerHTML.includes('×')) {
+                    console.log('✅ FOUND close button by content at (' + x + ', ' + y + ')');
+                    return { x, y, element: button };
+                }
+            }
+        }
+        
+        console.log('❌ No close button found - will use fallback coordinates');
         return null;
     }
     
     function clickChatbotButton() {
+        console.log('🔍 DIAGNOSTIC: Attempting to click chatbot button...');
+        
+        // Check initial state
+        const container = document.querySelector('.chatbot-container');
+        if (container) {
+            console.log('🔍 Container found, initial classes:', container.className);
+            console.log('🔍 Container initial display:', getComputedStyle(container).display);
+            console.log('🔍 Container initial visibility:', getComputedStyle(container).visibility);
+        }
+        
         const selectors = ['#chatbot-trigger', '.chatbot-trigger', '#chatToggle', '.chat-toggle'];
         for (const selector of selectors) {
             const button = document.querySelector(selector);
             if (button) {
+                console.log('🔍 Found button with selector:', selector);
+                console.log('🔍 Button text:', button.textContent.trim());
+                console.log('🔍 Button style display:', getComputedStyle(button).display);
+                
+                // Click the button
                 button.click();
                 console.log('✅ Chatbot button clicked using: ' + selector);
+                
+                // Check state after click
+                setTimeout(() => {
+                    if (container) {
+                        console.log('🔍 Container after click, classes:', container.className);
+                        console.log('🔍 Container after click display:', getComputedStyle(container).display);
+                        console.log('🔍 Container after click visibility:', getComputedStyle(container).visibility);
+                        console.log('🔍 Container has active class:', container.classList.contains('active'));
+                    }
+                }, 100);
+                
                 return true;
             }
         }
+        console.log('❌ No chatbot button found with any selector');
         return false;
     }
     
     function clickInputField() {
+        console.log('🔍 DIAGNOSTIC: Attempting to click input field...');
         const selectors = ['#chatbot-input', '.chatbot-input', '#messageInput'];
         for (const selector of selectors) {
             const input = document.querySelector(selector);
             if (input) {
+                console.log('🔍 Found input with selector:', selector);
+                console.log('🔍 Input visible:', getComputedStyle(input).display !== 'none');
+                
                 input.click();
                 input.focus();
                 console.log('✅ Input field clicked and focused using: ' + selector);
                 return true;
             }
         }
+        console.log('❌ No input field found');
         return false;
     }
     
@@ -179,8 +198,29 @@ const chatbotFunctions = `
         return false;
     }
     
-    function clickSendButton() {
-        // Try clicking existing send button first (lux.html has one)
+    function clickSendButton(niche) {
+        // Medical spa niche has no send button - use Enter key directly
+        if (niche === 'medical_spa' || niche === 'medical' || niche === 'spa') {
+            const inputSelectors = ['#chatbot-input', '.chatbot-input', '#messageInput'];
+            for (const selector of inputSelectors) {
+                const input = document.querySelector(selector);
+                if (input) {
+                    const enterEvent = new KeyboardEvent('keypress', {
+                        key: 'Enter',
+                        code: 'Enter',
+                        keyCode: 13,
+                        which: 13,
+                        bubbles: true
+                    });
+                    input.dispatchEvent(enterEvent);
+                    console.log('✅ Enter pressed to send message (medspa has no send button) using: ' + selector);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // Other niches: Try clicking existing send button first
         const sendSelectors = ['#sendButton', '.send-button', '#chatbot-send', '.chatbot-send'];
         for (const selector of sendSelectors) {
             const button = document.querySelector(selector);
@@ -212,48 +252,48 @@ const chatbotFunctions = `
     }
     
     function clickMinimizeButton() {
-        const minimize = findMinimizeButton();
-        if (minimize && minimize.element) {
-            minimize.element.click();
-            console.log('✅ Minimize button clicked');
+        console.log('🔍 PROFESSIONAL: Attempting to close chatbot for marketing video...');
+        
+        // Get actual close button coordinates
+        const minimizeInfo = findMinimizeButton();
+        if (minimizeInfo) {
+            console.log('🎯 PROFESSIONAL: Using detected close button at (' + minimizeInfo.x + ', ' + minimizeInfo.y + ')');
+            minimizeInfo.element.click();
+            console.log('✅ PROFESSIONAL: Close button clicked successfully');
+        }
+        
+        // Ensure chatbot is closed for clean marketing video
+        const container = document.querySelector('.chatbot-container');
+        if (container) {
+            container.classList.remove('active');
+            console.log('✅ PROFESSIONAL: Chatbot closed for clean marketing video');
             return true;
         }
         
-        // Fallback: try clicking chat trigger to close
-        const selectors = ['#chatbot-trigger', '.chatbot-trigger', '#chatToggle', '.chat-toggle'];
-        for (const selector of selectors) {
-            const toggle = document.querySelector(selector);
-            if (toggle) {
-                toggle.click();
-                console.log('✅ Chat toggled closed as fallback using: ' + selector);
-                return true;
-            }
-        }
-        
-        console.log('❌ Could not minimize chatbot');
+        console.log('❌ PROFESSIONAL: Could not close chatbot');
         return false;
     }
 `;
 
-// **STEP 5 CURSOR POSITIONING** - Updated for new send button
+// **STEP 5 CURSOR POSITIONING** - EXACT COORDINATES from diagnostic script
 function getCursorPositionForFrame(frameIndex, totalFrames) {
-    // Fixed coordinates based on actual chatbot layout with new send button
+    // EXACT COORDINATES from screenshot analysis
     const startPosition = { x: 200, y: 200 };
-    const chatbotPosition = { x: 1858, y: 1018 };    // Chatbot button
-    const inputPosition = { x: 1636, y: 934 };      // Input field  
-    const sendPosition = { x: 1835, y: 934 };       // Send button position (adjusted for 300px input)
-    const minimizePosition = { x: 1854, y: 562 };   // CORRECT coordinates from debug analysis
+    const chatbotPosition = { x: 1860, y: 1020 };    // EXACT: Chatbot trigger button 
+    const inputPosition = { x: 1715, y: 935 };       // EXACT: Input field center
+    const sendPosition = { x: 1715, y: 935 };        // EXACT: No send button - use Enter at input position
+    const minimizePosition = { x: 1862, y: 545 };    // EXACT: Close "×" button position
     
-    // **STEP 5 TIMING** - 30 seconds: fast interaction + slow scrolling
-    const moveToButtonEnd = 0.15;      // 0-15%: Move to chatbot (0-4.5s) - FAST
-    const clickPause = 0.176;          // 15-17.6%: Click button (4.5-5.28s) - FAST
-    const moveToInputEnd = 0.25;       // 17.6-25%: Move to input (5.28-7.5s) - FAST
-    const typingEnd = 0.4;             // 25-40%: Typing (7.5-12s) - FAST
-    const moveToSendEnd = 0.476;       // 40-47.6%: Move to send (12-14.28s) - FAST
-    const sendPause = 0.5;             // 47.6-50%: Send message (14.28-15s) - FAST
-    const moveToMinimizeEnd = 0.56;    // 50-56%: Move to minimize (15-16.8s) - FAST
-    const minimizePause = 0.58;        // 56-58%: Minimize click (16.8-17.4s) - FAST
-    // 60-100%: Scrolling phase (18-30s) - SLOW SCROLLING (12 seconds!)
+    // **PROFESSIONAL TIMING** - 30 seconds marketing video with immediate send
+    const moveToButtonEnd = 0.15;      // 0-15%: Move to chatbot (0-4.5s)
+    const clickPause = 0.176;          // 15-17.6%: Click button (4.5-5.28s)
+    const moveToInputEnd = 0.25;       // 17.6-25%: Move to input (5.28-7.5s)
+    const typingEnd = 0.4;             // 25-40%: Typing (7.5-12s) - SMOOTH cursor during typing
+    const moveToSendEnd = 0.41;        // 40-41%: Move to send (12-12.3s) - FASTER
+    const sendPause = 0.42;            // 41-42%: Send message (12.3-12.6s) - IMMEDIATE
+    const moveToMinimizeEnd = 0.56;    // 50-56%: Move to minimize (15-16.8s)
+    const minimizePause = 0.58;        // 56-58%: Minimize click (16.8-17.4s)
+    // 60-100%: Scrolling phase (18-30s)
     
     const progress = frameIndex / totalFrames;
     
@@ -266,6 +306,7 @@ function getCursorPositionForFrame(frameIndex, totalFrames) {
         const phaseProgress = (progress - clickPause) / (moveToInputEnd - clickPause);
         return interpolatePosition(chatbotPosition, inputPosition, phaseProgress);
     } else if (progress <= typingEnd) {
+        // **PROFESSIONAL FIX**: Keep cursor at input position during typing - no jumping!
         return inputPosition;
     } else if (progress <= moveToSendEnd) {
         const phaseProgress = (progress - typingEnd) / (moveToSendEnd - typingEnd);
@@ -310,8 +351,8 @@ async function generateVideo(businessName, niche) {
         const page = await browser.newPage();
         await page.setViewport({ width: 1920, height: 1080 });
 
-        // Load the luxury website  
-        const websiteContent = fs.readFileSync(path.join(__dirname, 'lux.html'), 'utf8');
+        // Load the m.html website (complete n8n generated HTML)
+        const websiteContent = fs.readFileSync(path.join(__dirname, 'm.html'), 'utf8');
         await page.setContent(websiteContent);
 
         const fps = 60;
@@ -362,16 +403,16 @@ async function generateVideo(businessName, niche) {
             fs.mkdirSync(framesDir);
         }
         
-        // **FIXED TIMING SYSTEM**
+        // **FIXED TIMING SYSTEM** - Immediate send after typing
         const clickFrame = Math.floor(totalFrames * 0.176);         // Click at 5.28s
         const inputFocusFrame = Math.floor(totalFrames * 0.25);     // Focus input at 7.5s
         const typingStartFrame = Math.floor(totalFrames * 0.25);    // Start typing at 7.5s
         const typingEndFrame = Math.floor(totalFrames * 0.4);       // End typing at 12s
-        const sendClickFrame = Math.floor(totalFrames * 0.476);     // Send at 14.28s
+        const sendClickFrame = Math.floor(totalFrames * 0.42);      // FIXED: Send immediately at 12.6s (was 14.28s)
         const minimizeClickFrame = Math.floor(totalFrames * 0.56);  // Minimize at 16.8s
         const scrollStartFrame = Math.floor(totalFrames * 0.6);     // Scroll at 18s - AFTER MINIMIZE COMPLETES
         
-        const message = "I want to book a Botox treatment";
+        const message = "I want to book a Botox treatment"; // 32 characters - ensure input is wide enough
         let chatbotOpened = false;
         let chatbotMinimized = false;
         let typingProgress = 0;
@@ -389,18 +430,33 @@ async function generateVideo(businessName, niche) {
                     await page.evaluate(() => clickChatbotButton());
                     console.log(`🖱️ CLICKED chatbot button at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotOpened = true;
-                    await delay(500);
                     
-                    // **APPLY TEXT CUTOFF FIXES AFTER CHATBOT OPENS**
+                    // **CRITICAL FIX**: Wait longer for chatbot to fully appear
+                    await delay(1000); // Increased wait time
+                    
+                    // **ENSURE CHATBOT IS VISIBLE**: Force active state if needed
                     await page.evaluate(() => {
+                        const container = document.querySelector('.chatbot-container');
+                        if (container && !container.classList.contains('active')) {
+                            console.log('🔧 FORCE: Adding active class to chatbot container');
+                            container.classList.add('active');
+                        }
+                        
+                        // Diagnostic logging in video
+                        if (container) {
+                            console.log('📊 Chatbot state - Classes:', container.className);
+                            console.log('📊 Chatbot state - Display:', getComputedStyle(container).display);
+                            console.log('📊 Chatbot state - Has active:', container.classList.contains('active'));
+                        }
+                        
                         if (typeof applyWorkingFixes === 'function') {
                             applyWorkingFixes();
                         } else {
                             console.log('❌ applyWorkingFixes function not found');
                         }
                     });
-                    console.log('🔧 Applied text cutoff fixes after chatbot opened');
-                    await delay(200);
+                    console.log('🔧 Applied fixes and verified chatbot visibility');
+                    await delay(500); // Additional settling time
                 }
                 
                 if (i === inputFocusFrame) {
@@ -408,23 +464,25 @@ async function generateVideo(businessName, niche) {
                     console.log(`🖱️ FOCUSED input field at frame ${i} (${(i/fps).toFixed(1)}s)`);
                 }
                 
-                // Handle typing
+                // Handle typing - FIXED to include last character
                 if (i >= typingStartFrame && i < typingEndFrame) {
                     const typingFrames = typingEndFrame - typingStartFrame;
                     const currentProgress = (i - typingStartFrame) / typingFrames;
-                    const charactersToShow = Math.floor(currentProgress * message.length);
+                    // FIXED: Use Math.ceil to ensure last character is included
+                    const charactersToShow = Math.ceil(currentProgress * message.length);
                     
                     if (charactersToShow > typingProgress) {
                         const textToShow = message.substring(0, charactersToShow);
                         await page.evaluate((text) => typeInInput(text), textToShow);
                         
                         typingProgress = charactersToShow;
+                        console.log(`📝 Typing progress: "${textToShow}" (${charactersToShow}/${message.length} chars)`);
                     }
                 }
                 
                 if (i === sendClickFrame) {
-                    await page.evaluate(() => clickSendButton());
-                    console.log(`🖱️ CLICKED send button at frame ${i} (${(i/fps).toFixed(1)}s)`);
+                    await page.evaluate((niche) => clickSendButton(niche), niche);
+                    console.log(`🖱️ SEND MESSAGE at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     await delay(300);
                 }
                 
@@ -485,9 +543,26 @@ async function generateVideo(businessName, niche) {
                 const slowProgress = Math.min(scrollProgress * 1.05, 1.0); // Very slow pace but reaches 100%
                 const scrollY = Math.round(slowProgress * maxScroll); // Full 100% scroll guaranteed
                 
-                // Crop full page screenshot to simulate smooth scrolling
-                frameBuffer = await sharp(fullPageBuffer)
-                    .extract({ left: 0, top: scrollY, width: 1920, height: 1080 })
+                // **FIXED: Add bounds checking to prevent Sharp extraction errors**
+                const fullPageImage = sharp(fullPageBuffer);
+                const { width: fullWidth, height: fullHeight } = await fullPageImage.metadata();
+                
+                // Ensure extraction stays within bounds
+                const safeScrollY = Math.min(scrollY, Math.max(0, fullHeight - 1080));
+                const extractHeight = Math.min(1080, fullHeight - safeScrollY);
+                
+                // Crop full page screenshot to simulate smooth scrolling with bounds checking
+                frameBuffer = await fullPageImage
+                    .extract({ 
+                        left: 0, 
+                        top: safeScrollY, 
+                        width: 1920, 
+                        height: extractHeight 
+                    })
+                    .resize(1920, 1080, { 
+                        fit: 'contain',
+                        background: { r: 253, g: 248, b: 251, alpha: 1 } // Background color
+                    })
                     .png()
                     .toBuffer();
             }
@@ -596,7 +671,7 @@ app.post('/generate-video', async (req, res) => {
         console.log(`🎥 STEP 5: COMPLETE SITE TOUR - ACTUALLY FIXED!`);
         console.log(`📋 Business: ${businessName}`);
         console.log(`🏢 Niche: ${niche}`);
-        console.log(`🔧 FIXES: WORKING input width, CORRECT minimize position, PROPER content loading, FIXED scroll`);
+        console.log(`🔧 FIXES: EXACT coordinates from diagnostic (1860,1020) → (1715,935) → (1862,545)`);
         console.log(`🎬 Complete Flow: Interaction → Minimize → Site Tour (30s)`);
         
         const result = await generateVideo(businessName, niche);
@@ -618,8 +693,8 @@ app.listen(PORT, () => {
     console.log('║         LUXURY SITE TEST: COMPLETE SITE TOUR       ║');
     console.log(`║              Running on port ${PORT}                    ║`);
     console.log('║                                                    ║');
-    console.log('║  ✨ HTML: lux.html (Luxury Site)                  ║');
-    console.log('║  💬 Question: "I want to buy a house"            ║');
+    console.log('║  ✨ HTML: m.html (Complete n8n Generated)        ║');
+    console.log('║  💬 Question: "I want to book a Botox treatment" ║');
     console.log('║  📝 POST /generate-video - Generate video          ║');
     console.log('║  ❤️  GET  /health - Health check                   ║');
     console.log('╚════════════════════════════════════════════════════╝');

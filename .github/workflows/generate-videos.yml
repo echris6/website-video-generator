@@ -159,13 +159,13 @@ jobs:
           
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
           echo "✅ Processing repository_dispatch payload..."
-          
-          if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
-            echo "❌ No payload provided from n8n"
-            exit 1
-          else
-            echo "✅ Processing website data..."
-            node .github/scripts/process-payload.js
+        
+        if [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ]; then
+          echo "❌ No payload provided from n8n"
+          exit 1
+        else
+          echo "✅ Processing website data..."
+          node .github/scripts/process-payload.js
           fi
           
         else
@@ -327,7 +327,7 @@ jobs:
               esac
             else
               echo "📝 Using repository_dispatch payload for video generation..."
-              node .github/scripts/generate-videos.js
+            node .github/scripts/generate-videos.js
             fi
             
             echo "📁 Verifying fresh video generation..."
@@ -380,7 +380,7 @@ jobs:
           echo "**Template:** ${{ github.event.inputs.template }}" >> workflow-summary.md
           echo "**Workflow ID:** ${{ github.event.inputs.workflow_id }}" >> workflow-summary.md
         else
-          echo "**Triggered by:** n8n via repository_dispatch" >> workflow-summary.md
+        echo "**Triggered by:** n8n via repository_dispatch" >> workflow-summary.md
         fi
         
         echo "" >> workflow-summary.md
@@ -446,7 +446,7 @@ jobs:
         Workflow ID: ${{ github.event.inputs.workflow_id }}
         Videos: 1 fresh video (previous videos cleaned)"
         else
-          git commit -m "🎥 Generated fresh website video from n8n
+        git commit -m "🎥 Generated fresh website video from n8n
 
         Generated at: $(date -u)
         Triggered by: n8n repository_dispatch
@@ -490,13 +490,13 @@ jobs:
                   break
                 }
               else
-                git commit -m "🎥 Generated website video from n8n
+              git commit -m "🎥 Generated website video from n8n
 
-                Generated at: $(date -u)
-                Triggered by: n8n repository_dispatch (retry $((RETRY_COUNT + 1)))" || {
-                  echo "No changes to re-commit after rebase"
-                  break
-                }
+              Generated at: $(date -u)
+              Triggered by: n8n repository_dispatch (retry $((RETRY_COUNT + 1)))" || {
+                echo "No changes to re-commit after rebase"
+                break
+              }
               fi
               
               sleep 5

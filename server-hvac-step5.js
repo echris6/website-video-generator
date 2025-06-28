@@ -5,9 +5,6 @@ const path = require('path');
 const { spawn } = require('child_process');
 const sharp = require('sharp');
 
-// Universal delay function compatible with all Puppeteer versions
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 const app = express();
 app.use(express.json());
 
@@ -269,16 +266,16 @@ function getHVACCursorPositionForFrame(frameIndex, totalFrames) {
     const sendPosition = { x: 1835, y: 934 };       // Send button
     const minimizePosition = { x: 1854, y: 562 };   // Minimize button
     
-    // **HVAC EMERGENCY TIMING** - 30 seconds: fast interaction + slow scrolling  
-    const moveToButtonEnd = 0.15;      // 0-15%: Move to chat (0-4.5s) - FAST
-    const clickPause = 0.176;          // 15-17.6%: Click button (4.5-5.28s) - FAST
-    const moveToInputEnd = 0.25;       // 17.6-25%: Move to input (5.28-7.5s) - FAST
-    const typingEnd = 0.4;             // 25-40%: Typing emergency message (7.5-12s) - FAST
-    const moveToSendEnd = 0.476;       // 40-47.6%: Move to send (12-14.28s) - FAST
-    const sendPause = 0.5;             // 47.6-50%: Send message (14.28-15s) - FAST
-    const moveToMinimizeEnd = 0.56;    // 50-56%: Move to minimize (15-16.8s) - FAST
-    const minimizePause = 0.58;        // 56-58%: Minimize click (16.8-17.4s) - FAST
-    // 60-100%: Professional site tour (18-30s) - SLOW SCROLLING (12 seconds!)
+    // **HVAC EMERGENCY TIMING** - 25 seconds professional demo
+    const moveToButtonEnd = 0.15;      // 0-15%: Move to chat (0-3.75s)
+    const clickPause = 0.176;          // 15-17.6%: Click button (3.75-4.4s)
+    const moveToInputEnd = 0.25;       // 17.6-25%: Move to input (4.4-6.25s)
+    const typingEnd = 0.4;             // 25-40%: Typing emergency message (6.25-10s)
+    const moveToSendEnd = 0.476;       // 40-47.6%: Move to send (10-11.9s)
+    const sendPause = 0.5;             // 47.6-50%: Send message (11.9-12.5s)
+    const moveToMinimizeEnd = 0.56;    // 50-56%: SLOW SMOOTH movement to minimize (12.5-14s)
+    const minimizePause = 0.58;        // 56-58%: Minimize click (14-14.5s) 
+    // 60-100%: Professional site tour (15-25s) - TRULY GRADUAL & READABLE
     
     const progress = frameIndex / totalFrames;
     
@@ -320,7 +317,7 @@ function interpolatePosition(startPos, endPos, progress) {
 
 async function generateHVACVideo(businessName, niche) {
     const browser = await puppeteer.launch({
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         headless: true,
         args: [
             '--no-sandbox',
@@ -340,14 +337,14 @@ async function generateHVACVideo(businessName, niche) {
         await page.setContent(websiteContent);
 
         const fps = 60;
-        const duration = 30; // 30 seconds: fast interaction + slow scrolling
+        const duration = 25; // 25 seconds professional demo
         const totalFrames = fps * duration;
         
         console.log(`🎬 Generating ${totalFrames} frames for HVAC professional demo...`);
-        console.log(`🚨 HVAC Emergency Service Demo - Complete Professional Showcase (30 seconds)`);
+        console.log(`🚨 HVAC Emergency Service Demo - Complete Professional Showcase`);
         
         // EXTENDED WAIT - Let all animations fully settle before recording
-        await delay(5000);
+        await page.waitForTimeout(5000);
         console.log('⏳ HVAC site loading with extended wait - all animations should be settled...');
         
         // Inject HVAC functions and apply professional fixes IMMEDIATELY
@@ -464,7 +461,7 @@ async function generateHVACVideo(businessName, niche) {
             console.log('✅ ULTRA-AGGRESSIVE FIXES APPLIED - HERO SECTION SHOULD BE STABLE!');
         });
         
-        await delay(2000);
+        await page.waitForTimeout(2000);
         console.log('✅ HVAC site completely stabilized - NO MORE GLITCHING!');
         
         // Get page dimensions for professional tour
@@ -482,13 +479,13 @@ async function generateHVACVideo(businessName, niche) {
         }
         
         // **HVAC PROFESSIONAL TIMING SYSTEM**
-        const clickFrame = Math.floor(totalFrames * 0.176);         // Click at 4.5s
-        const inputFocusFrame = Math.floor(totalFrames * 0.25);     // Focus input at 7.5s
-        const typingStartFrame = Math.floor(totalFrames * 0.25);    // Start typing at 7.5s
-        const typingEndFrame = Math.floor(totalFrames * 0.4);       // End typing at 12s
-        const sendClickFrame = Math.floor(totalFrames * 0.476);     // Send at 14.28s
-        const minimizeClickFrame = Math.floor(totalFrames * 0.56);  // Minimize at 16.8s
-        const scrollStartFrame = Math.floor(totalFrames * 0.6);     // Professional tour at 18s - AFTER MINIMIZE COMPLETES
+        const clickFrame = Math.floor(totalFrames * 0.176);         // Click at 4.4s
+        const inputFocusFrame = Math.floor(totalFrames * 0.25);     // Focus input at 6.25s
+        const typingStartFrame = Math.floor(totalFrames * 0.25);    // Start typing at 6.25s
+        const typingEndFrame = Math.floor(totalFrames * 0.4);       // End typing at 10s
+        const sendClickFrame = Math.floor(totalFrames * 0.476);     // Send at 11.9s
+        const minimizeClickFrame = Math.floor(totalFrames * 0.56);  // Minimize at 14s
+        const scrollStartFrame = Math.floor(totalFrames * 0.6);     // Professional tour at 15s - AFTER MINIMIZE COMPLETES
         
         // HVAC Emergency Message - proper sentence that will display fully
         const emergencyMessage = "I need HVAC repair service";
@@ -509,7 +506,7 @@ async function generateHVACVideo(businessName, niche) {
                     await page.evaluate(() => clickHVACChatButton());
                     console.log(`🚨 CLICKED HVAC emergency chat at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotOpened = true;
-                    await delay(1000); // Give chatbot time to fully open and settle
+                    await page.waitForTimeout(1000); // Give chatbot time to fully open and settle
                     console.log('✅ Chatbot opened - proceeding with original design intact');
                 }
                 
@@ -550,7 +547,7 @@ async function generateHVACVideo(businessName, niche) {
                 if (i === sendClickFrame) {
                     await page.evaluate(() => clickHVACSendButton());
                     console.log(`🚨 SENT emergency message at frame ${i} (${(i/fps).toFixed(1)}s)`);
-                    await delay(300);
+                    await page.waitForTimeout(300);
                 }
                 
                 // Professional minimize
@@ -558,7 +555,7 @@ async function generateHVACVideo(businessName, niche) {
                     await page.evaluate(() => clickHVACMinimizeButton());
                     console.log(`🖱️ MINIMIZED HVAC chat at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotMinimized = true;
-                    await delay(500);
+                    await page.waitForTimeout(500);
                 }
                 
                 frameBuffer = await page.screenshot({ 
@@ -595,7 +592,7 @@ async function generateHVACVideo(businessName, niche) {
                     });
                     
                     // Professional content rendering time
-                    await delay(1000);
+                    await page.waitForTimeout(1000);
                     
                     // Professional full page screenshot
                     fullPageBuffer = await page.screenshot({ 
@@ -606,8 +603,8 @@ async function generateHVACVideo(businessName, niche) {
                 }
                 
                 const scrollProgress = (i - scrollStartFrame) / (totalFrames - scrollStartFrame);
-                // EXTRA SLOW & READABLE: Very gradual scrolling over 12 seconds, guaranteed to reach 100%
-                const slowProgress = Math.min(scrollProgress * 1.05, 1.0); // Very slow pace but reaches 100%
+                // TRULY GRADUAL SPEED: Slow and readable throughout, reaches 100%
+                const slowProgress = Math.min(scrollProgress * 1.18, 1.0); // Slow pace but reaches 100%
                 const scrollY = Math.round(slowProgress * maxScroll); // Full 100% scroll guaranteed
                 
                 // Professional site tour cropping
