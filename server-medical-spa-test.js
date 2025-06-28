@@ -26,43 +26,68 @@ const applyWorkingFixesFunction = `
     function applyWorkingFixes() {
         console.log('🔧 Applying HERO STABILIZATION + minimal fixes for M.HTML...');
         
-        // 1. COMPREHENSIVE HERO SECTION STABILIZATION - Fix glitching from the start
+        // 1. ULTRA-AGGRESSIVE HERO STABILIZATION - Eliminate ALL glitching from frame 1
         const heroStabilizationCSS = \`
-            /* HERO SECTION STABILIZATION - Prevent glitching */
-            .hero, [class*="hero"], #hero {
+            /* NUCLEAR HERO STABILIZATION - Zero tolerance for glitching */
+            .hero, [class*="hero"], #hero, .hero-section, #hero-section {
                 animation: none !important;
                 transform: none !important;
                 transition: none !important;
+                animation-play-state: paused !important;
+                will-change: auto !important;
             }
             
-            /* Stabilize hero background and overlays */
+            /* Stabilize ALL hero pseudo-elements */
             .hero::before, .hero::after,
-            [class*="hero"]::before, [class*="hero"]::after {
+            [class*="hero"]::before, [class*="hero"]::after,
+            .hero-section::before, .hero-section::after {
                 animation: none !important;
                 transform: none !important;
                 transition: none !important;
+                animation-play-state: paused !important;
+                will-change: auto !important;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
             
-            /* Disable all floating animations that cause glitching */
-            .floating-elements, .floating-square, .floating-circle:not([class*="chat"]):not([id*="chat"]) {
+            /* ELIMINATE ALL FLOATING ELEMENTS that cause hero instability */
+            .floating-elements, .floating-square, .floating-circle, 
+            .floating-animation, [class*="floating"]:not([class*="chat"]):not([id*="chat"]) {
                 animation: none !important;
                 transform: none !important;
                 transition: none !important;
-                opacity: 0.1 !important;
+                animation-play-state: paused !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                display: none !important;
             }
             
-            /* Stabilize any reveal animations */
-            .reveal-element, [class*="reveal"], [class*="fade"] {
+            /* FORCE STABILIZE reveal animations immediately */
+            .reveal-element, [class*="reveal"], [class*="fade"], .aos-animate {
                 animation: none !important;
-                transform: none !important;
+                transform: translateY(0) !important;
                 transition: none !important;
                 opacity: 1 !important;
+                visibility: visible !important;
+                animation-play-state: paused !important;
             }
             
-            /* Prevent any CSS transitions during video */
-            * {
-                transition: none !important;
+            /* NUCLEAR OPTION: Disable ALL animations site-wide during video */
+            *, *::before, *::after {
                 animation-duration: 0s !important;
+                animation-delay: 0s !important;
+                animation-iteration-count: 1 !important;
+                animation-play-state: paused !important;
+                transition-duration: 0s !important;
+                transition-delay: 0s !important;
+                will-change: auto !important;
+            }
+            
+            /* Force stable state for common animation libraries */
+            .animate__animated, .aos-item, .wow {
+                animation: none !important;
+                transform: none !important;
+                opacity: 1 !important;
             }
         \`;
         
@@ -389,7 +414,44 @@ async function generateVideo(businessName, niche) {
 
         // Load the m.html website (complete n8n generated HTML)
         const websiteContent = fs.readFileSync(path.join(__dirname, 'm.html'), 'utf8');
-        await page.setContent(websiteContent);
+        
+        // INJECT ULTRA-AGGRESSIVE STABILIZATION INTO HTML BEFORE LOADING
+        const stabilizedHTML = websiteContent.replace('</head>', `
+            <style>
+                /* IMMEDIATE HERO STABILIZATION - Applied before any JavaScript runs */
+                .hero, [class*="hero"], #hero, .hero-section, #hero-section {
+                    animation: none !important;
+                    transform: none !important;
+                    transition: none !important;
+                    animation-play-state: paused !important;
+                    will-change: auto !important;
+                }
+                
+                /* ELIMINATE ALL FLOATING ELEMENTS immediately */
+                .floating-elements, .floating-square, .floating-circle, 
+                .floating-animation, [class*="floating"]:not([class*="chat"]):not([id*="chat"]) {
+                    animation: none !important;
+                    transform: none !important;
+                    transition: none !important;
+                    animation-play-state: paused !important;
+                    opacity: 0 !important;
+                    visibility: hidden !important;
+                    display: none !important;
+                }
+                
+                /* NUCLEAR ANIMATION KILLER */
+                *, *::before, *::after {
+                    animation-duration: 0s !important;
+                    animation-delay: 0s !important;
+                    animation-play-state: paused !important;
+                    transition-duration: 0s !important;
+                    transition-delay: 0s !important;
+                    will-change: auto !important;
+                }
+            </style>
+        </head>`);
+        
+        await page.setContent(stabilizedHTML);
 
         const fps = 60;
         const duration = 30; // 30 seconds: fast interaction + slow scrolling
@@ -398,21 +460,20 @@ async function generateVideo(businessName, niche) {
         console.log(`🎬 Generating ${totalFrames} frames...`);
         console.log(`📐 Step 5: COMPLETE SITE TOUR - FIXED VERSION (30 seconds)`);
         
-        // Wait for content to load - MINIMAL wait to prevent hero glitching
-        await delay(500);
-        console.log('⏳ Waiting for content to fully load...');
+        // IMMEDIATE STABILIZATION: No waiting - apply fixes right away
+        console.log('⚡ Applying ULTRA-AGGRESSIVE stabilization IMMEDIATELY...');
         
-        // Inject chatbot functions and apply anti-glitch fixes IMMEDIATELY
+        // Inject chatbot functions and apply additional fixes
         await page.evaluate(chatbotFunctions);
         await page.evaluate(applyWorkingFixesFunction);
         
-        // APPLY ANTI-GLITCH FIXES RIGHT AWAY to prevent site glitching from the start
+        // APPLY ULTRA-AGGRESSIVE FIXES IMMEDIATELY
         await page.evaluate(() => {
             if (typeof applyWorkingFixes === 'function') {
                 applyWorkingFixes();
             }
         });
-        console.log('🔧 Anti-glitch fixes applied from the start');
+        console.log('🔧 ULTRA-AGGRESSIVE hero stabilization applied from frame 1');
         
         // Reveal all content
         await page.evaluate(() => {
@@ -707,7 +768,7 @@ app.post('/generate-video', async (req, res) => {
         console.log(`🎥 STEP 5: COMPLETE SITE TOUR - ACTUALLY FIXED!`);
         console.log(`📋 Business: ${businessName}`);
         console.log(`🏢 Niche: ${niche}`);
-        console.log(`🔧 FIXES: HERO STABILIZATION + exact coordinates (1860,1020) → (1715,935) → (1862,545)`);
+        console.log(`🔧 FIXES: ULTRA-AGGRESSIVE hero stabilization + exact coordinates (1860,1020) → (1715,935) → (1862,545)`);
         console.log(`🎬 Complete Flow: Interaction → Minimize → Site Tour (30s)`);
         
         const result = await generateVideo(businessName, niche);
