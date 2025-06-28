@@ -289,19 +289,19 @@ jobs:
                 "medical_spa")
                   echo "💉 Running Medical Spa video generation with custom HTML..."
                   # Backup original and use custom HTML
-                  [ -f "lux.html" ] && cp lux.html lux.html.backup
-                  cp website.html lux.html
+                  [ -f "test22.html" ] && cp test22.html test22.html.backup
+                  cp website.html test22.html
                   
-                  node server-medical-spa-test.js &
+                  node server-step5-medical-spa.js &
                   SERVER_PID=$!
                   sleep 5
-                  curl -X POST http://localhost:3020/generate-video \
+                  curl -X POST http://localhost:3006/generate-video \
                     -H "Content-Type: application/json" \
-                    -d "{\"businessName\":\"${{ github.event.inputs.business_name }}\",\"niche\":\"medical_spa\"}"
+                    -d "{\"testId\":\"${{ github.event.inputs.workflow_id }}\"}"
                   kill $SERVER_PID 2>/dev/null || true
                   
                   # Restore original if backup exists
-                  [ -f "lux.html.backup" ] && mv lux.html.backup lux.html
+                  [ -f "test22.html.backup" ] && mv test22.html.backup test22.html
                   ;;
                 "real_estate")
                   echo "🏠 Running Real Estate video generation with custom HTML..."
