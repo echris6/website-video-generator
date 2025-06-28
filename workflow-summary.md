@@ -1,13 +1,13 @@
 # 🎬 Video Generation Summary
 
-**Generated at:** Fri Jun 27 17:50:19 UTC 2025
+**Generated at:** Sat Jun 28 04:12:32 UTC 2025
 **Triggered by:** n8n via workflow_dispatch API
 **Business:** Luxe Aesthetics & Wellness Spa
 **Industry:** Medical Spa
 **Template:** medical_spa
-**Workflow ID:** ultimate_fix_test
+**Workflow ID:** 123456789
 
 **Videos generated:** 1
 
 ## 📹 Generated Videos:
-- `step5_tour_luxe_aesthetics_&_wellness_spa_1751046575303.mp4` (3.7M)
+- `medical_spa_hours_test_123456789_1751083907181.mp4` (2.4M)
