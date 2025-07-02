@@ -655,46 +655,110 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
         
         console.log('✅ All HVAC professional frames captured!');
         
-        // Create professional HVAC video - FIXED FFmpeg parameters
+        // Create professional HVAC video - FIXED FFmpeg parameters with robust error handling
         console.log('🎬 Creating professional HVAC video...');
         const videoPath = path.join(__dirname, 'videos', `hvac_professional_${businessName.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}.mp4`);
         
-        const ffmpeg = spawn('ffmpeg', [
-            '-y',
-            '-framerate', fps.toString(),
-            '-i', path.join(framesDir, 'frame_%06d.png'),
-            '-c:v', 'libx264',
-            '-pix_fmt', 'yuv420p',
-            '-crf', '18',
-            '-preset', 'medium',
-            '-movflags', '+faststart',
+        // **ROBUST ERROR HANDLING**: Ensure videos directory exists and is writable
+        const videosDir = path.join(__dirname, 'videos');
+        if (!fs.existsSync(videosDir)) {
+            fs.mkdirSync(videosDir, { recursive: true });
+        }
+        
+        // **RESOURCE MANAGEMENT**: Check available frames before FFmpeg
+        const frameFiles = fs.readdirSync(framesDir).filter(f => f.startsWith('frame_'));
+        console.log(`🔍 DEBUG: Found ${frameFiles.length} frames for encoding`);
+        
+        if (frameFiles.length !== totalFrames) {
+            throw new Error(`Frame count mismatch: expected ${totalFrames}, found ${frameFiles.length}`);
+        }
+        
+        // **PREVENT RACE CONDITIONS**: Use stricter FFmpeg parameters
+        const ffmpegArgs = [
+            '-y',                                    // Overwrite output
+            '-framerate', fps.toString(),            // Input framerate
+            '-i', path.join(framesDir, 'frame_%06d.png'), // Input pattern
+            '-c:v', 'libx264',                      // Video codec
+            '-pix_fmt', 'yuv420p',                  // Pixel format
+            '-crf', '23',                           // Higher CRF for better compatibility (was 18)
+            '-preset', 'fast',                      // Faster preset for GitHub Actions
+            '-profile:v', 'baseline',               // Baseline profile for max compatibility
+            '-level', '3.0',                        // Specific level for compatibility
+            '-movflags', '+faststart',              // Fast start for web
+            '-threads', '1',                        // Single thread to prevent resource conflicts
             videoPath
-        ]);
+        ];
+        
+        console.log(`🔧 FFmpeg args: ${ffmpegArgs.join(' ')}`);
+        
+        const ffmpeg = spawn('ffmpeg', ffmpegArgs, {
+            stdio: ['pipe', 'pipe', 'pipe'],
+            env: { ...process.env },
+            cwd: __dirname
+        });
 
+        // **ENHANCED ERROR LOGGING**
+        let stderrOutput = '';
         ffmpeg.stderr.on('data', (data) => {
             const output = data.toString();
+            stderrOutput += output;
+            
             const match = output.match(/frame=\s*(\d+)/);
             if (match) {
                 const currentFrame = parseInt(match[1]);
                 const percentage = (currentFrame / totalFrames * 100).toFixed(1);
                 console.log(`  🎬 Professional encoding: ${percentage}%`);
             }
+            
+            // Log warnings and errors immediately
+            if (output.includes('Error') || output.includes('failed')) {
+                console.warn(`⚠️ FFmpeg warning: ${output.trim()}`);
+            }
+        });
+
+        ffmpeg.stdout.on('data', (data) => {
+            console.log(`FFmpeg stdout: ${data.toString()}`);
         });
 
         await new Promise((resolve, reject) => {
-            ffmpeg.on('close', (code) => {
+            // **TIMEOUT PROTECTION**: Prevent hanging
+            const timeout = setTimeout(() => {
+                console.error('❌ FFmpeg timeout - killing process');
+                ffmpeg.kill('SIGKILL');
+                reject(new Error('FFmpeg process timed out after 10 minutes'));
+            }, 600000); // 10 minutes timeout
+            
+            ffmpeg.on('close', (code, signal) => {
+                clearTimeout(timeout);
+                
+                console.log(`🔍 FFmpeg process closed with code: ${code}, signal: ${signal}`);
+                
                 if (code === 0) {
                     console.log('  ✅ Professional HVAC video encoding complete!');
                     resolve();
                 } else {
-                    reject(new Error(`FFmpeg exited with code ${code}`));
+                    console.error(`❌ FFmpeg failed with code ${code}`);
+                    console.error(`🔍 Full stderr output: ${stderrOutput}`);
+                    console.error(`🔍 Signal: ${signal}`);
+                    
+                    // **ENHANCED ERROR REPORTING**
+                    const error = new Error(`FFmpeg exited with code ${code}`);
+                    error.code = code;
+                    error.signal = signal;
+                    error.stderr = stderrOutput;
+                    reject(error);
                 }
+            });
+            
+            ffmpeg.on('error', (err) => {
+                clearTimeout(timeout);
+                console.error(`❌ FFmpeg spawn error: ${err.message}`);
+                reject(err);
             });
         });
 
         // Professional cleanup
         console.log('🧹 Cleaning up professional frames...');
-        const frameFiles = fs.readdirSync(framesDir).filter(f => f.startsWith('frame_'));
         frameFiles.forEach(file => {
             fs.unlinkSync(path.join(framesDir, file));
         });
