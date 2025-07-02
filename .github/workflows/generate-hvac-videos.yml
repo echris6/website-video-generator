@@ -77,7 +77,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           fonts-liberation \
-          libasound2 \
+          libasound2t64 \
           libatk-bridge2.0-0 \
           libatk1.0-0 \
           libatspi2.0-0 \
@@ -235,11 +235,62 @@ jobs:
         echo "✅ Placeholders replaced successfully"
         echo "📄 Final HTML file created ($(wc -c < hvac-website.html) bytes)"
         
+        # Show preview of customized HTML content
+        echo "🔍 Preview of your customized HTML content:"
+        echo "   🏢 Business Name occurrences: $(grep -o '${{ steps.inputs.outputs.business_name }}' hvac-website.html | wc -l)"
+        echo "   📞 Phone Number occurrences: $(grep -o '${{ steps.inputs.outputs.business_phone }}' hvac-website.html | wc -l)"
+        echo "   📍 Address occurrences: $(grep -o '${{ steps.inputs.outputs.business_address }}' hvac-website.html | wc -l)"
+        echo "   🌐 Website occurrences: $(grep -o '${{ steps.inputs.outputs.business_website }}' hvac-website.html | wc -l)"
+        echo "   🎯 Hero Title occurrences: $(grep -o '${{ steps.inputs.outputs.hero_title }}' hvac-website.html | wc -l)"
+        
+        # Show sample of actual HTML content
+        echo "📋 Sample of your customized HTML:"
+        echo "   Title section:"
+        grep -A 2 -B 2 '<title>' hvac-website.html || echo "   (Title section not found)"
+        echo "   Business name in content:"
+        grep -n '${{ steps.inputs.outputs.business_name }}' hvac-website.html | head -3 || echo "   (Business name not found in content)"
+        
         # Validate HTML file
         if [ ! -f "hvac-website.html" ] || [ ! -s "hvac-website.html" ]; then
           echo "❌ HTML file creation failed or file is empty"
           exit 1
         fi
+        
+    - name: Verify Customized HTML Content
+      run: |
+        echo "🔍 VERIFYING YOUR CUSTOMIZED HTML CONTENT"
+        echo "=============================================="
+        
+        if [ ! -f "hvac-website.html" ]; then
+          echo "❌ HTML file not found!"
+          exit 1
+        fi
+        
+        echo "📊 File size: $(wc -c < hvac-website.html) bytes"
+        echo "📊 Total lines: $(wc -l < hvac-website.html) lines"
+        
+        echo ""
+        echo "🔍 YOUR BUSINESS DATA IN THE HTML:"
+        echo "   🏢 Business Name: '${{ steps.inputs.outputs.business_name }}'"
+        echo "      Found $(grep -c '${{ steps.inputs.outputs.business_name }}' hvac-website.html) times in HTML"
+        echo "   📞 Phone: '${{ steps.inputs.outputs.business_phone }}'"  
+        echo "      Found $(grep -c '${{ steps.inputs.outputs.business_phone }}' hvac-website.html) times in HTML"
+        echo "   🎯 Hero Title: '${{ steps.inputs.outputs.hero_title }}'"
+        echo "      Found $(grep -c '${{ steps.inputs.outputs.hero_title }}' hvac-website.html) times in HTML"
+        echo "   💬 Tagline: '${{ steps.inputs.outputs.tagline }}'"
+        echo "      Found $(grep -c '${{ steps.inputs.outputs.tagline }}' hvac-website.html) times in HTML"
+        
+        echo ""
+        echo "📋 HTML TITLE TAG (should contain your business name):"
+        grep '<title>' hvac-website.html || echo "   ❌ No title tag found"
+        
+        echo ""
+        echo "📋 FIRST 10 LINES OF YOUR CUSTOMIZED HTML:"
+        head -10 hvac-website.html
+        
+        echo ""
+        echo "✅ HTML verification complete - your business data is integrated!"
+        echo "=============================================="
         
     - name: Start HVAC Video Server
       run: |
@@ -247,8 +298,27 @@ jobs:
         export DISPLAY=:99
         Xvfb :99 -screen 0 1920x1080x24 &
         sleep 3
-        node server-hvac-step5.js &
+        echo "🚀 Starting HVAC video server with logging..."
+        node server-hvac-step5.js > server.log 2>&1 &
+        SERVER_PID=$!
+        echo "📋 Server PID: $SERVER_PID"
         sleep 5
+        
+        # Check if server started successfully
+        if ps -p $SERVER_PID > /dev/null; then
+          echo "✅ Server started successfully"
+          sleep 2
+          echo "📋 Server startup logs:"
+          if [ -f server.log ]; then
+            cat server.log
+          else
+            echo "No server.log file created yet"
+          fi
+        else
+          echo "❌ Server failed to start"
+          cat server.log
+          exit 1
+        fi
         
     - name: Generate HVAC Marketing Video
       id: generate
@@ -303,11 +373,61 @@ jobs:
         echo "📦 Payload size: $(wc -c < request.json) bytes"
         
         # Send request using file input to avoid shell issues
-        RESPONSE=$(curl -s -X POST http://localhost:3025/generate-video \
-          -H "Content-Type: application/json" \
-          -d @request.json)
+        echo "🚀 Sending request to server, monitoring logs..."
         
-        echo "📤 Server Response: $RESPONSE"
+        # Start curl in background and monitor server logs
+        curl -s -X POST http://localhost:3025/generate-video \
+          -H "Content-Type: application/json" \
+          -d @request.json > response.json &
+        CURL_PID=$!
+        
+        # Monitor server logs while video is being generated
+        echo "📋 Monitoring server logs during video generation..."
+        LAST_LINE=0
+        MONITOR_COUNT=0
+        while ps -p $CURL_PID > /dev/null; do
+          MONITOR_COUNT=$((MONITOR_COUNT + 1))
+          echo "🔄 Check #$MONITOR_COUNT - Video generation in progress..."
+          
+          if [ -f server.log ]; then
+            NEW_LINES=$(wc -l < server.log)
+            if [ $NEW_LINES -gt $LAST_LINE ]; then
+              echo "📋 NEW SERVER LOGS (lines $((LAST_LINE+1))-$NEW_LINES):"
+              echo "======================================"
+              sed -n "$((LAST_LINE+1)),${NEW_LINES}p" server.log
+              echo "======================================"
+              LAST_LINE=$NEW_LINES
+            else
+              echo "📋 No new server logs since last check"
+            fi
+            echo "📊 Total server log lines: $NEW_LINES"
+          else
+            echo "⚠️  Server log file not found yet"
+          fi
+          
+          echo "⏱️  Waiting 8 seconds before next check..."
+          sleep 8
+        done
+        
+        # Wait for curl to complete and get response
+        wait $CURL_PID
+        CURL_EXIT_CODE=$?
+        RESPONSE=$(cat response.json)
+        
+        echo "🎯 Video generation completed!"
+        echo "======================================"
+        echo "📤 SERVER RESPONSE:"
+        echo "$RESPONSE"
+        echo "======================================"
+        
+        echo "📋 COMPLETE SERVER LOGS:"
+        echo "======================================"
+        if [ -f server.log ]; then
+          cat server.log
+        else
+          echo "No server.log file found"
+        fi
+        echo "======================================"
         
         # Extract video path from response
         VIDEO_PATH=$(echo "$RESPONSE" | jq -r '.videoPath // empty')
@@ -321,13 +441,15 @@ jobs:
         else
           echo "❌ Video generation failed"
           echo "📋 Debug Info:"
-          echo "  Server logs:"
+          echo "  Server status:"
           ps aux | grep server-hvac || true
           echo "  Videos directory:"
           ls -la videos/ || true
           echo "  Response was: $RESPONSE"
           echo "  Request payload was:"
           head -20 request.json
+          echo "  Complete server logs:"
+          cat server.log || echo "No server logs found"
           exit 1
         fi
         
@@ -346,6 +468,9 @@ jobs:
         name: debug-logs-${{ steps.inputs.outputs.workflow_id }}
         path: |
           videos/
+          server.log
+          response.json
+          request.json
           *.log
         retention-days: 7
         
@@ -362,8 +487,11 @@ jobs:
         rm -rf frames/
         rm -rf temp/
         rm -f request.json
+        rm -f response.json
+        rm -f server.log
         rm -f hvac-website.html
-        pkill -f "server-hvac.js" || true
+        rm -f replace-placeholders.js
+        pkill -f "server-hvac-step5.js" || true
         pkill -f "Xvfb" || true
 
   # Notification job for successful video generation
