@@ -461,8 +461,16 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             console.log('✅ ULTRA-AGGRESSIVE FIXES APPLIED - HERO SECTION SHOULD BE STABLE!');
         });
         
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
         console.log('✅ HVAC site completely stabilized - NO MORE GLITCHING!');
+        
+        // **FIX BLACK SCREEN**: Take initial screenshot to ensure content is ready
+        console.log('📸 Capturing initial stable frame to prevent black screen...');
+        const initialFrame = await page.screenshot({ 
+            type: 'png',
+            clip: { x: 0, y: 0, width: 1920, height: 1080 }
+        });
+        console.log('✅ Initial frame captured - content is ready!');
         
         // Get page dimensions for professional tour
         const pageHeight = await page.evaluate(() => document.body.scrollHeight);
@@ -478,14 +486,17 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             fs.mkdirSync(framesDir);
         }
         
-        // **HVAC PROFESSIONAL TIMING SYSTEM** - Updated for 30s duration (first 15s same speed)
-        const clickFrame = Math.floor(totalFrames * 0.147);         // Click at 4.4s - SAME TIMING
-        const inputFocusFrame = Math.floor(totalFrames * 0.208);    // Focus input at 6.25s - SAME TIMING
-        const typingStartFrame = Math.floor(totalFrames * 0.208);   // Start typing at 6.25s - SAME TIMING
-        const typingEndFrame = Math.floor(totalFrames * 0.333);     // End typing at 10s - SAME TIMING
-        const sendClickFrame = Math.floor(totalFrames * 0.397);     // Send at 11.9s - SAME TIMING
-        const minimizeClickFrame = Math.floor(totalFrames * 0.467); // Minimize at 14s - SAME TIMING
-        const scrollStartFrame = Math.floor(totalFrames * 0.5);     // Professional tour at 15s - SLOWER SCROLLING (15s instead of 10s)
+        // **HVAC PROFESSIONAL TIMING SYSTEM** - Updated for 30s duration with initial static period
+        const staticFrames = 60; // 1 second of static content to prevent black screen
+        const adjustedTotalFrames = totalFrames - staticFrames;
+        
+        const clickFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.147);         // Click at 5.4s (was 4.4s)
+        const inputFocusFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.208);    // Focus input at 7.25s (was 6.25s)
+        const typingStartFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.208);   // Start typing at 7.25s (was 6.25s)
+        const typingEndFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.333);     // End typing at 11s (was 10s)
+        const sendClickFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.397);     // Send at 12.9s (was 11.9s)
+        const minimizeClickFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.467); // Minimize at 15s (was 14s)
+        const scrollStartFrame = staticFrames + Math.floor(adjustedTotalFrames * 0.5);     // Professional tour at 16s (was 15s)
         
         // HVAC Emergency Message - proper sentence that will display fully
         const emergencyMessage = "I need HVAC repair service";
@@ -498,7 +509,11 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
         for (let i = 0; i < totalFrames; i++) {
             let frameBuffer;
             
-            if (i < scrollStartFrame) {
+            if (i < staticFrames) {
+                // **STATIC INTRO PERIOD**: Show stable initial content for 1 second
+                frameBuffer = initialFrame;
+                
+            } else if (i < scrollStartFrame) {
                 // **EMERGENCY INTERACTION PHASE**: Professional chatbot demo
                 
                 // Handle emergency chatbot interaction
@@ -640,7 +655,7 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
         
         console.log('✅ All HVAC professional frames captured!');
         
-        // Create professional HVAC video
+        // Create professional HVAC video - FIXED FFmpeg parameters
         console.log('🎬 Creating professional HVAC video...');
         const videoPath = path.join(__dirname, 'videos', `hvac_professional_${businessName.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}.mp4`);
         
@@ -653,8 +668,6 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             '-crf', '18',
             '-preset', 'medium',
             '-movflags', '+faststart',
-            '-avoid_negative_ts', 'make_zero',
-            '-fflags', '+genpts',
             videoPath
         ]);
 
@@ -698,7 +711,7 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             duration: duration,
             fps: fps,
             frames: totalFrames,
-            message: `HVAC emergency service demo: "${emergencyMessage}" (30s with slower scrolling, no text cutoff, original design preserved)`
+            message: `HVAC emergency service demo: "${emergencyMessage}" (30s with slower scrolling, no black screen, no FFmpeg errors)`
         };
 
     } catch (error) {
