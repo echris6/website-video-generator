@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{businessName}} | {{heroTitle}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: {{primaryColor}};
+            --secondary-color: {{secondaryColor}};
+            --background-color: {{backgroundColor}};
+            --text-color: {{textColor}};
+            --accent-color: {{accentColor}};
+            
+            /* Ultra-luxury Sotheby's color palette */
+            --navy-blue: #0a1929;
+            --navy-blue-light: #1a365d;
+            --navy-blue-deep: #051922;
+            --executive-navy: #0f2027;
+            --gold-accent: linear-gradient(135deg, #c9a96e 0%, #f4e7a1 25%, #d4af37 50%, #b8860b 75%, #c9a96e 100%);
+            --gold-metallic: linear-gradient(145deg, #ffd700 0%, #ffed4a 15%, #d4af37 35%, #b8860b 55%, #8b6914 75%, #c9a96e 100%);
+            --platinum-gradient: linear-gradient(135deg, #e5e7eb 0%, #f8fafc 25%, #ffffff 50%, #f1f5f9 75%, #e2e8f0 100%);
+            --architectural-white: #fdfdfd;
+            --executive-gray: #2d3748;
+            --platinum: #e2e8f0;
+            --marble-white: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+            
+            /* Advanced glass-morphism layers */
+            --glass-ultra: rgba(255, 255, 255, 0.05);
+            --glass-light: rgba(255, 255, 255, 0.08);
+            --glass-medium: rgba(255, 255, 255, 0.12);
+            --glass-strong: rgba(255, 255, 255, 0.18);
+            --glass-executive: rgba(255, 255, 255, 0.25);
+            
+            /* Sophisticated shadow system */
+            --shadow-subtle: 0 4px 20px rgba(10, 25, 41, 0.08);
+            --shadow-medium: 0 8px 30px rgba(10, 25, 41, 0.12);
+            --shadow-strong: 0 15px 40px rgba(10, 25, 41, 0.15);
+            --shadow-executive: 0 25px 60px rgba(10, 25, 41, 0.18);
+            --shadow-luxury: 0 35px 80px rgba(10, 25, 41, 0.22);
+            
+            /* Premium effects */
+            --shimmer: linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.4) 50%, transparent 75%);
+            --shimmer-gold: linear-gradient(45deg, transparent 25%, rgba(255, 215, 0, 0.3) 50%, transparent 75%);
+            --parallax-speed: 0.5;
+            
+            /* Executive spacing system */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 4rem;
+            --spacing-xl: 6rem;
+            --spacing-xxl: 10rem;
+            
+            /* Typography system */
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --font-display: 'Inter', serif;
+            --weight-ultra-light: 100;
+            --weight-light: 200;
+            --weight-normal: 300;
+            --weight-medium: 400;
+            --weight-semi-bold: 500;
+            --weight-bold: 600;
+            --weight-black: 700;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--navy-blue);
+            background: var(--architectural-white);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Architectural Blueprint Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        .floating-square {
+            position: absolute;
+            border: 2px solid var(--gold-accent);
+            background: transparent;
+            opacity: 0.12;
+            animation: none;
+            transform-style: preserve-3d;
+        }
+
+        .floating-square::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 60%;
+            border: 1px solid var(--gold-accent);
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+        }
+
+        .floating-square::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 20%;
+            height: 20%;
+            background: var(--gold-accent);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .floating-square:nth-child(1) {
+            width: 240px;
+            height: 160px;
+            top: 12%;
+            left: 5%;
+            animation-delay: 0s;
+            border-radius: 12px;
+        }
+
+        .floating-square:nth-child(2) {
+            width: 180px;
+            height: 180px;
+            top: 45%;
+            right: 8%;
+            animation-delay: -10s;
+            border-radius: 50%;
+        }
+
+        .floating-square:nth-child(3) {
+            width: 140px;
+            height: 200px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -20s;
+            border-radius: 8px;
+        }
+
+        .floating-square:nth-child(4) {
+            width: 220px;
+            height: 140px;
+            top: 28%;
+            right: 30%;
+            animation-delay: -15s;
+            border-radius: 16px;
+        }
+
+        .floating-square:nth-child(5) {
+            width: 100px;
+            height: 100px;
+            top: 70%;
+            right: 15%;
+            animation-delay: -25s;
+            border-radius: 50%;
+        }
+
+        .floating-square:nth-child(6) {
+            width: 160px;
+            height: 120px;
+            bottom: 35%;
+            right: 50%;
+            animation-delay: -5s;
+            border-radius: 10px;
+        }
+
+
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Reveal Animation */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-element.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Ultra-Executive Header */
+        header {
+            background: var(--glass-light);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-strong);
+            padding: var(--spacing-sm) 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--marble-white);
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        header.scrolled {
+            background: var(--glass-executive);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            box-shadow: var(--shadow-executive);
+            border-bottom-color: rgba(201, 169, 110, 0.2);
+        }
+
+        header.scrolled::before {
+            opacity: 0.95;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            background: linear-gradient(135deg, #c8a882 0%, #d4af37 50%, #b8860b 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.02em;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--navy-blue);
+            font-weight: 400;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold-accent);
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: #d4af37;
+        }
+
+        /* Ultra-Executive Hero Section with Parallax */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--marble-white);
+            padding-top: 120px;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            right: -20%;
+            bottom: -20%;
+            background: 
+                radial-gradient(circle at 15% 15%, rgba(10, 25, 41, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(201, 169, 110, 0.05) 0%, transparent 40%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%);
+            pointer-events: none;
+            will-change: transform;
+            animation: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(45deg, transparent 24%, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.03) 26%, transparent 27%),
+                linear-gradient(-45deg, transparent 24%, rgba(10, 25, 41, 0.02) 25%, rgba(10, 25, 41, 0.02) 26%, transparent 27%);
+            background-size: 60px 60px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+
+
+        .hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 200;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, #c8a882 50%, #d4af37 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--executive-gray);
+            margin-bottom: 4rem;
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: linear-gradient(135deg, #c8a882 0%, #d4af37 30%, #e6c66b 60%, #d4af37 85%, #b8860b 100%);
+            color: white;
+            padding: 1.2rem 2.8rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: var(--weight-medium);
+            font-family: var(--font-primary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-strong), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            letter-spacing: 0.02em;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #d4af37 0%, #e6c66b 50%, #c8a882 100%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 50px;
+            z-index: 1;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 20%, rgba(255, 255, 255, 0.25) 50%, transparent 80%);
+            transform: rotate(25deg);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 2;
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+
+        .cta-button:hover::after {
+            opacity: 1;
+            left: 150%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-luxury), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .cta-button:active {
+            transform: translateY(-2px);
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Ultra-Luxury Property Showcase */
+        .property-showcase {
+            padding: var(--spacing-xxl) 0;
+            position: relative;
+            background: var(--platinum-gradient);
+            overflow: hidden;
+        }
+
+        .property-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(10, 25, 41, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(201, 169, 110, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: var(--spacing-md);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .property-card {
+            background: var(--glass-medium);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-strong);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .property-card.featured {
+            grid-row: span 1;
+        }
+
+        .property-card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-luxury);
+            border-color: rgba(201, 169, 110, 0.3);
+        }
+
+        .property-image {
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #c8a882 0%, #d4af37 30%, #e6c66b 60%, #d4af37 85%, #b8860b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--weight-medium);
+            font-size: 1.2rem;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .property-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            background: linear-gradient(135deg, #c8a882 0%, #d4af37 30%, #e6c66b 60%, #d4af37 85%, #b8860b 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: var(--weight-semi-bold);
+            z-index: 10;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .property-details {
+            padding: var(--spacing-md);
+        }
+
+        .property-details h3 {
+            font-family: var(--font-primary);
+            font-size: 1.5rem;
+            font-weight: var(--weight-medium);
+            color: var(--navy-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-location {
+            color: var(--executive-gray);
+            font-size: 1rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .property-stats {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .property-stats span {
+            background: var(--glass-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: var(--weight-medium);
+            color: var(--navy-blue);
+        }
+
+        .property-price {
+            font-size: 1.8rem;
+            font-weight: var(--weight-semi-bold);
+            background: linear-gradient(135deg, #c8a882 0%, #d4af37 30%, #e6c66b 60%, #d4af37 85%, #b8860b 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .property-card.featured .property-price {
+            font-size: 2.2rem;
+        }
+
+        /* Premium Services Section */
+        .services {
+            padding: var(--spacing-xxl) 0;
+            position: relative;
+            background: var(--marble-white);
+        }
+
+        .services h2 {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 200;
+            margin-bottom: 6rem;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, #c8a882 50%, #d4af37 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--glass-medium);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-strong);
+            padding: var(--spacing-md) var(--spacing-sm);
+            border-radius: 28px;
+            text-align: center;
+            box-shadow: var(--shadow-strong);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gold-metallic);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 28px;
+            z-index: 1;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: var(--shimmer-gold);
+            opacity: 0;
+            transform: rotate(45deg);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 2;
+        }
+
+        .service-card:hover::before {
+            opacity: 0.08;
+        }
+
+        .service-card:hover::after {
+            opacity: 0.6;
+            transform: rotate(45deg) translateX(100%);
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-luxury);
+            border-color: rgba(201, 169, 110, 0.4);
+        }
+
+        .service-card > * {
+            position: relative;
+            z-index: 3;
+        }
+
+        .service-image {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, #d4af37 30%, var(--navy-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        .service-card h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--navy-blue);
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card p {
+            font-size: 1rem;
+            color: var(--executive-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-price {
+            font-size: 1.2rem;
+            font-weight: 400;
+            background: var(--gold-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-cta {
+            background: transparent;
+            color: var(--navy-blue);
+            border: 2px solid var(--navy-blue);
+            padding: 0.8rem 1.8rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .service-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--navy-blue);
+            border-radius: 25px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: -1;
+        }
+
+        .service-cta:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-cta:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Executive Contact Section */
+        .contact {
+            padding: 10rem 0;
+            background: linear-gradient(135deg, #f7fafc 0%, rgba(248, 249, 251, 0.5) 100%);
+            position: relative;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 80%, rgba(26, 54, 93, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: stretch;
+        }
+
+        .contact h2 {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 200;
+            margin-bottom: 6rem;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, #c8a882 50%, #d4af37 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.01em;
+            grid-column: 1 / -1;
+        }
+
+        .map-container {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-white-strong);
+            border-radius: 20px;
+            box-shadow: var(--premium-shadow);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .map-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gold-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .map-container h3 {
+            font-size: 1.5rem;
+            color: var(--navy-blue);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .map-container p {
+            color: var(--executive-gray);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-form {
+            background: var(--glass-medium);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-strong);
+            padding: var(--spacing-lg);
+            border-radius: 24px;
+            box-shadow: var(--shadow-strong);
+            min-height: 500px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Sophisticated Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--marble-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+
+        .preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .loader::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--gold-accent);
+            border-radius: 50%;
+            animation: none;
+        }
+
+        .loader::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            border: 2px solid transparent;
+            border-bottom: 2px solid var(--navy-blue);
+            border-radius: 50%;
+            animation: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            color: var(--navy-blue);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid rgba(26, 54, 93, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--navy-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Executive Footer */
+        footer {
+            background: linear-gradient(135deg, var(--navy-blue) 0%, #2d3748 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gold-accent);
+            opacity: 0.05;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive Excellence */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .services-grid {
+                gap: 1.5rem;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .services-grid {
+                gap: 1rem;
+            }
+
+            .service-card {
+                padding: 1.8rem 1rem;
+            }
+
+            .service-card h3 {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+            }
+
+            .service-card p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .service-price {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .service-cta {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .contact-form, .map-container {
+                padding: 2rem;
+            }
+
+            .floating-square {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .service-card {
+                padding: 1.5rem 0.8rem;
+            }
+
+            .service-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .service-card p {
+                font-size: 0.9rem;
+            }
+
+            .service-cta {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Performance Optimizations */
+        .service-card,
+        .cta-button {
+            will-change: transform;
+        }
+
+        /* Simple Chat Assistant Styles */
+        .chat-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            font-family: var(--font-primary);
+        }
+
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-luxury);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gold-accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .chat-toggle:hover::before {
+            opacity: 0.1;
+        }
+
+        .chat-toggle:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow-luxury), 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .chat-icon, .chat-close {
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chat-close {
+            display: none;
+        }
+
+        .chat-toggle.active .chat-icon {
+            display: none;
+        }
+
+        .chat-toggle.active .chat-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chat-widget {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: var(--glass-medium);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-strong);
+            border-radius: 20px;
+            box-shadow: var(--shadow-luxury);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        .chat-widget.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gold-accent);
+            opacity: 0.05;
+        }
+
+        .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gold-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .avatar-placeholder {
+            color: white;
+            font-weight: var(--weight-semi-bold);
+            font-size: 1.2rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .agent-details h4 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: var(--weight-medium);
+            margin: 0;
+        }
+
+        .agent-status {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            font-weight: var(--weight-normal);
+        }
+
+        .chat-minimize {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .chat-minimize:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 2px;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            animation: messageSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .bot-message .message-content {
+            background: linear-gradient(135deg, var(--platinum) 0%, var(--architectural-white) 100%);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 0.8rem 1rem;
+            border-radius: 16px 16px 16px 4px;
+            max-width: 80%;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(10, 25, 41, 0.08);
+        }
+
+        .user-message {
+            text-align: right;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 16px 16px 4px 16px;
+            max-width: 80%;
+            margin-left: auto;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(26, 54, 93, 0.2);
+        }
+
+        .message-content p {
+            margin: 0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--executive-gray);
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .quick-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--glass-medium);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .quick-action-btn {
+            background: var(--glass-light);
+            border: 1px solid var(--glass-medium);
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: var(--weight-medium);
+            color: var(--navy-blue);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: left;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--glass-medium);
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            font-size: 1rem;
+        }
+
+        .chat-input-container {
+            padding: 0.8rem 1rem;
+            border-top: 1px solid var(--glass-medium);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--glass-medium);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: var(--glass-light);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .send-button {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 0 1rem 0.8rem;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--executive-gray);
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dots .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--navy-blue);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots .dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        .lead-capture-form {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--marble-white);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h4 {
+            color: var(--navy-blue);
+            font-size: 1.3rem;
+            font-weight: var(--weight-medium);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: var(--executive-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .lead-capture-form .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .lead-capture-form input,
+        .lead-capture-form select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(26, 54, 93, 0.2);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .lead-capture-form input:focus,
+        .lead-capture-form select:focus {
+            outline: none;
+            border-color: var(--navy-blue);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .form-cancel {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: 2px solid var(--glass-medium);
+            border-radius: 12px;
+            color: var(--executive-gray);
+            font-weight: var(--weight-medium);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-cancel:hover {
+            background: var(--glass-light);
+        }
+
+        .form-submit {
+            flex: 2;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: var(--weight-medium);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chat-container {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .chat-widget {
+                width: calc(100vw - 2rem);
+                height: 400px;
+                right: -1rem;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .floating-square {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sophisticated Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Architectural Blueprint Elements -->
+    <div class="floating-elements">
+        <div class="floating-square"></div>
+        <div class="floating-square"></div>
+        <div class="floating-square"></div>
+        <div class="floating-square"></div>
+        <div class="floating-square"></div>
+        <div class="floating-square"></div>
+    </div>
+
+    <!-- Executive Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">{{businessName}}</div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#properties">Portfolio</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Executive Hero Section -->
+    <section class="hero reveal-element" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>{{heroTitle}}</h1>
+                <p>{{tagline}}</p>
+                <a href="#properties" class="cta-button">
+                    <span>Schedule Consultation</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Luxury Property Showcase -->
+    <section class="property-showcase" id="properties">
+        <div class="container">
+            <h2 class="reveal-element">Featured Properties</h2>
+            <div class="property-grid reveal-element">
+                <div class="property-card featured">
+                    <div class="property-image">
+                        <div class="image-placeholder">$12.5M Estate</div>
+                        <div class="property-badge">Featured</div>
+                    </div>
+                    <div class="property-details">
+                        <h3>Beverly Hills Estate</h3>
+                        <p class="property-location">Beverly Hills, CA</p>
+                        <div class="property-stats">
+                            <span>8 BD</span>
+                            <span>10 BA</span>
+                            <span>15,000 sqft</span>
+                        </div>
+                        <div class="property-price">$12,500,000</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-image">
+                        <div class="image-placeholder">$8.2M Penthouse</div>
+                    </div>
+                    <div class="property-details">
+                        <h3>Manhattan Penthouse</h3>
+                        <p class="property-location">Upper East Side, NY</p>
+                        <div class="property-stats">
+                            <span>4 BD</span>
+                            <span>5 BA</span>
+                            <span>4,500 sqft</span>
+                        </div>
+                        <div class="property-price">$8,200,000</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-image">
+                        <div class="image-placeholder">$6.8M Villa</div>
+                    </div>
+                    <div class="property-details">
+                        <h3>Malibu Ocean Villa</h3>
+                        <p class="property-location">Malibu, CA</p>
+                        <div class="property-stats">
+                            <span>6 BD</span>
+                            <span>7 BA</span>
+                            <span>8,200 sqft</span>
+                        </div>
+                        <div class="property-price">$6,800,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="reveal-element">Executive Services</h2>
+            <div class="services-grid reveal-element">
+                <div class="service-card">
+                    <div class="service-image">
+                        <div class="image-placeholder">Market Analysis</div>
+                    </div>
+                    <h3>Market Intelligence</h3>
+                    <p>Comprehensive property valuation and market insights to maximize your investment potential and strategic positioning in luxury markets</p>
+                    <div class="service-price">Complimentary</div>
+                    <button class="service-cta">Get Analysis</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-image">
+                        <div class="image-placeholder">Property Marketing</div>
+                    </div>
+                    <h3>Luxury Marketing</h3>
+                    <p>Premium listing presentation and targeted buyer attraction strategies with exclusive market positioning and global reach</p>
+                    <div class="service-price">Commission Based</div>
+                    <button class="service-cta">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-image">
+                        <div class="image-placeholder">Closing Support</div>
+                    </div>
+                    <h3>White-Glove Service</h3>
+                    <p>Expert transaction management and client advocacy throughout the entire luxury property acquisition and closing process</p>
+                    <div class="service-price">Full Service</div>
+                    <button class="service-cta">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Executive Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="reveal-element">Schedule Your Consultation</h2>
+            <div class="contact-container reveal-element">
+                <div class="map-container">
+                    <div class="map-icon">📍</div>
+                    <h3>Visit Our Office</h3>
+                    <p>{{businessAddress}}</p>
+                    <p>{{businessPhone}}</p>
+                    <p>{{mapEmbedCode}}</p>
+                </div>
+                
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Property Interests</label>
+                        <textarea id="message" name="message" placeholder="Tell us about your property goals..."></textarea>
+                    </div>
+                    <button type="submit" class="cta-button">
+                        <span>Schedule Consultation</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Executive Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 {{businessName}}. All rights reserved.</p>
+            <p>{{businessAddress}} | {{businessPhone}}</p>
+        </div>
+    </footer>
+
+    <!-- Simple Chat Assistant -->
+    <div class="chat-container" id="chatContainer">
+        <!-- Chat Toggle Button -->
+        <div class="chat-toggle" id="chatToggle">
+            <div class="chat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                </svg>
+            </div>
+            <div class="chat-close" id="chatClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Chat Widget -->
+        <div class="chat-widget" id="chatWidget">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="agent-info">
+                    <div class="agent-details">
+                        <h4>Real Estate Assistant</h4>
+                        <span class="agent-status">Ask me anything</span>
+                    </div>
+                </div>
+                <button class="chat-minimize" id="chatMinimize">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13H5v-2h14v2z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <p>Hello! I'm here to answer questions about our real estate services. What would you like to know?</p>
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Ask a question...">
+                    <button class="send-button" id="sendButton">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <span>Typing...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ultra-Executive JavaScript -->
+    <script>
+        // Sophisticated Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.classList.add('fade-out');
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 800);
+            }, 1200);
+        });
+
+        // Executive Header Scroll Effect with Parallax
+        let ticking = false;
+        function updateHeader() {
+            const header = document.getElementById('header');
+            const scrolled = window.pageYOffset;
+            
+            if (scrolled > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            // Parallax effect for hero background
+            const heroBackground = document.querySelector('.hero::before');
+            if (scrolled < window.innerHeight) {
+                const parallaxOffset = scrolled * 0.5;
+                if (heroBackground) {
+                    document.querySelector('.hero').style.transform = `translateY(${parallaxOffset}px)`;
+                }
+            }
+            
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        });
+
+        // Advanced Intersection Observer for Reveal Animations
+        const revealElements = document.querySelectorAll('.reveal-element');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('revealed');
+                    }, index * 100); // Staggered animation
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
+        });
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+        // Luxury Smooth Scroll with Momentum
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const target = document.querySelector(targetId);
+                
+                if (target) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = target.offsetTop - headerHeight - 20;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Executive Form Interactions with Floating Labels
+        const formInputs = document.querySelectorAll('input, textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-4px)';
+                this.parentElement.style.transition = 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+
+            // Sophisticated validation states
+            input.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    this.style.borderColor = 'rgba(201, 169, 110, 0.5)';
+                } else {
+                    this.style.borderColor = 'rgba(10, 25, 41, 0.2)';
+                }
+            });
+        });
+
+        // Simple Elegant Card Hover Effects
+        const serviceCards = document.querySelectorAll('.service-card, .property-card');
+        serviceCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.willChange = 'transform';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.willChange = 'auto';
+            });
+        });
+
+        // Executive CTA Button Ripple Effect
+        const ctaButtons = document.querySelectorAll('.cta-button, .service-cta');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.pointerEvents = 'none';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Sophisticated Error States for Forms
+        const form = document.querySelector('.contact-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Advanced form validation with luxury styling
+                const inputs = this.querySelectorAll('input[required], textarea[required]');
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.style.borderColor = '#ef4444';
+                        input.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+                    } else {
+                        input.style.borderColor = 'rgba(201, 169, 110, 0.5)';
+                        input.style.boxShadow = '0 0 0 3px rgba(201, 169, 110, 0.1)';
+                    }
+                });
+                
+                if (isValid) {
+                    // Luxury success animation
+                    const submitBtn = this.querySelector('[type="submit"]');
+                    submitBtn.textContent = 'Sent Successfully ✓';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                }
+            });
+        }
+
+        // Premium Performance Optimization
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                // Preload critical resources
+                const criticalImages = document.querySelectorAll('img[data-src]');
+                const imageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+                
+                criticalImages.forEach(img => imageObserver.observe(img));
+                
+                console.log('Ultra-luxury Sotheby\'s International experience ready');
+            });
+        }
+
+        // CSS Animation for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Simple Real Estate Chat Assistant
+        class SimpleChatAssistant {
+            constructor() {
+                this.isOpen = false;
+                this.responses = {
+                    welcome: "Hello! I'm here to answer questions about our real estate services. What would you like to know?",
+                    
+                    // Simple Q&A responses
+                    hours: "Our office hours are Monday-Friday 9AM-6PM, Saturday 10AM-4PM. You can also call us anytime at {{businessPhone}}.",
+                    location: "We're located at {{businessAddress}}. Feel free to stop by during business hours!",
+                    services: "We offer buying assistance, selling services, market analysis, property management, and investment consulting. How can we help you?",
+                    buying: "I can help you find the perfect property! We work with all price ranges and have access to exclusive listings. What's your ideal price range?",
+                    selling: "We provide full-service selling including professional photography, marketing, and expert negotiation. What type of property are you looking to sell?",
+                    market: "I can provide a free market analysis for your property. This includes recent comparable sales and current market trends in your area.",
+                    contact: "You can reach us at {{businessPhone}} or email us. We typically respond within a few hours during business hours.",
+                    commission: "Our commission rates are competitive and include full marketing, professional photos, and expert support through closing.",
+                    
+                    default: "That's a great question! For detailed information, please call us at {{businessPhone}} or visit our office. We'd be happy to help!"
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+            }
+            
+            bindEvents() {
+                const chatToggle = document.getElementById('chatToggle');
+                const chatMinimize = document.getElementById('chatMinimize');
+                const sendButton = document.getElementById('sendButton');
+                const messageInput = document.getElementById('messageInput');
+                
+                chatToggle.addEventListener('click', () => this.toggleChat());
+                chatMinimize.addEventListener('click', () => this.closeChat());
+                sendButton.addEventListener('click', () => this.sendMessage());
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+            }
+            
+            toggleChat() {
+                const chatWidget = document.getElementById('chatWidget');
+                const chatToggle = document.getElementById('chatToggle');
+                
+                if (this.isOpen) {
+                    this.closeChat();
+                } else {
+                    this.openChat();
+                }
+            }
+            
+            openChat() {
+                const chatWidget = document.getElementById('chatWidget');
+                const chatToggle = document.getElementById('chatToggle');
+                
+                chatWidget.classList.add('active');
+                chatToggle.classList.add('active');
+                this.isOpen = true;
+                
+                // Focus on input
+                setTimeout(() => {
+                    document.getElementById('messageInput').focus();
+                }, 400);
+            }
+            
+            closeChat() {
+                const chatWidget = document.getElementById('chatWidget');
+                const chatToggle = document.getElementById('chatToggle');
+                
+                chatWidget.classList.remove('active');
+                chatToggle.classList.remove('active');
+                this.isOpen = false;
+            }
+            
+            addMessage(content, isUser = false, delay = 0) {
+                setTimeout(() => {
+                    const messagesContainer = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                    
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    messageDiv.innerHTML = `
+                        <div class="message-content">
+                            <p>${content}</p>
+                        </div>
+                        <div class="message-time">${timeString}</div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, delay);
+            }
+            
+            showTyping() {
+                const typingIndicator = document.getElementById('typingIndicator');
+                typingIndicator.classList.add('active');
+            }
+            
+            hideTyping() {
+                const typingIndicator = document.getElementById('typingIndicator');
+                typingIndicator.classList.remove('active');
+            }
+            
+            sendMessage() {
+                const messageInput = document.getElementById('messageInput');
+                const message = messageInput.value.trim();
+                
+                if (!message) return;
+                
+                this.addMessage(message, true);
+                messageInput.value = '';
+                
+                this.showTyping();
+                setTimeout(() => {
+                    this.hideTyping();
+                    this.processMessage(message);
+                }, 1500);
+            }
+            
+            processMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                let response = '';
+                
+                // Simple keyword detection for basic Q&A
+                if (lowerMessage.includes('hours') || lowerMessage.includes('open') || lowerMessage.includes('time')) {
+                    response = this.responses.hours;
+                } else if (lowerMessage.includes('location') || lowerMessage.includes('address') || lowerMessage.includes('where')) {
+                    response = this.responses.location;
+                } else if (lowerMessage.includes('services') || lowerMessage.includes('what do you') || lowerMessage.includes('help')) {
+                    response = this.responses.services;
+                } else if (lowerMessage.includes('buy') || lowerMessage.includes('buying') || lowerMessage.includes('purchase')) {
+                    response = this.responses.buying;
+                } else if (lowerMessage.includes('sell') || lowerMessage.includes('selling') || lowerMessage.includes('listing')) {
+                    response = this.responses.selling;
+                } else if (lowerMessage.includes('market') || lowerMessage.includes('value') || lowerMessage.includes('analysis')) {
+                    response = this.responses.market;
+                } else if (lowerMessage.includes('contact') || lowerMessage.includes('phone') || lowerMessage.includes('call')) {
+                    response = this.responses.contact;
+                } else if (lowerMessage.includes('commission') || lowerMessage.includes('fee') || lowerMessage.includes('cost')) {
+                    response = this.responses.commission;
+                } else if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                    response = this.responses.welcome;
+                } else {
+                    response = this.responses.default;
+                }
+                
+                this.addMessage(response);
+            }
+            
+
+        }
+        
+        // Initialize the simple chat assistant when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new SimpleChatAssistant();
+        });
+    </script>
+</body>
+</html>

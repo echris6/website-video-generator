@@ -1,0 +1,233 @@
+// Business Detection and Template Selection - UPDATED WITH ACTUAL TEMPLATES
+// All templates include functional chatbots:
+// - Medical Spa: #chatbot-trigger, #chatbot-input, SimpleChatbot class
+// - Real Estate: #chatToggle, #messageInput, SimpleChatAssistant class  
+// - HVAC: #hvacChatToggle, #hvacMessageInput, SimpleHVACChatAssistant class
+
+const fs = require('fs');
+const path = require('path');
+
+const businessName = "Luxe Aesthetics & Wellness Spa"; // Test data
+const businessDescription = "Premier medical spa offering Botox, fillers, laser treatments";
+const businessAddress = "2845 Beverly Hills Boulevard, Beverly Hills, CA 90210";
+const businessPhone = "(310) 555-LUXE";
+
+// Enhanced business type detection
+function detectBusinessType(name, description) {
+    const text = (name + " " + description).toLowerCase();
+    
+    // Medical Spa Detection
+    if (text.includes('med spa') || text.includes('medical spa') || text.includes('aesthetics') || 
+        text.includes('botox') || text.includes('filler') || text.includes('laser') || 
+        text.includes('spa') && (text.includes('medical') || text.includes('aesthetic'))) {
+        return {
+            industry: 'Medical Spa',
+            template: 'medical_spa',
+            primaryColor: '#E8B4CB',
+            secondaryColor: '#C891A8',
+            backgroundColor: '#FDF8FB',
+            textColor: '#2D2D2D',
+            accentColor: '#8B5A6B',
+            heroTitle: 'Transform Your Beauty Naturally',
+            tagline: 'Experience the perfect blend of medical expertise and luxury wellness in our state-of-the-art spa',
+            ctaText: 'Schedule Consultation',
+            chatbotSelector: '#chatbot-trigger', // Medical spa chatbot
+            inputSelector: '#chatbot-input'
+        };
+    }
+    
+    // Real Estate Detection
+    else if (text.includes('real estate') || text.includes('realty') || text.includes('realtor') || 
+             text.includes('property') || text.includes('homes') || text.includes('broker')) {
+        return {
+            industry: 'Real Estate',
+            template: 'real_estate',
+            primaryColor: '#1a365d',
+            secondaryColor: '#d4af37',
+            backgroundColor: '#fafafa',
+            textColor: '#1a365d',
+            accentColor: '#d4af37',
+            heroTitle: 'Luxury Property Excellence',
+            tagline: 'Navigate the luxury real estate market with unparalleled expertise and exclusive access to premium properties',
+            ctaText: 'Schedule Consultation',
+            chatbotSelector: '#chatToggle', // Real estate chatbot
+            inputSelector: '#messageInput'
+        };
+    }
+    
+    // HVAC/Home Services Detection
+    else if (text.includes('hvac') || text.includes('heating') || text.includes('cooling') || 
+             text.includes('air conditioning') || text.includes('furnace') || text.includes('plumbing') ||
+             text.includes('electrical') || text.includes('home service')) {
+        return {
+            industry: 'HVAC Services',
+            template: 'hvac',
+            primaryColor: '#1e40af',
+            secondaryColor: '#ea580c',
+            backgroundColor: '#ffffff',
+            textColor: '#1e293b',
+            accentColor: '#dc2626',
+            heroTitle: 'Professional HVAC Solutions',
+            tagline: 'Expert heating, cooling, and ventilation services with fast response times and guaranteed satisfaction',
+            ctaText: 'Get Free Estimate',
+            chatbotSelector: '#hvacChatToggle', // HVAC chatbot
+            inputSelector: '#hvacMessageInput'
+        };
+    }
+    
+    // Cosmetic Dental Detection
+    else if (text.includes('dental') || text.includes('dentist') || text.includes('invisalign') || 
+             text.includes('cosmetic') || text.includes('orthodontic') || text.includes('smile')) {
+        return {
+            industry: 'Cosmetic Dental',
+            template: 'cosmetic_dental',
+            primaryColor: '#2563eb',
+            secondaryColor: '#1d4ed8',
+            backgroundColor: '#ffffff',
+            textColor: '#1e293b',
+            accentColor: '#3b82f6',
+            heroTitle: 'Transform Your Smile',
+            tagline: 'Advanced cosmetic dentistry and Invisalign treatments for the confident smile you deserve',
+            ctaText: 'Book Consultation',
+            chatbotSelector: '#chatbot-trigger', // Default chatbot
+            inputSelector: '#chatbot-input'
+        };
+    }
+    
+    // Default Professional Services
+    else {
+        return {
+            industry: 'Professional Services',
+            template: 'medical_spa', // Default to medical spa template
+            primaryColor: '#E8B4CB',
+            secondaryColor: '#C891A8',
+            backgroundColor: '#FDF8FB',
+            textColor: '#2D2D2D',
+            accentColor: '#8B5A6B',
+            heroTitle: 'Professional Excellence',
+            tagline: 'Expert services tailored to your needs',
+            ctaText: 'Get Started',
+            chatbotSelector: '#chatbot-trigger', // Default chatbot
+            inputSelector: '#chatbot-input'
+        };
+    }
+}
+
+// Load template function - UPDATED TO USE ACTUAL TEMPLATE FILES
+function loadTemplate(templateType) {
+    try {
+        let templatePath;
+        
+        switch(templateType) {
+            case 'medical_spa':
+                templatePath = path.join(__dirname, 'templates', 'medical spa.html');
+                break;
+            case 'real_estate':
+                templatePath = path.join(__dirname, 'templates', 'real estate.html');
+                break;
+            case 'hvac':
+                templatePath = path.join(__dirname, 'templates', 'hvac.html');
+                break;
+            case 'cosmetic_dental':
+                // If we don't have a dental template, fallback to medical spa
+                templatePath = path.join(__dirname, 'templates', 'medical spa.html');
+                break;
+            default:
+                templatePath = path.join(__dirname, 'templates', 'medical spa.html');
+        }
+        
+        // Read the actual template file
+        if (fs.existsSync(templatePath)) {
+            return fs.readFileSync(templatePath, 'utf8');
+        } else {
+            console.error(`Template file not found: ${templatePath}`);
+            // Fallback to medical spa template
+            const fallbackPath = path.join(__dirname, 'templates', 'medical spa.html');
+            if (fs.existsSync(fallbackPath)) {
+                return fs.readFileSync(fallbackPath, 'utf8');
+            } else {
+                throw new Error('No template files found in templates folder');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading template:', error);
+        throw error;
+    }
+}
+
+// TEMPLATE FEATURES SUMMARY:
+// 
+// Medical Spa Template (medical spa.html):
+// - Chatbot: Simple chatbot with #chatbot-trigger button and #chatbot-input field
+// - Features: Rose gold theme, luxury medical spa design, service cards for Botox/fillers/laser
+// - Chat Class: SimpleChatbot - handles medical spa questions
+//
+// Real Estate Template (real estate.html): 
+// - Chatbot: Sophisticated chat with #chatToggle button and #messageInput field
+// - Features: Navy/gold luxury theme, property showcase, executive design
+// - Chat Class: SimpleChatAssistant - handles real estate questions
+//
+// HVAC Template (hvac.html):
+// - Chatbot: Professional HVAC chat with #hvacChatToggle and #hvacMessageInput
+// - Features: Blue/orange professional theme, emergency service focus, service cards
+// - Chat Class: SimpleHVACChatAssistant - handles HVAC service questions
+
+// Detect business type
+const businessData = detectBusinessType(businessName, businessDescription);
+
+// Load appropriate template
+let htmlTemplate = loadTemplate(businessData.template);
+
+// Replace all placeholders with actual business data
+const finalHTML = htmlTemplate
+    .replace(/{{businessName}}/g, businessName)
+    .replace(/{{heroTitle}}/g, businessData.heroTitle)
+    .replace(/{{tagline}}/g, businessData.tagline)
+    .replace(/{{ctaText}}/g, businessData.ctaText)
+    .replace(/{{businessAddress}}/g, businessAddress)
+    .replace(/{{businessPhone}}/g, businessPhone)
+    .replace(/{{primaryColor}}/g, businessData.primaryColor)
+    .replace(/{{secondaryColor}}/g, businessData.secondaryColor)
+    .replace(/{{backgroundColor}}/g, businessData.backgroundColor)
+    .replace(/{{textColor}}/g, businessData.textColor)
+    .replace(/{{accentColor}}/g, businessData.accentColor)
+    .replace(/{{mapEmbedCode}}/g, ''); // Add map embed later
+
+// Return final result
+const result = [{
+    json: {
+        html: finalHTML,
+        industry: businessData.industry,
+        template: businessData.template,
+        businessName: businessName,
+        businessPhone: businessPhone,
+        chatbotSelector: businessData.chatbotSelector,
+        inputSelector: businessData.inputSelector,
+        templateFeatures: {
+            medical_spa: {
+                chatbot: 'SimpleChatbot class with #chatbot-trigger and #chatbot-input',
+                theme: 'Rose gold luxury medical spa theme',
+                selectors: {trigger: '#chatbot-trigger', input: '#chatbot-input'}
+            },
+            real_estate: {
+                chatbot: 'SimpleChatAssistant class with #chatToggle and #messageInput', 
+                theme: 'Navy/gold executive real estate theme',
+                selectors: {trigger: '#chatToggle', input: '#messageInput'}
+            },
+            hvac: {
+                chatbot: 'SimpleHVACChatAssistant class with #hvacChatToggle and #hvacMessageInput',
+                theme: 'Blue/orange professional HVAC theme', 
+                selectors: {trigger: '#hvacChatToggle', input: '#hvacMessageInput'}
+            }
+        }
+    }
+}];
+
+// Usage example:
+console.log(`✅ Template loaded: ${businessData.template}`);
+console.log(`✅ Industry detected: ${businessData.industry}`);
+console.log(`✅ Chatbot selector: ${businessData.chatbotSelector}`);
+console.log(`✅ Input selector: ${businessData.inputSelector}`);
+console.log(`✅ All templates include working chatbots!`);
+
+module.exports = { detectBusinessType, loadTemplate, result }; 

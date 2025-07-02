@@ -657,7 +657,31 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
         
         // Create professional HVAC video - FIXED FFmpeg parameters with robust error handling
         console.log('🎬 Creating professional HVAC video...');
-        const videoPath = path.join(__dirname, 'videos', `hvac_professional_${businessName.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}.mp4`);
+        
+        // **FIX FILENAME SANITIZATION**: Handle special characters that break file paths
+        const sanitizeFilename = (name) => {
+            return name
+                .toLowerCase()
+                .replace(/[\/\\]/g, '_')           // Replace slashes with underscores  
+                .replace(/[&]/g, 'and')            // Replace & with 'and'
+                .replace(/[,]/g, '')               // Remove commas
+                .replace(/['"]/g, '')              // Remove quotes
+                .replace(/[()]/g, '')              // Remove parentheses
+                .replace(/[[\]]/g, '')             // Remove brackets
+                .replace(/[{}]/g, '')              // Remove braces
+                .replace(/[|]/g, '_')              // Replace pipes with underscores
+                .replace(/[?*<>]/g, '_')           // Replace invalid chars with underscores
+                .replace(/[:]/g, '_')              // Replace colons with underscores
+                .replace(/[.]{2,}/g, '_')          // Replace multiple dots with underscore
+                .replace(/\s+/g, '_')              // Replace spaces with underscores
+                .replace(/_{2,}/g, '_')            // Replace multiple underscores with single
+                .replace(/^_+|_+$/g, '');          // Remove leading/trailing underscores
+        };
+        
+        const sanitizedBusinessName = sanitizeFilename(businessName);
+        console.log(`🔧 SANITIZED: "${businessName}" → "${sanitizedBusinessName}"`);
+        
+        const videoPath = path.join(__dirname, 'videos', `hvac_professional_${sanitizedBusinessName}_${Date.now()}.mp4`);
         
         // **ROBUST ERROR HANDLING**: Ensure videos directory exists and is writable
         const videosDir = path.join(__dirname, 'videos');
