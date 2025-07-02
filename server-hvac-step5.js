@@ -266,16 +266,16 @@ function getHVACCursorPositionForFrame(frameIndex, totalFrames) {
     const sendPosition = { x: 1835, y: 934 };       // Send button
     const minimizePosition = { x: 1854, y: 562 };   // Minimize button
     
-    // **HVAC EMERGENCY TIMING** - 25 seconds professional demo
-    const moveToButtonEnd = 0.15;      // 0-15%: Move to chat (0-3.75s)
-    const clickPause = 0.176;          // 15-17.6%: Click button (3.75-4.4s)
-    const moveToInputEnd = 0.25;       // 17.6-25%: Move to input (4.4-6.25s)
-    const typingEnd = 0.4;             // 25-40%: Typing emergency message (6.25-10s)
-    const moveToSendEnd = 0.476;       // 40-47.6%: Move to send (10-11.9s)
-    const sendPause = 0.5;             // 47.6-50%: Send message (11.9-12.5s)
-    const moveToMinimizeEnd = 0.56;    // 50-56%: SLOW SMOOTH movement to minimize (12.5-14s)
-    const minimizePause = 0.58;        // 56-58%: Minimize click (14-14.5s) 
-    // 60-100%: Professional site tour (15-25s) - TRULY GRADUAL & READABLE
+    // **HVAC EMERGENCY TIMING** - 30 seconds professional demo (first 15s same speed, scrolling slower)
+    const moveToButtonEnd = 0.125;     // 0-12.5%: Move to chat (0-3.75s) - SAME TIMING
+    const clickPause = 0.147;          // 12.5-14.7%: Click button (3.75-4.4s) - SAME TIMING
+    const moveToInputEnd = 0.208;      // 14.7-20.8%: Move to input (4.4-6.25s) - SAME TIMING
+    const typingEnd = 0.333;           // 20.8-33.3%: Typing emergency message (6.25-10s) - SAME TIMING
+    const moveToSendEnd = 0.397;       // 33.3-39.7%: Move to send (10-11.9s) - SAME TIMING
+    const sendPause = 0.417;           // 39.7-41.7%: Send message (11.9-12.5s) - SAME TIMING
+    const moveToMinimizeEnd = 0.467;   // 41.7-46.7%: SLOW SMOOTH movement to minimize (12.5-14s) - SAME TIMING
+    const minimizePause = 0.483;       // 46.7-48.3%: Minimize click (14-14.5s) - SAME TIMING
+    // 50-100%: Professional site tour (15-30s) - SLOWER & MORE READABLE SCROLLING
     
     const progress = frameIndex / totalFrames;
     
@@ -315,9 +315,9 @@ function interpolatePosition(startPos, endPos, progress) {
     };
 }
 
-async function generateHVACVideo(businessName, niche) {
+async function generateHVACVideo(businessName, niche, htmlContent) {
     const browser = await puppeteer.launch({
-        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         headless: true,
         args: [
             '--no-sandbox',
@@ -333,15 +333,15 @@ async function generateHVACVideo(businessName, niche) {
         await page.setViewport({ width: 1920, height: 1080 });
 
         // Load the HVAC professional website  
-        const websiteContent = fs.readFileSync(path.join(__dirname, 'hvac1.html'), 'utf8');
+        const websiteContent = htmlContent || fs.readFileSync(path.join(__dirname, 'hvac1.html'), 'utf8');
         await page.setContent(websiteContent);
 
         const fps = 60;
-        const duration = 25; // 25 seconds professional demo
+        const duration = 30; // 30 seconds professional demo - extended for slower scrolling
         const totalFrames = fps * duration;
         
         console.log(`🎬 Generating ${totalFrames} frames for HVAC professional demo...`);
-        console.log(`🚨 HVAC Emergency Service Demo - Complete Professional Showcase`);
+        console.log(`🚨 HVAC Emergency Service Demo - 30s with SLOWER scrolling (15s chatbot + 15s scroll)`);
         
         // EXTENDED WAIT - Let all animations fully settle before recording
         await page.waitForTimeout(5000);
@@ -478,14 +478,14 @@ async function generateHVACVideo(businessName, niche) {
             fs.mkdirSync(framesDir);
         }
         
-        // **HVAC PROFESSIONAL TIMING SYSTEM**
-        const clickFrame = Math.floor(totalFrames * 0.176);         // Click at 4.4s
-        const inputFocusFrame = Math.floor(totalFrames * 0.25);     // Focus input at 6.25s
-        const typingStartFrame = Math.floor(totalFrames * 0.25);    // Start typing at 6.25s
-        const typingEndFrame = Math.floor(totalFrames * 0.4);       // End typing at 10s
-        const sendClickFrame = Math.floor(totalFrames * 0.476);     // Send at 11.9s
-        const minimizeClickFrame = Math.floor(totalFrames * 0.56);  // Minimize at 14s
-        const scrollStartFrame = Math.floor(totalFrames * 0.6);     // Professional tour at 15s - AFTER MINIMIZE COMPLETES
+        // **HVAC PROFESSIONAL TIMING SYSTEM** - Updated for 30s duration (first 15s same speed)
+        const clickFrame = Math.floor(totalFrames * 0.147);         // Click at 4.4s - SAME TIMING
+        const inputFocusFrame = Math.floor(totalFrames * 0.208);    // Focus input at 6.25s - SAME TIMING
+        const typingStartFrame = Math.floor(totalFrames * 0.208);   // Start typing at 6.25s - SAME TIMING
+        const typingEndFrame = Math.floor(totalFrames * 0.333);     // End typing at 10s - SAME TIMING
+        const sendClickFrame = Math.floor(totalFrames * 0.397);     // Send at 11.9s - SAME TIMING
+        const minimizeClickFrame = Math.floor(totalFrames * 0.467); // Minimize at 14s - SAME TIMING
+        const scrollStartFrame = Math.floor(totalFrames * 0.5);     // Professional tour at 15s - SLOWER SCROLLING (15s instead of 10s)
         
         // HVAC Emergency Message - proper sentence that will display fully
         const emergencyMessage = "I need HVAC repair service";
@@ -695,7 +695,7 @@ async function generateHVACVideo(businessName, niche) {
             duration: duration,
             fps: fps,
             frames: totalFrames,
-            message: `HVAC emergency service demo: "${emergencyMessage}" (no text cutoff, original design preserved)`
+            message: `HVAC emergency service demo: "${emergencyMessage}" (30s with slower scrolling, no text cutoff, original design preserved)`
         };
 
     } catch (error) {
@@ -714,15 +714,16 @@ app.get('/health', (req, res) => {
 // HVAC video generation endpoint
 app.post('/generate-video', async (req, res) => {
     try {
-        const { businessName, niche } = req.body;
+        const { businessName, niche, htmlContent } = req.body;
         
-        console.log(`🚨 HVAC EMERGENCY SERVICE DEMO - ORIGINAL DESIGN PRESERVED`);
+        console.log(`🚨 HVAC EMERGENCY SERVICE DEMO - CUSTOMIZED FOR YOUR BUSINESS`);
         console.log(`📋 Business: ${businessName}`);
         console.log(`🏢 Niche: HVAC Emergency Services`);
         console.log(`🔧 Features: 24/7 Service, Emergency Response, Licensed Technicians`);
-        console.log(`🎬 Demo Flow: Emergency Chat → "I need HVAC repair service" → Site Tour (NO UI CHANGES)`);
+        console.log(`🎬 Demo Flow: Emergency Chat → "I need HVAC repair service" → Slower Site Tour (30s total)`);
+        console.log(`📄 HTML Content: ${htmlContent ? 'Custom business template loaded' : 'Using default template'}`);
         
-        const result = await generateHVACVideo(businessName, niche);
+        const result = await generateHVACVideo(businessName, niche, htmlContent);
         res.json(result);
         
     } catch (error) {
