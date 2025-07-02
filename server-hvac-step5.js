@@ -652,6 +652,9 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             '-pix_fmt', 'yuv420p',
             '-crf', '18',
             '-preset', 'medium',
+            '-movflags', '+faststart',
+            '-avoid_negative_ts', 'make_zero',
+            '-fflags', '+genpts',
             videoPath
         ]);
 
