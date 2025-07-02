@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{businessName}} | Premium HVAC Services | {{heroTitle}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: {{primaryColor}};
+            --secondary-color: {{secondaryColor}};
+            --background-color: {{backgroundColor}};
+            --text-color: {{textColor}};
+            --accent-color: {{accentColor}};
+            
+            /* Premium HVAC Professional Palette */
+            --trust-blue: #0f172a;
+            --emergency-red: #dc2626;
+            --emergency-orange: #ea580c;
+            --professional-navy: #1e293b;
+            --reliable-gray: #475569;
+            --premium-white: #ffffff;
+            --success-green: #059669;
+            --warning-amber: #f59e0b;
+            
+            /* Advanced Gradients */
+            --emergency-gradient: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+            --trust-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --professional-gradient: linear-gradient(135deg, #64748b 0%, #475569 50%, #334155 100%);
+            --success-gradient: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+            
+            /* Glass Effects */
+            --glass-white: rgba(255, 255, 255, 0.08);
+            --glass-white-strong: rgba(255, 255, 255, 0.15);
+            --glass-dark: rgba(15, 23, 42, 0.08);
+            --glass-emergency: rgba(220, 38, 38, 0.1);
+            
+            /* Shadows & Effects */
+            --shadow-premium: 0 25px 50px rgba(15, 23, 42, 0.08);
+            --shadow-hover: 0 35px 70px rgba(15, 23, 42, 0.12);
+            --shadow-emergency: 0 20px 40px rgba(220, 38, 38, 0.2);
+            --shadow-floating: 0 10px 25px rgba(15, 23, 42, 0.1);
+            
+            /* Professional Textures */
+            --metal-texture: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
+                             linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%);
+            --blueprint-pattern: radial-gradient(circle at 2px 2px, rgba(30, 64, 175, 0.1) 1px, transparent 0);
+            --shimmer: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--professional-navy);
+            background: var(--premium-white);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Premium Preloader */
+        .premium-preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--trust-gradient);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .preloader-content {
+            text-align: center;
+        }
+
+        .hvac-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--emergency-orange);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .preloader-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        /* Emergency Banner */
+        .emergency-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--emergency-gradient);
+            color: white;
+            padding: 1rem 0;
+            z-index: 9999;
+            text-align: center;
+            animation: slideDown 1s ease 2s forwards;
+            transform: translateY(-100%);
+            box-shadow: var(--shadow-emergency);
+        }
+
+        @keyframes slideDown {
+            to { transform: translateY(0); }
+        }
+
+        .banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .banner-icon {
+            font-size: 1.5rem;
+            animation: flash 2s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+
+
+        /* Floating Background Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-blueprint {
+            position: absolute;
+            background: var(--blueprint-pattern);
+            background-size: 20px 20px;
+            border-radius: 12px;
+            opacity: 0.03;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .floating-blueprint:nth-child(1) {
+            width: 300px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .floating-blueprint:nth-child(2) {
+            width: 250px;
+            height: 150px;
+            top: 60%;
+            right: 8%;
+            animation-delay: -8s;
+        }
+
+        .floating-blueprint:nth-child(3) {
+            width: 200px;
+            height: 250px;
+            bottom: 20%;
+            left: 15%;
+            animation-delay: -16s;
+        }
+
+        .floating-blueprint:nth-child(4) {
+            width: 350px;
+            height: 180px;
+            top: 35%;
+            right: 20%;
+            animation-delay: -12s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(1deg); }
+            50% { transform: translateY(-30px) rotate(-1deg); }
+            75% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Reveal Animations */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-element.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-left.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-right.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Premium Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: var(--shadow-premium);
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--trust-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '⚙';
+            font-size: 1.5rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--professional-navy);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 0.5rem 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--emergency-gradient);
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 2px;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--emergency-red);
+            transform: translateY(-2px);
+        }
+
+        .header-emergency {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .emergency-phone {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--emergency-gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-emergency);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emergency-phone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--shimmer);
+            transition: left 0.6s ease;
+        }
+
+        .emergency-phone:hover::before {
+            left: 100%;
+        }
+
+        .emergency-phone:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 60px rgba(220, 38, 38, 0.25);
+        }
+
+        .response-time {
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Cinematic Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding-top: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(15, 23, 42, 0.05) 0%, transparent 50%),
+                var(--metal-texture);
+            background-size: auto, 40px 40px;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass-white-strong);
+            backdrop-filter: blur(10px);
+            color: var(--professional-navy);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .hero-badge:hover {
+            background: var(--glass-white-strong);
+            transform: translateY(-2px);
+        }
+
+        .emergency-badge {
+            background: var(--emergency-gradient);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            background: var(--trust-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--reliable-gray);
+            margin-bottom: 3rem;
+            font-weight: 400;
+            line-height: 1.7;
+            max-width: 650px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--emergency-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--reliable-gray);
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--emergency-gradient);
+            color: white;
+            padding: 1.5rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-emergency);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--shimmer);
+            transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 70px rgba(220, 38, 38, 0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--trust-blue);
+            border: 3px solid var(--trust-blue);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .cta-secondary:hover {
+            background: var(--trust-blue);
+            color: white;
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Professional Authority Section */
+        .authority {
+            padding: 8rem 0;
+            background: var(--professional-navy);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .authority::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--metal-texture);
+            background-size: 60px 60px;
+            opacity: 0.02;
+        }
+
+        .authority h2 {
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .authority-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 6rem;
+            font-weight: 300;
+        }
+
+        .certifications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        .cert-item {
+            background: var(--glass-white);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .cert-item:hover {
+            transform: translateY(-10px);
+            background: var(--glass-white-strong);
+        }
+
+        .cert-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .cert-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cert-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .counter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto 4rem;
+        }
+
+        .counter-item {
+            text-align: center;
+        }
+
+        .counter-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--emergency-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            line-height: 1;
+        }
+
+        .counter-label {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .brand-item {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .brand-item:hover {
+            background: var(--glass-white-strong);
+            transform: translateY(-5px);
+        }
+
+        /* Premium Services Section */
+        .services {
+            padding: 10rem 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            position: relative;
+        }
+
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--blueprint-pattern);
+            background-size: 30px 30px;
+            opacity: 0.02;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: var(--trust-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .services-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: var(--reliable-gray);
+            margin-bottom: 6rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--glass-white-strong);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-premium);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--trust-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 24px;
+        }
+
+        .service-card:hover::before {
+            opacity: 0.03;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(15, 23, 42, 0.15);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--emergency-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--professional-navy);
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-description {
+            font-size: 1.1rem;
+            color: var(--reliable-gray);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            color: var(--reliable-gray);
+        }
+
+        .service-features li::before {
+            content: '✓';
+            background: var(--success-gradient);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .service-pricing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--emergency-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .response-time-badge {
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .service-cta {
+            width: 100%;
+            background: transparent;
+            color: var(--trust-blue);
+            border: 2px solid var(--trust-blue);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .service-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--trust-blue);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .service-cta:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .service-cta:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* Premium Contact Section */
+        .contact {
+            padding: 10rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--blueprint-pattern);
+            background-size: 25px 25px;
+            opacity: 0.02;
+        }
+
+        .contact h2 {
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: var(--trust-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .contact-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: var(--reliable-gray);
+            margin-bottom: 6rem;
+            font-weight: 400;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: stretch;
+        }
+
+        .contact-info {
+            background: var(--glass-white-strong);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-floating);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--emergency-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .contact-details h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--professional-navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-details p {
+            color: var(--reliable-gray);
+            line-height: 1.6;
+        }
+
+        .contact-form {
+            background: var(--glass-white-strong);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--professional-navy);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid rgba(15, 23, 42, 0.1);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--emergency-red);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-floating);
+            background: white;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .emergency-form-cta {
+            width: 100%;
+            background: var(--emergency-gradient);
+            color: white;
+            border: none;
+            padding: 1.5rem 2rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: var(--shadow-emergency);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emergency-form-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--shimmer);
+            transition: left 0.6s ease;
+        }
+
+        .emergency-form-cta:hover::before {
+            left: 100%;
+        }
+
+        .emergency-form-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 60px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Premium Footer */
+        footer {
+            background: linear-gradient(135deg, var(--professional-navy) 0%, #0f172a 100%);
+            color: white;
+            padding: 6rem 0 3rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--metal-texture);
+            background-size: 50px 50px;
+            opacity: 0.02;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-brand {
+            padding-right: 2rem;
+        }
+
+        .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-logo::before {
+            content: '⚙';
+            font-size: 1.5rem;
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .footer-emergency {
+            background: var(--emergency-gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-emergency:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-emergency);
+        }
+
+        .footer-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .container { padding: 0 1.5rem; }
+            .services-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+            .contact-container { grid-template-columns: 1fr; gap: 3rem; }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+
+                 @media (max-width: 768px) {
+             .container { padding: 0 1rem; }
+             .header-content { flex-direction: column; gap: 1rem; }
+             .hero { padding-top: 160px; }
+             .hero-stats { justify-content: center; }
+             .services-grid { grid-template-columns: 1fr; }
+             .certifications { grid-template-columns: repeat(2, 1fr); }
+             .counter-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+             .footer-content { grid-template-columns: 1fr; }
+             .floating-blueprint { display: none; }
+         }
+
+                 @media (max-width: 480px) {
+             .hero h1 { font-size: 2.5rem; }
+             .certifications { grid-template-columns: 1fr; }
+             .counter-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+             .form-grid { grid-template-columns: 1fr; }
+         }
+
+        /* Professional HVAC Chatbot Styles */
+        .hvac-chat-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9990;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hvac-chat-toggle {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-premium), 0 0 0 3px rgba(30, 64, 175, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid rgba(234, 88, 12, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hvac-chat-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--emergency-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .hvac-chat-toggle:hover::before {
+            opacity: 0.1;
+        }
+
+        .hvac-chat-toggle:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow-premium), 0 0 20px rgba(30, 64, 175, 0.4);
+        }
+
+        .chat-icon, .chat-close {
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chat-close {
+            display: none;
+        }
+
+        .hvac-chat-toggle.active .chat-icon {
+            display: none;
+        }
+
+        .hvac-chat-toggle.active .chat-close {
+            display: flex;
+        }
+
+        .hvac-chat-widget {
+            position: absolute;
+            bottom: 85px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: var(--glass-white-strong);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(30, 64, 175, 0.1);
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        .hvac-chat-widget.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .hvac-chat-header {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+
+        .hvac-chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--emergency-gradient);
+            opacity: 0.05;
+        }
+
+        .hvac-agent-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hvac-agent-details h4 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 0.3rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .hvac-agent-status {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .hvac-chat-minimize {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hvac-chat-minimize:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .hvac-chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .hvac-chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .hvac-chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .hvac-chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(30, 64, 175, 0.3);
+            border-radius: 2px;
+        }
+
+        .hvac-message {
+            margin-bottom: 1rem;
+            animation: hvacMessageSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .hvac-bot-message .hvac-message-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid rgba(30, 64, 175, 0.1);
+            padding: 0.9rem 1.1rem;
+            border-radius: 16px 16px 16px 4px;
+            max-width: 85%;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.08);
+        }
+
+        .hvac-user-message {
+            text-align: right;
+        }
+
+        .hvac-user-message .hvac-message-content {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            padding: 0.9rem 1.1rem;
+            border-radius: 16px 16px 4px 16px;
+            max-width: 85%;
+            margin-left: auto;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+        }
+
+        .hvac-message-content p {
+            margin: 0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .hvac-message-time {
+            font-size: 0.75rem;
+            color: var(--reliable-gray);
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+
+
+
+        .hvac-chat-input-container {
+            padding: 0.8rem 1rem;
+            border-top: 1px solid rgba(30, 64, 175, 0.1);
+        }
+
+        .hvac-chat-input {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .hvac-chat-input input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(30, 64, 175, 0.15);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .hvac-chat-input input:focus {
+            outline: none;
+            border-color: #1e40af;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-floating);
+        }
+
+        .hvac-send-button {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .hvac-send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+        }
+
+        .hvac-typing-indicator {
+            display: none;
+            padding: 0 1rem 0.8rem;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--reliable-gray);
+        }
+
+        .hvac-typing-indicator.active {
+            display: flex;
+        }
+
+        .hvac-typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .hvac-typing-dots .dot {
+            width: 6px;
+            height: 6px;
+            background: #1e40af;
+            border-radius: 50%;
+            animation: hvacTypingBounce 1.4s infinite ease-in-out;
+        }
+
+        .hvac-typing-dots .dot:nth-child(1) { animation-delay: -0.32s; }
+        .hvac-typing-dots .dot:nth-child(2) { animation-delay: -0.16s; }
+
+
+
+        @keyframes hvacMessageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes hvacTypingBounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Responsive for HVAC Chat */
+        @media (max-width: 768px) {
+            .hvac-chat-container {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .hvac-chat-widget {
+                width: calc(100vw - 2rem);
+                height: 400px;
+                right: -1rem;
+            }
+        }
+
+        /* Performance & Accessibility */
+        .service-card, .cta-button { will-change: transform; }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .floating-blueprint, .emergency-badge { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Preloader -->
+    <div class="premium-preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="hvac-spinner"></div>
+            <div class="preloader-text">Premium HVAC Solutions Loading...</div>
+        </div>
+    </div>
+
+    <!-- Emergency Banner -->
+    <div class="emergency-banner">
+                 <div class="banner-content">
+             <span class="banner-icon">⚡</span>
+             <span>24/7 Emergency HVAC Service | Average Response Time: 45 Minutes</span>
+             <span class="banner-icon">⚡</span>
+         </div>
+    </div>
+
+
+
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-blueprint"></div>
+        <div class="floating-blueprint"></div>
+        <div class="floating-blueprint"></div>
+        <div class="floating-blueprint"></div>
+    </div>
+
+    <!-- Premium Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">{{businessName}}</div>
+                <div class="header-nav">
+                    <nav>
+                        <ul>
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="header-emergency">
+                        <div class="response-time">⚡ 45min response</div>
+                                                 <a href="tel:{{businessPhone}}" class="emergency-phone">
+                             ⚡ Emergency: {{businessPhone}}
+                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cinematic Hero Section -->
+    <section class="hero reveal-element" id="home">
+        <div class="container">
+            <div class="hero-content">
+                                 <div class="hero-badges">
+                     <div class="hero-badge emergency-badge">⚡ 24/7 Emergency Available</div>
+                     <div class="hero-badge">⌘ Licensed & Insured</div>
+                     <div class="hero-badge">✓ 100% Satisfaction Guaranteed</div>
+                     <div class="hero-badge">★ BBB A+ Rating</div>
+                 </div>
+                <h1>{{heroTitle}}</h1>
+                <p>{{tagline}}</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="15">15</span>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="10000">10000+</span>
+                        <div class="stat-label">Customers Served</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="99">99%</span>
+                        <div class="stat-label">% Satisfaction Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="45">45</span>
+                        <div class="stat-label">Min Response Time</div>
+                    </div>
+                </div>
+                <div class="hero-ctas">
+                    <a href="#contact" class="cta-button">{{ctaText}}</a>
+                                         <a href="tel:{{businessPhone}}" class="cta-button cta-secondary">⚡ Emergency Service</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Authority Section -->
+    <section class="authority" id="about">
+        <div class="container">
+            <div class="authority-content reveal-element">
+                <h2>Professional Excellence</h2>
+                <p class="authority-subtitle">Certified expertise you can trust for all your HVAC needs</p>
+                
+                                 <div class="certifications">
+                     <div class="cert-item">
+                         <span class="cert-icon">⌘</span>
+                         <div class="cert-title">Licensed & Bonded</div>
+                         <div class="cert-desc">Fully licensed contractor with comprehensive insurance coverage</div>
+                     </div>
+                     <div class="cert-item">
+                         <span class="cert-icon">★</span>
+                         <div class="cert-title">BBB A+ Rating</div>
+                         <div class="cert-desc">Better Business Bureau accredited with highest rating</div>
+                     </div>
+                     <div class="cert-item">
+                         <span class="cert-icon">✓</span>
+                         <div class="cert-title">EPA Certified</div>
+                         <div class="cert-desc">Environmental Protection Agency certified technicians</div>
+                     </div>
+                     <div class="cert-item">
+                         <span class="cert-icon">⚙</span>
+                         <div class="cert-title">NATE Certified</div>
+                         <div class="cert-desc">North American Technician Excellence certified team</div>
+                     </div>
+                 </div>
+
+                                 <div class="counter-grid">
+                     <div class="counter-item">
+                         <span class="counter-number" data-count="15">15</span>
+                         <div class="counter-label">Years in Business</div>
+                     </div>
+                     <div class="counter-item">
+                         <span class="counter-number" data-count="10000">10000+</span>
+                         <div class="counter-label">Happy Customers</div>
+                     </div>
+                     <div class="counter-item">
+                         <span class="counter-number" data-count="99">99%</span>
+                         <div class="counter-label">% Satisfaction Rate</div>
+                     </div>
+                     <div class="counter-item">
+                         <span class="counter-number" data-count="24">24</span>
+                         <div class="counter-label">24-Hour Emergency Service</div>
+                     </div>
+                 </div>
+
+                <div class="brands-grid">
+                    <div class="brand-item">Carrier</div>
+                    <div class="brand-item">Trane</div>
+                    <div class="brand-item">Lennox</div>
+                    <div class="brand-item">York</div>
+                    <div class="brand-item">Rheem</div>
+                    <div class="brand-item">Goodman</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="reveal-element">Expert HVAC Services</h2>
+            <p class="services-subtitle reveal-element">Professional heating, cooling, and air quality solutions with guaranteed satisfaction</p>
+            <div class="services-grid reveal-element">
+                                 <div class="service-card">
+                     <div class="service-icon">⚡</div>
+                     <h3>Emergency Repairs</h3>
+                    <p class="service-description">24/7 emergency HVAC repairs with rapid response times to restore your comfort when you need it most.</p>
+                    <ul class="service-features">
+                        <li>24/7 Emergency Availability</li>
+                        <li>45-Minute Average Response</li>
+                        <li>Upfront Pricing</li>
+                        <li>Licensed Technicians</li>
+                    </ul>
+                    <div class="service-pricing">
+                        <div class="service-price">Starting at $89</div>
+                        <div class="response-time-badge">45min response</div>
+                    </div>
+                    <button class="service-cta">Call for Emergency Service</button>
+                </div>
+                
+                                 <div class="service-card">
+                     <div class="service-icon">⌂</div>
+                     <h3>System Installation</h3>
+                    <p class="service-description">Professional installation of new HVAC systems with energy-efficient options and comprehensive warranties.</p>
+                    <ul class="service-features">
+                        <li>Energy-Efficient Systems</li>
+                        <li>Professional Installation</li>
+                        <li>Comprehensive Warranties</li>
+                        <li>Financing Available</li>
+                    </ul>
+                    <div class="service-pricing">
+                        <div class="service-price">Free Estimates</div>
+                        <div class="response-time-badge">Same day quote</div>
+                    </div>
+                    <button class="service-cta">Get Free Estimate</button>
+                </div>
+                
+                                 <div class="service-card">
+                     <div class="service-icon">⚙</div>
+                     <h3>Maintenance Programs</h3>
+                    <p class="service-description">Regular maintenance programs to keep your system running efficiently and prevent costly emergency repairs.</p>
+                    <ul class="service-features">
+                        <li>Bi-Annual Tune-ups</li>
+                        <li>Priority Emergency Service</li>
+                        <li>Discounted Repairs</li>
+                        <li>Extended Equipment Life</li>
+                    </ul>
+                    <div class="service-pricing">
+                        <div class="service-price">Starting at $149</div>
+                        <div class="response-time-badge">Scheduled service</div>
+                    </div>
+                    <button class="service-cta">Schedule Maintenance</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="reveal-element">Get Your Free Estimate</h2>
+            <p class="contact-subtitle reveal-element">Ready to improve your comfort? Contact us for expert HVAC solutions.</p>
+            <div class="contact-container reveal-element">
+                <div class="contact-info">
+                                         <div class="contact-item">
+                         <div class="contact-icon">☎</div>
+                         <div class="contact-details">
+                             <h3>Emergency Service</h3>
+                             <p>{{businessPhone}}<br>24/7 Emergency Availability</p>
+                         </div>
+                     </div>
+                     <div class="contact-item">
+                         <div class="contact-icon">◉</div>
+                         <div class="contact-details">
+                             <h3>Service Area</h3>
+                             <p>{{businessAddress}}<br>Serving the entire metro area</p>
+                         </div>
+                     </div>
+                     <div class="contact-item">
+                         <div class="contact-icon">⧖</div>
+                         <div class="contact-details">
+                             <h3>Response Time</h3>
+                             <p>Average 45 minutes<br>Same-day service available</p>
+                         </div>
+                     </div>
+                     <div class="contact-item">
+                         <div class="contact-icon">$</div>
+                         <div class="contact-details">
+                             <h3>Free Estimates</h3>
+                             <p>No hidden fees<br>Upfront, transparent pricing</p>
+                         </div>
+                     </div>
+                </div>
+                
+                <form class="contact-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service Needed</label>
+                        <select id="service" name="service" required>
+                            <option value="">Select a service...</option>
+                            <option value="emergency">Emergency Repair</option>
+                            <option value="installation">New Installation</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="quote">Free Estimate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Describe Your HVAC Needs</label>
+                        <textarea id="message" name="message" placeholder="Tell us about your heating, cooling, or air quality concerns..."></textarea>
+                    </div>
+                    <button type="submit" class="emergency-form-cta">{{ctaText}}</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">{{businessName}}</div>
+                    <p class="footer-description">Professional HVAC services with 15+ years of experience. Licensed, insured, and committed to your comfort with 24/7 emergency service.</p>
+                                         <a href="tel:{{businessPhone}}" class="footer-emergency">
+                         ⚡ Emergency: {{businessPhone}}
+                     </a>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#services">Emergency Repairs</a></li>
+                        <li><a href="#services">System Installation</a></li>
+                        <li><a href="#services">Maintenance</a></li>
+                        <li><a href="#services">Air Quality</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#about">Certifications</a></li>
+                        <li><a href="#contact">Service Area</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#contact">Free Estimates</a></li>
+                        <li><a href="#services">Financing</a></li>
+                        <li><a href="#services">Warranties</a></li>
+                        <li><a href="#contact">Emergency Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 {{businessName}}. All rights reserved. Licensed & Insured HVAC Contractor.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Professional HVAC Chatbot -->
+    <div class="hvac-chat-container" id="hvacChatContainer">
+        <!-- Chat Toggle Button -->
+        <div class="hvac-chat-toggle" id="hvacChatToggle">
+            <div class="chat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                </svg>
+            </div>
+            <div class="chat-close" id="hvacChatClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Chat Widget -->
+        <div class="hvac-chat-widget" id="hvacChatWidget">
+            <!-- Chat Header -->
+            <div class="hvac-chat-header">
+                <div class="hvac-agent-info">
+                    <div class="hvac-agent-details">
+                        <h4>{{businessName}} HVAC</h4>
+                        <span class="hvac-agent-status">🚨 24/7 Emergency Service</span>
+                    </div>
+                </div>
+                <button class="hvac-chat-minimize" id="hvacChatMinimize">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13H5v-2h14v2z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="hvac-chat-messages" id="hvacChatMessages">
+                <div class="hvac-message hvac-bot-message">
+                    <div class="hvac-message-content">
+                        <p>Hello! I'm here to answer questions about our HVAC services. How can I help you today?</p>
+                    </div>
+                    <div class="hvac-message-time">Just now</div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="hvac-chat-input-container">
+                <div class="hvac-chat-input">
+                    <input type="text" id="hvacMessageInput" placeholder="Describe your HVAC issue...">
+                    <button class="hvac-send-button" id="hvacSendButton">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="hvac-typing-indicator" id="hvacTypingIndicator">
+                <div class="hvac-typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <span>Technician typing...</span>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Advanced JavaScript -->
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 1500);
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Reveal animations
+        const revealElements = document.querySelectorAll('.reveal-element, .reveal-left, .reveal-right');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+        // Counter numbers are now static (no animation)
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Form interactions
+        const formInputs = document.querySelectorAll('input, textarea, select');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Emergency tracking
+        document.querySelectorAll('[href^="tel:"]').forEach(phoneLink => {
+            phoneLink.addEventListener('click', function() {
+                console.log('Emergency HVAC call initiated');
+            });
+        });
+
+        console.log('Premium HVAC website loaded successfully');
+
+        // Simple HVAC Chat Assistant
+        class SimpleHVACChatAssistant {
+            constructor() {
+                this.isOpen = false;
+                this.responses = {
+                    welcome: "Hello! I'm here to answer questions about our HVAC services. How can I help you today?",
+                    
+                    // Simple Q&A responses
+                    hours: "We provide 24/7 emergency service! Regular business hours are Monday-Friday 8AM-6PM, Saturday 9AM-4PM. For emergencies, call {{businessPhone}} anytime.",
+                    emergency: "For heating or cooling emergencies, call {{businessPhone}} immediately. We offer 24/7 emergency service with same-day response. Emergency service starts at $89.",
+                    services: "We offer heating & cooling repair, new system installation, maintenance, air quality solutions, and 24/7 emergency service. How can we help you?",
+                    installation: "We provide free estimates for new HVAC systems. High-efficiency systems available with financing options. Our team is licensed and insured.",
+                    maintenance: "Regular maintenance prevents breakdowns and extends system life. Our tune-ups include cleaning, inspection, and efficiency testing. Starting at $149.",
+                    repair: "We repair all brands of heating and cooling systems. Licensed technicians provide same-day service for most repairs. Emergency service available 24/7.",
+                    cost: "We provide upfront pricing with no hidden fees. Emergency service starts at $89. New installations start around $3,000. Maintenance starts at $149.",
+                    financing: "We offer flexible financing options with approved credit. Low monthly payments available. Same-day approval for qualified customers.",
+                    area: "We serve the entire metro area with same-day service. Our service area covers a 50-mile radius from our main location.",
+                    license: "We are fully licensed, bonded, and insured HVAC contractors with EPA certification and NATE-certified technicians. BBB A+ rating.",
+                    
+                    default: "For immediate help, please call {{businessPhone}}. We're here 24/7 for emergencies. What specific HVAC question can I help answer?"
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+            }
+            
+            bindEvents() {
+                const chatToggle = document.getElementById('hvacChatToggle');
+                const chatMinimize = document.getElementById('hvacChatMinimize');
+                const sendButton = document.getElementById('hvacSendButton');
+                const messageInput = document.getElementById('hvacMessageInput');
+                
+                chatToggle.addEventListener('click', () => this.toggleChat());
+                chatMinimize.addEventListener('click', () => this.closeChat());
+                sendButton.addEventListener('click', () => this.sendMessage());
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+            }
+            
+            toggleChat() {
+                if (this.isOpen) {
+                    this.closeChat();
+                } else {
+                    this.openChat();
+                }
+            }
+            
+            openChat() {
+                const chatWidget = document.getElementById('hvacChatWidget');
+                const chatToggle = document.getElementById('hvacChatToggle');
+                
+                chatWidget.classList.add('active');
+                chatToggle.classList.add('active');
+                this.isOpen = true;
+                
+                // Focus on input
+                setTimeout(() => {
+                    document.getElementById('hvacMessageInput').focus();
+                }, 400);
+            }
+            
+            closeChat() {
+                const chatWidget = document.getElementById('hvacChatWidget');
+                const chatToggle = document.getElementById('hvacChatToggle');
+                
+                chatWidget.classList.remove('active');
+                chatToggle.classList.remove('active');
+                this.isOpen = false;
+            }
+            
+            addMessage(content, isUser = false, delay = 0) {
+                setTimeout(() => {
+                    const messagesContainer = document.getElementById('hvacChatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `hvac-message ${isUser ? 'hvac-user-message' : 'hvac-bot-message'}`;
+                    
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    messageDiv.innerHTML = `
+                        <div class="hvac-message-content">
+                            <p>${content}</p>
+                        </div>
+                        <div class="hvac-message-time">${timeString}</div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, delay);
+            }
+            
+            showTyping() {
+                const typingIndicator = document.getElementById('hvacTypingIndicator');
+                typingIndicator.classList.add('active');
+            }
+            
+            hideTyping() {
+                const typingIndicator = document.getElementById('hvacTypingIndicator');
+                typingIndicator.classList.remove('active');
+            }
+            
+            sendMessage() {
+                const messageInput = document.getElementById('hvacMessageInput');
+                const message = messageInput.value.trim();
+                
+                if (!message) return;
+                
+                this.addMessage(message, true);
+                messageInput.value = '';
+                
+                this.showTyping();
+                setTimeout(() => {
+                    this.hideTyping();
+                    this.processMessage(message);
+                }, 1500);
+            }
+            
+            processMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                let response = '';
+                
+                // Simple keyword detection for basic Q&A
+                if (lowerMessage.includes('hours') || lowerMessage.includes('open') || lowerMessage.includes('time')) {
+                    response = this.responses.hours;
+                } else if (lowerMessage.includes('emergency') || lowerMessage.includes('urgent') || lowerMessage.includes('no heat') || lowerMessage.includes('no ac') || lowerMessage.includes('broken')) {
+                    response = this.responses.emergency;
+                } else if (lowerMessage.includes('services') || lowerMessage.includes('what do you') || lowerMessage.includes('help')) {
+                    response = this.responses.services;
+                } else if (lowerMessage.includes('install') || lowerMessage.includes('new system') || lowerMessage.includes('replace')) {
+                    response = this.responses.installation;
+                } else if (lowerMessage.includes('maintenance') || lowerMessage.includes('tune') || lowerMessage.includes('check')) {
+                    response = this.responses.maintenance;
+                } else if (lowerMessage.includes('repair') || lowerMessage.includes('fix') || lowerMessage.includes('broken')) {
+                    response = this.responses.repair;
+                } else if (lowerMessage.includes('cost') || lowerMessage.includes('price') || lowerMessage.includes('how much')) {
+                    response = this.responses.cost;
+                } else if (lowerMessage.includes('financing') || lowerMessage.includes('payment') || lowerMessage.includes('monthly')) {
+                    response = this.responses.financing;
+                } else if (lowerMessage.includes('area') || lowerMessage.includes('location') || lowerMessage.includes('serve')) {
+                    response = this.responses.area;
+                } else if (lowerMessage.includes('license') || lowerMessage.includes('certified') || lowerMessage.includes('insured')) {
+                    response = this.responses.license;
+                } else if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                    response = this.responses.welcome;
+                } else {
+                    response = this.responses.default;
+                }
+                
+                this.addMessage(response);
+            }
+            
+
+        }
+        
+        // Initialize the simple HVAC chat assistant when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new SimpleHVACChatAssistant();
+        });
+    </script>
+</body>
+</html>
+    </style>
+</head>
+<body>
+    <!-- Rest of the file remains unchanged -->
+</body>
+</html> 

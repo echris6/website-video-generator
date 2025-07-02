@@ -1,0 +1,328 @@
+name: Generate HVAC Marketing Videos
+
+on:
+  # Manual trigger with inputs
+  workflow_dispatch:
+    inputs:
+      business_name:
+        description: 'HVAC business name'
+        required: true
+        type: string
+      business_phone:
+        description: 'Business phone number'
+        required: true
+        type: string
+      business_address:
+        description: 'Business address'
+        required: true
+        type: string
+      business_website:
+        description: 'Business website URL'
+        required: true
+        type: string
+      industry:
+        description: 'Always HVAC Services'
+        required: false
+        type: string
+        default: 'HVAC Services'
+      template:
+        description: 'Always hvac'
+        required: false
+        type: string
+        default: 'hvac'
+
+  # API trigger for n8n integration
+  repository_dispatch:
+    types: [generate-hvac-video]
+
+jobs:
+  generate-hvac-video:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install Dependencies
+      run: |
+        npm ci --prefer-offline
+        
+    - name: Install Chrome Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          fonts-liberation \
+          libasound2 \
+          libatk-bridge2.0-0 \
+          libatk1.0-0 \
+          libatspi2.0-0 \
+          libdrm2 \
+          libgtk-3-0 \
+          libnspr4 \
+          libnss3 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          xvfb \
+          fonts-ipafont-gothic \
+          fonts-wqy-zenhei \
+          fonts-thai-tlwg \
+          fonts-kacst \
+          fonts-freefont-ttf
+          
+    - name: Install Chrome Browser
+      run: |
+        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/chrome.list'
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+        
+    - name: Install FFmpeg and JSON tools
+      run: |
+        sudo apt-get install -y ffmpeg jq
+        
+    - name: Create Required Directories
+      run: |
+        mkdir -p videos
+        mkdir -p frames
+        mkdir -p temp
+        
+    - name: Extract Input Parameters
+      id: inputs
+      run: |
+        # Auto-generate workflow_id using timestamp (not sent from n8n)
+        WORKFLOW_ID="hvac-$(date +%Y%m%d-%H%M%S)-${{ github.run_number }}"
+        echo "workflow_id=$WORKFLOW_ID" >> $GITHUB_OUTPUT
+        
+        if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          echo "business_name=${{ github.event.client_payload.business_name || 'Professional HVAC Services' }}" >> $GITHUB_OUTPUT
+          echo "business_phone=${{ github.event.client_payload.business_phone || '(555) 123-4567' }}" >> $GITHUB_OUTPUT
+          echo "business_address=${{ github.event.client_payload.business_address || '123 Main Street, Your City, ST 12345' }}" >> $GITHUB_OUTPUT
+          echo "business_website=${{ github.event.client_payload.business_website || 'www.yourhvac.com' }}" >> $GITHUB_OUTPUT
+          echo "industry=${{ github.event.client_payload.industry || 'HVAC Services' }}" >> $GITHUB_OUTPUT
+          echo "template=${{ github.event.client_payload.template || 'hvac' }}" >> $GITHUB_OUTPUT
+        elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "business_name=${{ github.event.inputs.business_name }}" >> $GITHUB_OUTPUT
+          echo "business_phone=${{ github.event.inputs.business_phone }}" >> $GITHUB_OUTPUT
+          echo "business_address=${{ github.event.inputs.business_address }}" >> $GITHUB_OUTPUT
+          echo "business_website=${{ github.event.inputs.business_website }}" >> $GITHUB_OUTPUT
+          echo "industry=${{ github.event.inputs.industry }}" >> $GITHUB_OUTPUT
+          echo "template=${{ github.event.inputs.template }}" >> $GITHUB_OUTPUT
+        else
+          echo "business_name=Demo HVAC Services" >> $GITHUB_OUTPUT
+          echo "business_phone=(555) 123-4567" >> $GITHUB_OUTPUT
+          echo "business_address=123 Main Street, Your City, ST 12345" >> $GITHUB_OUTPUT
+          echo "business_website=www.yourhvac.com" >> $GITHUB_OUTPUT
+          echo "industry=HVAC Services" >> $GITHUB_OUTPUT
+          echo "template=hvac" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "📋 Extracted Parameters:"
+        echo "  🏢 Business Name: ${{ github.event.inputs.business_name || github.event.client_payload.business_name || 'Demo HVAC Services' }}"
+        echo "  📞 Business Phone: ${{ github.event.inputs.business_phone || github.event.client_payload.business_phone || '(555) 123-4567' }}"
+        echo "  📍 Business Address: ${{ github.event.inputs.business_address || github.event.client_payload.business_address || '123 Main Street, Your City, ST 12345' }}"
+        echo "  🌐 Business Website: ${{ github.event.inputs.business_website || github.event.client_payload.business_website || 'www.yourhvac.com' }}"
+        echo "  🏭 Industry: ${{ github.event.inputs.industry || github.event.client_payload.industry || 'HVAC Services' }}"
+        echo "  📄 Template: ${{ github.event.inputs.template || github.event.client_payload.template || 'hvac' }}"
+        echo "  🆔 Workflow ID: $WORKFLOW_ID"
+        
+    - name: Create HTML File from Template
+      run: |
+        echo "📄 Creating hvac-website.html from repository template..."
+        
+        # Check if template exists
+        if [ ! -f "templates/hvac-template.html" ]; then
+          echo "❌ Template file not found: templates/hvac-template.html"
+          exit 1
+        fi
+        
+        # Copy template to working file
+        cp templates/hvac-template.html hvac-website.html
+        echo "✅ Template copied ($(wc -c < hvac-website.html) bytes)"
+        
+        # Replace placeholders with business data
+        echo "🔄 Replacing placeholders with business data..."
+        
+        # Replace business information placeholders (escape special characters)
+        BUSINESS_NAME="${{ steps.inputs.outputs.business_name }}"
+        BUSINESS_PHONE="${{ steps.inputs.outputs.business_phone }}"
+        BUSINESS_ADDRESS="${{ steps.inputs.outputs.business_address }}"
+        BUSINESS_WEBSITE="${{ steps.inputs.outputs.business_website }}"
+        
+        # Use environment variables with sed to handle special characters
+        export BUSINESS_NAME BUSINESS_PHONE BUSINESS_ADDRESS BUSINESS_WEBSITE
+        
+        sed -i "s/{{businessName}}/$BUSINESS_NAME/g" hvac-website.html
+        sed -i "s/{{businessPhone}}/$BUSINESS_PHONE/g" hvac-website.html
+        sed -i "s/{{businessAddress}}/$BUSINESS_ADDRESS/g" hvac-website.html
+        sed -i "s/{{businessWebsite}}/$BUSINESS_WEBSITE/g" hvac-website.html
+        
+        # Replace standard HVAC template placeholders
+        sed -i "s/{{heroTitle}}/Professional HVAC Services You Can Trust/g" hvac-website.html
+        sed -i "s/{{tagline}}/Expert heating, cooling, and air quality solutions with 24\/7 emergency service. Licensed, insured, and committed to your comfort./g" hvac-website.html
+        sed -i "s/{{ctaText}}/Get Free Estimate/g" hvac-website.html
+        sed -i "s/{{primaryColor}}/#1e40af/g" hvac-website.html
+        sed -i "s/{{secondaryColor}}/#dc2626/g" hvac-website.html
+        sed -i "s/{{backgroundColor}}/#ffffff/g" hvac-website.html
+        sed -i "s/{{textColor}}/#1e293b/g" hvac-website.html
+        sed -i "s/{{accentColor}}/#ea580c/g" hvac-website.html
+        
+        echo "✅ Placeholders replaced successfully"
+        echo "📄 Final HTML file created ($(wc -c < hvac-website.html) bytes)"
+        
+        # Validate HTML file
+        if [ ! -f "hvac-website.html" ] || [ ! -s "hvac-website.html" ]; then
+          echo "❌ HTML file creation failed or file is empty"
+          exit 1
+        fi
+        
+    - name: Start HVAC Video Server
+      run: |
+        export PUPPETEER_EXECUTABLE_PATH=$(which google-chrome-stable)
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1920x1080x24 &
+        sleep 3
+        node server-hvac-step5.js &
+        sleep 5
+        
+    - name: Generate HVAC Marketing Video
+      id: generate
+      run: |
+        export PUPPETEER_EXECUTABLE_PATH=$(which google-chrome-stable)
+        export DISPLAY=:99
+        
+        # Test server health
+        curl -f http://localhost:3025/health || exit 1
+        
+        # Generate video with parameters
+        echo "🎬 Generating HVAC video with parameters:"
+        echo "  🏢 Business: ${{ steps.inputs.outputs.business_name }}"
+        echo "  📞 Phone: ${{ steps.inputs.outputs.business_phone }}"
+        echo "  📍 Address: ${{ steps.inputs.outputs.business_address }}"
+        echo "  🌐 Website: ${{ steps.inputs.outputs.business_website }}"
+        echo "  🏭 Industry: ${{ steps.inputs.outputs.industry }}"
+        echo "  📄 Template: ${{ steps.inputs.outputs.template }}"
+        echo "  🆔 Workflow ID: ${{ steps.inputs.outputs.workflow_id }}"
+        
+        # Create JSON payload safely using jq to avoid shell special characters
+        jq -n \
+          --arg business "${{ steps.inputs.outputs.business_name }}" \
+          --arg phone "${{ steps.inputs.outputs.business_phone }}" \
+          --arg address "${{ steps.inputs.outputs.business_address }}" \
+          --arg website "${{ steps.inputs.outputs.business_website }}" \
+          --arg niche "${{ steps.inputs.outputs.template }}" \
+          --rawfile html hvac-website.html \
+          --arg industry "${{ steps.inputs.outputs.industry }}" \
+          --arg workflow "${{ steps.inputs.outputs.workflow_id }}" \
+          '{
+            businessName: $business,
+            businessPhone: $phone,
+            businessAddress: $address,
+            businessWebsite: $website,
+            niche: $niche,
+            htmlContent: $html,
+            industry: $industry,
+            workflowId: $workflow
+          }' > request.json
+        
+        echo "📋 Request payload created safely"
+        echo "📦 Payload size: $(wc -c < request.json) bytes"
+        
+        # Send request using file input to avoid shell issues
+        RESPONSE=$(curl -s -X POST http://localhost:3025/generate-video \
+          -H "Content-Type: application/json" \
+          -d @request.json)
+        
+        echo "📤 Server Response: $RESPONSE"
+        
+        # Extract video path from response
+        VIDEO_PATH=$(echo "$RESPONSE" | jq -r '.videoPath // empty')
+        echo "video_path=$VIDEO_PATH" >> $GITHUB_OUTPUT
+        echo "workflow_id=${{ steps.inputs.outputs.workflow_id }}" >> $GITHUB_OUTPUT
+        
+        # Check if video was created
+        if [ -n "$VIDEO_PATH" ] && [ -f "videos/$VIDEO_PATH" ]; then
+          echo "✅ HVAC video generated successfully: $VIDEO_PATH"
+          ls -la videos/
+        else
+          echo "❌ Video generation failed"
+          echo "📋 Debug Info:"
+          echo "  Server logs:"
+          ps aux | grep server-hvac || true
+          echo "  Videos directory:"
+          ls -la videos/ || true
+          echo "  Response was: $RESPONSE"
+          echo "  Request payload was:"
+          head -20 request.json
+          exit 1
+        fi
+        
+    - name: Upload HVAC Video Artifact
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: hvac-video-${{ steps.generate.outputs.workflow_id }}
+        path: videos/
+        retention-days: 30
+        
+    - name: Upload Debug Logs on Failure
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: debug-logs-${{ steps.inputs.outputs.workflow_id }}
+        path: |
+          videos/
+          *.log
+        retention-days: 7
+        
+    - name: Upload Video to Release (if tagged)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: videos/*.mp4
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Cleanup Temporary Files
+      if: always()
+      run: |
+        rm -rf frames/
+        rm -rf temp/
+        rm -f request.json
+        rm -f hvac-website.html
+        pkill -f "server-hvac.js" || true
+        pkill -f "Xvfb" || true
+
+  # Notification job for successful video generation
+  notify-success:
+    needs: generate-hvac-video
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Send Success Notification
+      run: |
+        echo "🎉 HVAC marketing video generated successfully!"
+        echo "🏢 Business: ${{ needs.generate-hvac-video.steps.inputs.outputs.business_name }}"
+        echo "📞 Phone: ${{ needs.generate-hvac-video.steps.inputs.outputs.business_phone }}"
+        echo "📍 Address: ${{ needs.generate-hvac-video.steps.inputs.outputs.business_address }}"
+        echo "🌐 Website: ${{ needs.generate-hvac-video.steps.inputs.outputs.business_website }}"
+        echo "🏭 Industry: ${{ needs.generate-hvac-video.steps.inputs.outputs.industry }}"
+        echo "📄 Template: ${{ needs.generate-hvac-video.steps.inputs.outputs.template }}"
+        echo "🎬 Video: ${{ needs.generate-hvac-video.steps.generate.outputs.video_path }}"
+        echo "🆔 Workflow ID: ${{ needs.generate-hvac-video.steps.generate.outputs.workflow_id }}"
+        echo "📦 Artifact: hvac-video-${{ needs.generate-hvac-video.steps.generate.outputs.workflow_id }}"
+        
+        # Here you could add webhook notifications to n8n or other services
+        # curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+        #   -H "Content-Type: application/json" \
+        #   -d "{\"status\": \"success\", \"video_path\": \"${{ needs.generate-hvac-video.steps.generate.outputs.video_path }}\", \"workflow_id\": \"${{ needs.generate-hvac-video.steps.generate.outputs.workflow_id }}\"}"
