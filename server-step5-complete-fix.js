@@ -143,7 +143,7 @@ async function generateVideo(req, res) {
         
         // Video settings
         const fps = 60;
-        const duration = 25;
+        const duration = 30; // 30 seconds for complete showcase
         const totalFrames = fps * duration;
         
         console.log(`🎬 Generating ${totalFrames} frames (25s at 60fps)...`);

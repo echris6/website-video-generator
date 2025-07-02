@@ -130,7 +130,7 @@ async function generateVideo(req, res) {
         console.log('🔧 PROPER FIXES: Working text cutoff, correct minimize coords, proper content loading');
         
         const fps = 60;
-        const duration = 25; // 25 seconds
+        const duration = 30; // 30 seconds - extended for better showcase
         const totalFrames = fps * duration;
         
         console.log(`🎬 Generating ${totalFrames} frames...`);

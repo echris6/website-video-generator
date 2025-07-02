@@ -105,7 +105,7 @@ async function generateVideo(businessName, niche) {
         
         // Step 5: 25 seconds (Step 4 + Minimize + Site Tour)
         const fps = 60;
-        const duration = 25;
+        const duration = 30; // 30 seconds for full demo
         const totalFrames = fps * duration;
         
         console.log(`🎬 Generating ${totalFrames} frames...`);

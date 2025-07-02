@@ -153,17 +153,21 @@ jobs:
           echo "template=hvac" >> $GITHUB_OUTPUT
         fi
         
-        echo "📋 Extracted Parameters:"
-        echo "  🏢 Business Name: ${{ github.event.inputs.business_name || github.event.client_payload.business_name || 'Demo HVAC Services' }}"
-        echo "  📞 Business Phone: ${{ github.event.inputs.business_phone || github.event.client_payload.business_phone || '(555) 123-4567' }}"
-        echo "  📍 Business Address: ${{ github.event.inputs.business_address || github.event.client_payload.business_address || '123 Main Street, Your City, ST 12345' }}"
-        echo "  🌐 Business Website: ${{ github.event.inputs.business_website || github.event.client_payload.business_website || 'www.yourhvac.com' }}"
-        echo "  🎯 Hero Title: ${{ github.event.inputs.hero_title || github.event.client_payload.hero_title || 'Professional HVAC Solutions' }}"
-        echo "  💬 Tagline: ${{ github.event.inputs.tagline || github.event.client_payload.tagline || 'Expert heating, cooling, and ventilation services' }}"
-        echo "  📢 CTA Text: ${{ github.event.inputs.cta_text || github.event.client_payload.cta_text || 'Get Free Estimate' }}"
-        echo "  🏭 Industry: ${{ github.event.inputs.industry || github.event.client_payload.industry || 'HVAC Services' }}"
-        echo "  📄 Template: ${{ github.event.inputs.template || github.event.client_payload.template || 'hvac' }}"
+        echo "📋 EXTRACTED PARAMETERS FOR THIS UNIQUE VIDEO:"
+        echo "=============================================="
+        echo "  🏢 Business Name: '${{ steps.inputs.outputs.business_name }}'"
+        echo "  📞 Business Phone: '${{ steps.inputs.outputs.business_phone }}'"
+        echo "  📍 Business Address: '${{ steps.inputs.outputs.business_address }}'"
+        echo "  🌐 Business Website: '${{ steps.inputs.outputs.business_website }}'"
+        echo "  🎯 Hero Title: '${{ steps.inputs.outputs.hero_title }}'"
+        echo "  💬 Tagline: '${{ steps.inputs.outputs.tagline }}'"
+        echo "  📢 CTA Text: '${{ steps.inputs.outputs.cta_text }}'"
+        echo "  🏭 Industry: '${{ steps.inputs.outputs.industry }}'"
+        echo "  📄 Template: '${{ steps.inputs.outputs.template }}'"
         echo "  🆔 Workflow ID: $WORKFLOW_ID"
+        echo "=============================================="
+        echo "✅ Each workflow run uses its OWN unique business data!"
+        echo "🔄 This ensures no duplicate business info across videos"
         
     - name: Create HTML File from Template
       run: |

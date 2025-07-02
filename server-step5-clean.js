@@ -318,7 +318,7 @@ async function generateVideo(businessName, niche) {
                     success: true,
                     video: path.basename(outputPath),
                     size: `${sizeMB} MB`,
-                    duration: '25s',
+                    duration: '30s',
                     frames: totalFrames
                 });
             } else {
