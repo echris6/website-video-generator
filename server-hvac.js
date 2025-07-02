@@ -253,7 +253,7 @@ async function generateHVACVideo(businessName, niche, htmlContent, businessData 
         if (businessData.businessAddress) console.log(`📍 Address: ${businessData.businessAddress}`);
         if (businessData.heroTitle) console.log(`🎯 Hero Title: ${businessData.heroTitle}`);
         
-        await page.waitForTimeout(5000);
+        await new Promise(resolve => setTimeout(resolve, 5000));
         console.log('⏳ HVAC site loaded with stabilization wait...');
         
         await page.evaluate(hvacChatbotFunctions);
@@ -295,7 +295,7 @@ async function generateHVACVideo(businessName, niche, htmlContent, businessData 
             });
         });
         
-        await page.waitForTimeout(2000);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         console.log('✅ HVAC site completely stabilized');
         
         const pageHeight = await page.evaluate(() => document.body.scrollHeight);
@@ -333,7 +333,7 @@ async function generateHVACVideo(businessName, niche, htmlContent, businessData 
                     await page.evaluate(() => clickHVACChatButton());
                     console.log(`🚨 CLICKED HVAC chat at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotOpened = true;
-                    await page.waitForTimeout(1000);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                 }
                 
                 if (i === inputFocusFrame) {
@@ -364,14 +364,14 @@ async function generateHVACVideo(businessName, niche, htmlContent, businessData 
                 if (i === sendClickFrame) {
                     await page.evaluate(() => clickHVACSendButton());
                     console.log(`🚨 SENT message at frame ${i} (${(i/fps).toFixed(1)}s)`);
-                    await page.waitForTimeout(300);
+                    await new Promise(resolve => setTimeout(resolve, 300));
                 }
                 
                 if (i === minimizeClickFrame && !chatbotMinimized) {
                     await page.evaluate(() => clickHVACMinimizeButton());
                     console.log(`🖱️ MINIMIZED chat at frame ${i} (${(i/fps).toFixed(1)}s)`);
                     chatbotMinimized = true;
-                    await page.waitForTimeout(500);
+                    await new Promise(resolve => setTimeout(resolve, 500));
                 }
                 
                 frameBuffer = await page.screenshot({ 
@@ -392,7 +392,7 @@ async function generateHVACVideo(businessName, niche, htmlContent, businessData 
                             section.style.visibility = 'visible';
                         });
                     });
-                    await page.waitForTimeout(1000);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                     fullPageBuffer = await page.screenshot({ 
                         fullPage: true,
                         type: 'png'
