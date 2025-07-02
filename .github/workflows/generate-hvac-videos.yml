@@ -116,7 +116,9 @@ jobs:
       id: inputs
       run: |
         # Auto-generate workflow_id using timestamp (not sent from n8n)
-        WORKFLOW_ID="hvac-$(date +%Y%m%d-%H%M%S)-${{ github.run_number }}"
+        TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+        RUN_NUMBER="${{ github.run_number }}"
+        WORKFLOW_ID="hvac-${TIMESTAMP}-${RUN_NUMBER}"
         echo "workflow_id=$WORKFLOW_ID" >> $GITHUB_OUTPUT
         
         if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
