@@ -1,11 +1,18 @@
 {
-  "timestamp": "2025-07-02T13:17:55.458Z",
+  "timestamp": "2025-07-07T04:25:59.108Z",
   "results": {
-    "serverFilesFound": 7,
+    "serverFilesFound": 1,
     "totalServerFiles": 7,
-    "duration30sFiles": 7,
-    "errorsCount": 0,
-    "errors": []
+    "duration30sFiles": 1,
+    "errorsCount": 6,
+    "errors": [
+      "server-hvac.js: File does not exist",
+      "server-step5-clean.js: File does not exist",
+      "server-step5-tour-fixed.js: File does not exist",
+      "server-step5-final-clean.js: File does not exist",
+      "server-step5-complete-fix.js: File does not exist",
+      "server-step5-minimal.js: File does not exist"
+    ]
   },
-  "status": "PASSED"
+  "status": "FAILED"
 }

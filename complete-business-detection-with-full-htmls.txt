@@ -66,21 +66,21 @@ function detectBusinessType(name, description) {
         };
     }
     
-    // Default Professional Services
+    // Default HVAC Services (Changed from medical_spa to hvac)
     else {
         return {
-            industry: 'Professional Services',
-            template: 'medical_spa',
-            primaryColor: '#E8B4CB',
-            secondaryColor: '#C891A8',
-            backgroundColor: '#FDF8FB',
-            textColor: '#2D2D2D',
-            accentColor: '#8B5A6B',
-            heroTitle: 'Professional Excellence',
-            tagline: 'Expert services tailored to your needs',
-            ctaText: 'Get Started',
-            chatbotSelector: '#chatbot-trigger',
-            inputSelector: '#chatbot-input'
+            industry: 'HVAC Services',
+            template: 'hvac',
+            primaryColor: '#1e40af',
+            secondaryColor: '#ea580c',
+            backgroundColor: '#ffffff',
+            textColor: '#1e293b',
+            accentColor: '#dc2626',
+            heroTitle: 'Professional HVAC Solutions',
+            tagline: 'Expert heating, cooling, and ventilation services with fast response times',
+            ctaText: 'Get Free Estimate',
+            chatbotSelector: '#hvacChatToggle',
+            inputSelector: '#hvacMessageInput'
         };
     }
 }
@@ -6090,8 +6090,8 @@ const HTML_TEMPLATES = {
 function loadTemplate(templateType) {
     const template = HTML_TEMPLATES[templateType];
     if (!template) {
-        console.warn('Template ' + templateType + ' not found, using medical_spa as fallback');
-        return HTML_TEMPLATES['medical_spa'];
+        console.warn('Template ' + templateType + ' not found, using hvac as fallback');
+        return HTML_TEMPLATES['hvac'];
     }
     return template;
 }

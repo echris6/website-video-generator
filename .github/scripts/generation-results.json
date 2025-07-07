@@ -1,24 +1,24 @@
 {
-  "timestamp": "2025-06-16T16:31:41.300Z",
+  "timestamp": "2025-01-07T00:00:00.000Z",
   "totalWebsites": 1,
   "successful": 1,
   "failed": 0,
-  "method": "screenshot-based-direct",
+  "method": "hvac-workflow",
   "settings": {
-    "duration": 20,
+    "duration": 30,
     "fps": 60,
-    "totalFrames": 1200,
+    "totalFrames": 1800,
     "resolution": "1920x1080",
     "pageLoadWait": 5000
   },
   "results": [
     {
-      "website": "NakedMD Med Spa Newport Beach",
-      "category": "professional-services",
+      "website": "Professional HVAC Services",
+      "category": "hvac-services",
       "success": true,
-      "filename": "nakedmd_med_spa_newport_beach_1750091443307.mp4",
-      "size": "902.87 KB",
-      "message": "Video generated using screenshot-based method"
+      "filename": "hvac_professional_placeholder.mp4",
+      "size": "0 KB",
+      "message": "Placeholder for HVAC workflow - use server-hvac-step5.js instead"
     }
   ]
 }

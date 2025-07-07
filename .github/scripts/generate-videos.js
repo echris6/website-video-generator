@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+// DISABLED: This script conflicts with the HVAC workflow and causes multiple videos to be generated
+// Use server-hvac-step5.js instead for HVAC video generation
+
+process.exit(0); // Exit early to prevent execution
 
 const fs = require('fs');
 const path = require('path');
