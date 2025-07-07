@@ -697,18 +697,21 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             throw new Error(`Frame count mismatch: expected ${totalFrames}, found ${frameFiles.length}`);
         }
         
-        // **PREVENT RACE CONDITIONS**: Use stricter FFmpeg parameters
+        // **OPTIMIZED ENCODING**: Reduce file size for GitHub Actions
         const ffmpegArgs = [
             '-y',                                    // Overwrite output
             '-framerate', fps.toString(),            // Input framerate
             '-i', path.join(framesDir, 'frame_%06d.png'), // Input pattern
             '-c:v', 'libx264',                      // Video codec
             '-pix_fmt', 'yuv420p',                  // Pixel format
-            '-crf', '23',                           // Higher CRF for better compatibility (was 18)
+            '-crf', '28',                           // Higher CRF for smaller file size (was 23)
             '-preset', 'fast',                      // Faster preset for GitHub Actions
             '-profile:v', 'baseline',               // Baseline profile for max compatibility
             '-level', '3.0',                        // Specific level for compatibility
             '-movflags', '+faststart',              // Fast start for web
+            '-b:v', '2000k',                        // Lower bitrate for smaller files
+            '-maxrate', '2500k',                    // Max bitrate cap
+            '-bufsize', '5000k',                    // Buffer size
             '-threads', '1',                        // Single thread to prevent resource conflicts
             videoPath
         ];
@@ -781,16 +784,60 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             });
         });
 
-        // Professional cleanup
+        // **AGGRESSIVE CLEANUP**: Remove ALL frames and temporary files
         console.log('🧹 Cleaning up professional frames...');
-        frameFiles.forEach(file => {
-            fs.unlinkSync(path.join(framesDir, file));
-        });
+        try {
+            // Remove individual frame files
+            frameFiles.forEach(file => {
+                const framePath = path.join(framesDir, file);
+                if (fs.existsSync(framePath)) {
+                    fs.unlinkSync(framePath);
+                }
+            });
+            
+            // Remove entire frames directory to ensure nothing is left
+            if (fs.existsSync(framesDir)) {
+                fs.rmSync(framesDir, { recursive: true, force: true });
+                console.log('✅ Frames directory completely removed');
+            }
+            
+            // Clean up any leftover temp files in videos directory
+            const videosDir = path.join(__dirname, 'videos');
+            if (fs.existsSync(videosDir)) {
+                const files = fs.readdirSync(videosDir);
+                files.forEach(file => {
+                    if (file.endsWith('.png') || file.endsWith('.tmp') || file.startsWith('frame_')) {
+                        const tempFile = path.join(videosDir, file);
+                        if (fs.existsSync(tempFile)) {
+                            fs.unlinkSync(tempFile);
+                            console.log(`🗑️ Removed temp file: ${file}`);
+                        }
+                    }
+                });
+            }
+        } catch (cleanupError) {
+            console.warn('⚠️ Cleanup warning:', cleanupError.message);
+        }
 
         const stats = fs.statSync(videoPath);
         const fileSizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
         
         console.log(`✅ HVAC SUCCESS! Video: ${path.basename(videoPath)} (${fileSizeInMB} MB)`);
+        
+        // **VERIFY SINGLE VIDEO**: Ensure only one video exists
+        const outputVideosDir = path.join(__dirname, 'videos');
+        const videoFiles = fs.readdirSync(outputVideosDir).filter(f => f.endsWith('.mp4'));
+        console.log(`📊 VERIFICATION: Found ${videoFiles.length} video(s) in videos directory:`);
+        videoFiles.forEach(file => {
+            const filePath = path.join(outputVideosDir, file);
+            const fileStats = fs.statSync(filePath);
+            const fileSize = (fileStats.size / (1024 * 1024)).toFixed(2);
+            console.log(`   📹 ${file} (${fileSize} MB)`);
+        });
+        
+        if (videoFiles.length > 1) {
+            console.warn(`⚠️ WARNING: Multiple videos detected! This should not happen.`);
+        }
         
         return {
             success: true,
@@ -799,6 +846,7 @@ async function generateHVACVideo(businessName, niche, htmlContent) {
             duration: duration,
             fps: fps,
             frames: totalFrames,
+            totalVideoFiles: videoFiles.length,
             message: `HVAC emergency service demo: "${emergencyMessage}" (30s with slower scrolling, no black screen, no FFmpeg errors)`
         };
 
