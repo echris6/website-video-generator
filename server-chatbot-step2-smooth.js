@@ -1,3 +1,11 @@
+#!/usr/bin/env node
+
+// DISABLED: This server conflicts with server-hvac-step5.js and causes multiple videos
+// Use server-hvac-step5.js instead for HVAC video generation
+console.log('⚠️  server-chatbot-step2-smooth.js is DISABLED to prevent multiple video generation');
+console.log('🔧 Use server-hvac-step5.js on port 3025 instead');
+process.exit(0);
+
 const express = require('express');
 const puppeteer = require('puppeteer');
 const ffmpeg = require('fluent-ffmpeg');
